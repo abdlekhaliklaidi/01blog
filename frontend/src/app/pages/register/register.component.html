@@ -1,1 +1,77 @@
-<p>register works!</p>
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h2>Créer un compte</h2>
+      <p>Remplissez le formulaire pour vous inscrire</p>
+    </div>
+    
+    <div class="form-group">
+        <label for="firstname"><span class="icon">👤</span> firstname</label>
+        <input type="text" id="firstname" name="firstname" class="form-control"
+               [(ngModel)]="credentials.firstname" required #firstnameInput="ngModel" />
+        <div *ngIf="firstnameInput.invalid && firstnameInput.touched" class="error">
+          Le prénom est requis.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="lastname"><span class="icon">👤</span> lastname</label>
+        <input type="text" id="lastname" name="lastname" class="form-control"
+               [(ngModel)]="credentials.lastname" required #lastnameInput="ngModel" />
+        <div *ngIf="lastnameInput.invalid && lastnameInput.touched" class="error">
+          Le nom est requis.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="genre"><span class="icon">⚧️</span> Genre</label>
+        <select id="genre" name="genre" class="form-control"
+                [(ngModel)]="credentials.genre" required #genreInput="ngModel">
+          <option value="" disabled selected>Choisissez votre genre</option>
+          <option value="Homme">Homme</option>
+          <option value="Femme">Femme</option>
+        </select>
+        <div *ngIf="genreInput.invalid && genreInput.touched" class="error">
+          Le genre est requis.
+        </div>
+      </div>
+
+    <form (ngSubmit)="onRegister()" #registerForm="ngForm" novalidate>
+      <div class="form-group">
+        <label for="email"><span class="icon">📧</span> Email</label>
+        <input type="email" id="email" name="email" class="form-control"
+               [(ngModel)]="credentials.email" required #emailInput="ngModel" />
+        <div *ngIf="emailInput.invalid && emailInput.touched" class="error">
+          L'email est requis.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password"><span class="icon">🔒</span> Mot de passe</label>
+        <input type="password" id="password" name="password" class="form-control"
+               [(ngModel)]="credentials.password" required #passwordInput="ngModel" />
+        <div *ngIf="passwordInput.invalid && passwordInput.touched" class="error">
+          Le mot de passe est requis.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword"><span class="icon">✅</span> Confirmer le mot de passe</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" class="form-control"
+               [(ngModel)]="credentials.confirmPassword" required #confirmPasswordInput="ngModel" />
+        <div *ngIf="confirmPasswordInput.invalid && confirmPasswordInput.touched" class="error">
+          La confirmation est requise.
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary" [disabled]="registerForm.invalid">
+          S'inscrire
+        </button>
+      </div>
+
+      <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+      <div *ngIf="errorMessage" class="alert alert-error">{{ errorMessage }}</div>
+    </form>
+  </div>
+</div>

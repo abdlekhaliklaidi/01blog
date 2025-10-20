@@ -1,8 +1,87 @@
-<!-- <p>login works!</p> -->
-<h2>Login</h2>
-<form (ngSubmit)="onLogin()" #loginForm="ngForm">
-  <input type="email" name="email" [(ngModel)]="email" placeholder="Email" required />
-  <input type="password" name="password" [(ngModel)]="password" placeholder="Password" required />
-  <button type="submit" [disabled]="!loginForm.form.valid">Login</button>
-</form>
+<div class="auth-container">
+  <div class="auth-card">
+  
+    <div class="auth-header">
+      <h2>🔐 Connexion</h2>
+    </div>
 
+    <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+      <div class="form-group">
+        <label for="email">
+          <i class="icon">📧</i> Email
+        </label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          [(ngModel)]="credentials.email"
+          placeholder="Entrez votre email"
+          required
+          email
+          #emailInput="ngModel"
+          class="form-control"
+        />
+        <div class="error" *ngIf="emailInput.invalid && emailInput.touched">
+          Veuillez entrer un email valide
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">
+          <i class="icon">🔒</i> Mot de passe
+        </label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          [(ngModel)]="credentials.password"
+          placeholder="Entrez votre mot de passe"
+          required
+          minlength="6"
+          #passwordInput="ngModel"
+          class="form-control"
+        />
+        <div class="error" *ngIf="passwordInput.invalid && passwordInput.touched">
+          Le mot de passe doit contenir au moins 6 caractères
+        </div>
+      </div>
+
+      <div class="forgot-password">
+        <a routerLink="/forgot-password">Mot de passe oublié?</a>
+      </div>
+
+      <div class="form-actions">
+        <button 
+          type="submit" 
+          class="btn-primary" 
+          [disabled]="!loginForm.valid"
+        >
+          Se connecter
+        </button>
+        
+        <div class="divider">
+          <span>OU</span>
+        </div>
+
+        <a routerLink="/register" class="btn-secondary">
+          Créer un compte
+        </a>
+      </div>
+
+      <div class="alert alert-success" *ngIf="successMessage">
+        <strong>{{ successMessage }}</strong>
+      </div>
+      
+      <div class="alert alert-error" *ngIf="errorMessage">
+        <strong>{{ errorMessage }}</strong>
+      </div>
+    </form>
+    
+    <div class="auth-footer">
+      <p>
+        Pas encore de compte? 
+        <a routerLink="/register" class="link-primary">Inscrivez-vous</a>
+      </p>
+    </div>
+  </div>
+</div>
