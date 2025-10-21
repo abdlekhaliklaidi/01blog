@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,7 @@ export class LoginComponent {
   successMessage: string = '';
   errorMessage: string = '';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   onLogin() {
     const { email, password } = this.credentials;
@@ -35,6 +36,7 @@ export class LoginComponent {
         next: (res) => {
           this.successMessage = res;
           this.errorMessage = '';
+          this.router.navigate(['/home']);
         },
         error: (err) => {
           this.errorMessage = err.error || 'Échec de la connexion';
