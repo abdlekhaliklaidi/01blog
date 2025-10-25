@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 @Component({
@@ -31,17 +31,56 @@ export class LoginComponent {
       return;
     }
 
-    this.http.post('http://localhost:8080/users/login', { email, password }, { responseType: 'text' })
+    this.http.post<{ token: string }>(
+      'http://localhost:8080/users/login',
+      { email, password }
+    ).subscribe({
+      next: (res) => {
+        localStorage.setItem('token', res.token);
+
+        this.successMessage = 'Connexion réussie!';
+        this.errorMessage = '';
+
+        this.getUsersList();
+
+        this.router.navigate(['/home']);
+      },
+      error: (err) => {
+        if (err.status === 401) {
+          this.errorMessage = 'Email ou mot de passe incorrect';
+        } else if (err.status === 403) {
+          this.errorMessage = 'Accès interdit';
+        } else {
+          this.errorMessage = 'Erreur serveur, veuillez réessayer';
+        }
+        this.successMessage = '';
+      }
+    });
+  }
+
+  getUsersList() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.warn('Aucun token trouvé.');
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    this.http.get('http://localhost:8080/users', { headers })
       .subscribe({
-        next: (res) => {
-          this.successMessage = res;
-          this.errorMessage = '';
-          this.router.navigate(['/home']);
+        next: data => {
+          console.log('Liste des utilisateurs:', data);
         },
-        error: (err) => {
-          this.errorMessage = err.error || 'Échec de la connexion';
-          this.successMessage = '';
+        error: err => {
+          console.error('Erreur lors du chargement des utilisateurs:', err);
         }
       });
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem('token');
   }
 }
