@@ -2,11 +2,32 @@
   text-align: center;
   padding: 2rem;
   font-family: Arial, sans-serif;
+  position: relative;
+}
+
+.logout-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  background-color: #667eea;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+  background-color: #5563c1;
+  transform: scale(1.05);
 }
 
 .home-container h1 {
   color: #667eea;
   font-size: 2.5rem;
+  margin-top: 4rem;
 }
 
 .home-container p {
