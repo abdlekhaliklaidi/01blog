@@ -69,16 +69,18 @@
     <div *ngFor="let post of posts" class="post-card">
       <div class="post-header">
         <!-- <img [src]="post.author?.avatar || 'https://i.pravatar.cc/40'" alt="author avatar" /> -->
-        <strong>{{ post.author?.firstName || 'Unknown' }}</strong>
+        <strong>{{ post.authorFirstName || 'Unknown' }}</strong>
       </div>
 
       <h3>{{ post.title }}</h3>
-      <img
+      <!-- <img
   *ngIf="post.imageBase64"
   [src]="'data:image/png;base64,' + post.imageBase64"
   alt="post image"
   class="post-image"
-/>
+/> -->
+    <img *ngIf="post.imageUrl" [src]="post.imageUrl" alt="Post image">
+
       <p>{{ post.content }}</p>
 
       <div class="post-actions">

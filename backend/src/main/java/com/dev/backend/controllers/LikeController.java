@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/likes")
 public class LikeController {

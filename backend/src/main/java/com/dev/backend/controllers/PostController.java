@@ -10,6 +10,9 @@ import com.dev.backend.entities.User;
 import com.dev.backend.repositories.PostRepository;
 import com.dev.backend.repositories.UserRepository;
 import com.dev.backend.services.PostService;
+import com.dev.backend.dto.PostDTO;
+import java.util.stream.Collectors;
+
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,8 +36,10 @@ public class PostController {
     private UserRepository userRepository;
 
     @GetMapping
-    public List<Post> getAllPosts() {
-        return postService.getAllPosts();
+    public List<PostDTO> getAllPosts() {
+           return postService.getAllPosts().stream()
+                .map(PostDTO::new)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
@@ -50,7 +55,7 @@ public class PostController {
     }
 
     @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<Post> createPostWithImage(
+    public ResponseEntity<PostDTO> createPostWithImage(
             @RequestParam("title") String title,
             @RequestParam("content") String content,
             @RequestParam("authorId") Long authorId,
@@ -71,7 +76,8 @@ public class PostController {
 
         Post savedPost = postRepository.save(post);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
+        PostDTO postDTO = new PostDTO(savedPost);
+        return ResponseEntity.status(HttpStatus.CREATED).body(postDTO);
     }
 
     @PutMapping("/{id}")

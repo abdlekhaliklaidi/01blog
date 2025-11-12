@@ -82,7 +82,8 @@ export class HomeComponent implements OnInit {
           likes: p.likes || [],
           comments: p.comments || [],
           showComments: false,
-          newComment: ''
+          newComment: '',
+          likedByCurrentUser: (p.likes || []).some((l: any) => l.user?.id === this.userInfo.id)
         }));
       },
       error: (err) => {
@@ -178,13 +179,14 @@ addComment(post: any) {
         //   newComment: ''
         // });
         this.posts.unshift({
-  ...created,
-  likes: created.likes || [],
-  comments: created.comments || [],
-  showComments: false,
-  newComment: '',
-  imageBase64: created.imageBase64 
-});
+            ...created,
+        likes: created.likes || [],
+        comments: created.comments || [],
+        showComments: false,
+        newComment: '',
+        imageUrl: created.imageUrl 
+      });
+
         this.closeCreatePost();
       },
       error: (err) => console.error('Error creating post', err)

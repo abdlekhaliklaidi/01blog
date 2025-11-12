@@ -16,7 +16,12 @@ public class PostDTO {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
-        this.imageUrl = post.getImageBase64();
+        if (post.getImageBase64() != null && !post.getImageBase64().isEmpty()) {
+        this.imageUrl = "data:image/jpeg;base64," + post.getImageBase64();
+    } else {
+        this.imageUrl = null;
+    }
+
         this.createdAt = post.getCreatedAt();
         this.authorFirstName = post.getAuthor() != null ? post.getAuthor().getFirstname() : "Unknown";
     }
