@@ -1,4 +1,128 @@
+<nav class="navbar">
+  <div class="nav-left">
+    <h2 class="logo">01Blog</h2>
+    <button type="button" class="nav-btn">🏠 Home</button>
+    <button type="button" class="nav-btn">🔔 Notifications</button>
+    <button type="button" class="nav-btn">👥 Invitations</button>
+  </div>
+
+  <div class="nav-center">
+    <input type="text" placeholder="Search..." class="search-input" />
+  </div>
+
+  <div class="nav-right">
+    <div class="user-avatar" (click)="toggleUserMenu()">
+      <img [src]="userInfo.avatar" alt="User Avatar" />
+    </div>
+    <div class="user-menu" *ngIf="showUserMenu">
+      <p>{{ userInfo.name }}</p>
+      <button type="button">Profile</button>
+      <button type="button" (click)="logout()">Logout</button>
+    </div>
+  </div>
+</nav>
+
 <div class="home-container">
-  <button class="logout-btn" (click)="logout()">Logout</button>
-  <h1>Bienvenue sur la page d'accueil</h1>
+  <aside class="sidebar sidebar-left">
+    <div class="followers-section">
+      <h3>Followers</h3>
+      <ul>
+        <li *ngFor="let follower of followers">
+          <img [src]="follower.avatar" alt="{{ follower.name }}">
+          <div class="follower-info">
+            <span>{{ follower.name }}</span>
+            <div class="actions">
+              <button *ngIf="follower.status === 'pending'" type="button" class="accept-btn" (click)="acceptFollower(follower)">Accept</button>
+              <button *ngIf="follower.status === 'pending'" type="button" class="reject-btn" (click)="rejectFollower(follower)">Reject</button>
+              <span *ngIf="follower.status === 'accepted'" class="accepted-label">✔ Accepted</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="following-section">
+      <h3>Following</h3>
+      <ul>
+        <li *ngFor="let f of following">
+          <img [src]="f.avatar" alt="{{ f.name }}">
+          <div class="follower-info">
+            <span>{{ f.name }}</span>
+            <button type="button" class="follow-btn" [class.unfollow]="f.following" (click)="toggleFollow(f)">
+              {{ f.following ? 'Unfollow' : 'Follow' }}
+            </button>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="feed">
+    <div class="feed-header">
+      <button type="button" class="create-post-btn" (click)="openCreatePost()">New Post</button>
+    </div>
+
+    <div *ngIf="posts.length === 0" class="no-posts">
+      <p>No posts yet. Create your first one!</p>
+    </div>
+
+    <div *ngFor="let post of posts" class="post-card">
+      <div class="post-header">
+        <!-- <img [src]="post.author?.avatar || 'https://i.pravatar.cc/40'" alt="author avatar" /> -->
+        <strong>{{ post.author?.firstName || 'Unknown' }}</strong>
+      </div>
+
+      <h3>{{ post.title }}</h3>
+      <img
+  *ngIf="post.imageBase64"
+  [src]="'data:image/png;base64,' + post.imageBase64"
+  alt="post image"
+  class="post-image"
+/>
+      <p>{{ post.content }}</p>
+
+      <div class="post-actions">
+        <button type="button" class="like-btn" (click)="toggleLike(post)">
+          👍 {{ post.likes?.length || 0 }}
+        </button>
+        <button type="button" (click)="post.showComments = !post.showComments">
+          💬 {{ post.comments?.length || 0 }}
+        </button>
+      </div>
+
+      <div *ngIf="post.showComments" class="comments-section">
+        <div *ngFor="let c of post.comments">
+          <strong>{{ c.user?.name }}</strong>: {{ c.content }}
+        </div>
+
+        <div class="add-comment">
+          <input type="text" [(ngModel)]="post.newComment" placeholder="Write a comment..." />
+          <button (click)="addComment(post)">Send</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <aside class="sidebar sidebar-right">
+    <div class="user-card">
+      <img [src]="userInfo.avatar" alt="user avatar" class="profile-pic">
+      <h3>{{ userInfo.name }}</h3>
+      <p class="bio">{{ userInfo.bio }}</p>
+      <button type="button" class="create-post-btn" (click)="openCreatePost()">Create Post</button>
+      <button type="button" class="logout-btn" (click)="logout()">Logout</button>
+    </div>
+  </aside>
+</div>
+
+<div class="modal-overlay" *ngIf="showCreatePost">
+  <div class="modal">
+    <h3>Create a Post</h3>
+    <input type="text" [(ngModel)]="newPost.title" placeholder="Title" />
+    <textarea [(ngModel)]="newPost.content" placeholder="Content"></textarea>
+    <input type="file" (change)="onFileSelected($event)" />
+    <div class="modal-actions">
+      <button type="button" (click)="createPost()">Publish</button>
+      <button type="button" (click)="closeCreatePost()">Cancel</button>
+    </div>
+  </div>
 </div>

@@ -2,7 +2,6 @@ package com.dev.backend.entities;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
@@ -17,7 +16,7 @@ public class Like {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-@JsonBackReference(value = "user-like")
+    @JsonBackReference(value = "user-like")
     private User user;
 
     @ManyToOne
@@ -32,35 +31,35 @@ public class Like {
         likedAt = LocalDateTime.now();
     }
 
-    public Long getId() {
-        return id;
+    public Long getId() { 
+        return id; 
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(Long id) { 
+        this.id = id; 
     }
 
-    public User getUser() {
-        return user;
+    public User getUser() { 
+        return user; 
+    }
+    
+    public void setUser(User user) { 
+        this.user = user; 
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public Post getPost() { 
+        return post; 
     }
 
-    public Post getPost() {
-        return post;
+    public void setPost(Post post) { 
+        this.post = post; 
     }
 
-    public void setPost(Post post) {
-        this.post = post;
+    public LocalDateTime getLikedAt() { 
+        return likedAt; 
     }
 
-    public LocalDateTime getLikedAt() {
-        return likedAt;
-    }
-
-    public void setLikedAt(LocalDateTime likedAt) {
-        this.likedAt = likedAt;
+    public void setLikedAt(LocalDateTime likedAt) { 
+        this.likedAt = likedAt; 
     }
 }

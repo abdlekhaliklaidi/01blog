@@ -74,7 +74,7 @@ public class SecurityConfig {
            .securityMatcher("/**")
            .cors(cors -> {})
            .authorizeHttpRequests(auth -> auth
-           .requestMatchers("/users/login", "/users/register").permitAll()
+           .requestMatchers("/users/login", "/users/register", "/posts/**").permitAll()
            .anyRequest().authenticated()
         )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

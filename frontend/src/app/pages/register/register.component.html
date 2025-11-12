@@ -28,8 +28,8 @@
         <select id="genre" name="genre" class="form-control"
                 [(ngModel)]="credentials.genre" required #genreInput="ngModel">
           <option value="" disabled selected>Choisissez votre genre</option>
-          <option value="Homme">Homme</option>
-          <option value="Femme">Femme</option>
+          <option value="Homme">M</option>
+          <option value="Femme">F</option>
         </select>
         <div *ngIf="genreInput.invalid && genreInput.touched" class="error">
           Le genre est requis.

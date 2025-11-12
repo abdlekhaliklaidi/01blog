@@ -2,20 +2,35 @@ package com.dev.backend.controllers;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import com.dev.backend.entities.Post;
-import com.dev.backend.services.PostService;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
+
+import com.dev.backend.entities.Post;
+import com.dev.backend.entities.User;
+import com.dev.backend.repositories.PostRepository;
+import com.dev.backend.repositories.UserRepository;
+import com.dev.backend.services.PostService;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/posts")
+@CrossOrigin(origins = "http://localhost:4200")
 public class PostController {
 
     @Autowired
     private PostService postService;
+
+    @Autowired
+    private PostRepository postRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping
     public List<Post> getAllPosts() {
@@ -25,8 +40,8 @@ public class PostController {
     @GetMapping("/{id}")
     public ResponseEntity<Post> getPost(@PathVariable Long id) {
         return postService.getPostById(id)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @GetMapping("/author/{authorId}")
@@ -34,10 +49,29 @@ public class PostController {
         return postService.getPostsByAuthor(authorId);
     }
 
-    @PostMapping(consumes = "application/json")
-    public ResponseEntity<Post> createPost(@RequestBody Post post) {
-        Post createdPost = postService.createPost(post);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
+    @PostMapping(consumes = "multipart/form-data")
+    public ResponseEntity<Post> createPostWithImage(
+            @RequestParam("title") String title,
+            @RequestParam("content") String content,
+            @RequestParam("authorId") Long authorId,
+            @RequestParam(value = "image", required = false) MultipartFile imageFile) throws IOException {
+
+        Post post = new Post();
+        post.setTitle(title);
+        post.setContent(content);
+
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String base64 = Base64.getEncoder().encodeToString(imageFile.getBytes());
+           post.setImageBase64(base64);
+        }
+
+        User author = userRepository.findById(authorId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        post.setAuthor(author);
+
+        Post savedPost = postRepository.save(post);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
     }
 
     @PutMapping("/{id}")
