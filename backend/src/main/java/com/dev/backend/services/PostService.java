@@ -57,6 +57,16 @@ public class PostService {
         return postRepository.save(post);
     }
 
+    public Post createPostWithImage(Post post, MultipartFile image) throws IOException {
+    if (image != null && !image.isEmpty()) {
+        String base64Image = Base64.getEncoder().encodeToString(image.getBytes());
+        post.setImageBase64(base64Image);
+    }
+    post.setCreatedAt(LocalDateTime.now());
+    return postRepository.save(post);
+    }
+
+
     public Post updatePost(Long id, Post updatedPost) {
         return postRepository.findById(id)
             .map(post -> {

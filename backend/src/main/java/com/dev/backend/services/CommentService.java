@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.dev.backend.entities.Comment;
 import com.dev.backend.repositories.CommentRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +30,8 @@ public class CommentService {
     public Optional<Comment> getCommentById(Long id) {
         return commentRepository.findById(id);
     }
-
+    
+    @Transactional
     public Comment createComment(Comment comment) {
         return commentRepository.save(comment);
     }

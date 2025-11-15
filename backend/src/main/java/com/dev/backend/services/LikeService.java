@@ -2,6 +2,9 @@ package com.dev.backend.services;
 
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.dev.backend.entities.Like;
 import com.dev.backend.entities.Post;
@@ -50,16 +53,23 @@ public class LikeService {
             .ifPresent(likeRepository::delete);
     }
 
-    public Like toggleLike(Long userId, Long postId) {
-        Optional<Like> existing = likeRepository.findByUserIdAndPostId(userId, postId);
+    private User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Utilisateur connecté non trouvé"));
+    }
+
+    @Transactional
+    public Like toggleLike(Long postId) {
+        User user = getCurrentUser();
+
+        Optional<Like> existing = likeRepository.findByUserIdAndPostId(user.getId(), postId);
 
         if (existing.isPresent()) {
             likeRepository.delete(existing.get());
             return null;
         }
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé avec ID : " + userId));
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Post non trouvé avec ID : " + postId));

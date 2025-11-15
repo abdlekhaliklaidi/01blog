@@ -31,16 +31,16 @@ public class LikeController {
             .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    @PostMapping
-    public ResponseEntity<Like> createLike(@RequestBody Like like) {
-        Like createdLike = likeService.createLike(like);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdLike);
-    }
-    
+    // @PostMapping
+    // public ResponseEntity<Like> createLike(@RequestBody Like like) {
+    //     Like createdLike = likeService.createLike(like);
+    //     return ResponseEntity.status(HttpStatus.CREATED).body(createdLike);
+    // }
+
     @PostMapping("/toggle")
-    public ResponseEntity<Like> toggleLike(@RequestParam Long userId, @RequestParam Long postId) {
-    Like like = likeService.toggleLike(userId, postId);
-    return ResponseEntity.ok(like);
+    public ResponseEntity<Like> toggleLike(@RequestParam Long postId) {
+        Like like = likeService.toggleLike(postId);
+        return ResponseEntity.ok(like);
     }
 
     @DeleteMapping("/{id}")
@@ -49,9 +49,9 @@ public class LikeController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/user/{userId}/post/{postId}")
-    public ResponseEntity<Void> deleteLikeByUserAndPost(@PathVariable Long userId, @PathVariable Long postId) {
-        likeService.deleteLikeByUserAndPost(userId, postId);
-        return ResponseEntity.noContent().build();
-    }
+    // @DeleteMapping("/user/{userId}/post/{postId}")
+    // public ResponseEntity<Void> deleteLikeByUserAndPost(@PathVariable Long userId, @PathVariable Long postId) {
+    //     likeService.deleteLikeByUserAndPost(userId, postId);
+    //     return ResponseEntity.noContent().build();
+    // }
 }
