@@ -44,6 +44,13 @@ public class User {
     @JsonManagedReference(value = "following-follower")
     private List<Follower> followings;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Notification> notifications;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Report> reports;
+
+
 
     public Long getId() {
         return id;

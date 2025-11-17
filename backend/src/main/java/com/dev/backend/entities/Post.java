@@ -44,6 +44,10 @@ public class Post {
     @JsonManagedReference(value = "post-like")
     private List<Like> likes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Report> reports;
+
+
     // Getters and setters
 
     public Long getId() { return id; }

@@ -85,7 +85,8 @@
 
       <div class="post-actions">
         <button type="button" class="like-btn" (click)="toggleLike(post)">
-          👍 {{ post.likes?.length || 0 }}
+          <!-- 👍 {{ post.likes?.length || 0 }} -->
+          👍 {{ post.likesCount }}
         </button>
         <button type="button" (click)="post.showComments = !post.showComments">
           💬 {{ post.comments?.length || 0 }}
@@ -93,9 +94,24 @@
       </div>
 
       <div *ngIf="post.showComments" class="comments-section">
-        <div *ngFor="let c of post.comments">
-          <strong>{{ c.user?.name }}</strong>: {{ c.content }}
-        </div>
+        <div *ngFor="let c of post.comments" class="comment-box">
+
+  <div class="comment-header">
+
+    <div class="comment-info">
+      <span class="comment-author">{{ c.authorName }}</span>
+        <!-- {{ c.user?.firstname }} {{ c.user?.lastname }} -->
+      <span class="comment-date">
+        {{ c.createdAt | date:'short' }}
+      </span>
+    </div>
+  </div>
+
+  <div class="comment-content">
+    {{ c.content }}
+  </div>
+
+</div>
 
         <div class="add-comment">
           <input type="text" [(ngModel)]="post.newComment" placeholder="Write a comment..." />
