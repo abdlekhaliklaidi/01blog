@@ -19,6 +19,7 @@ public class PostDTO {
     private boolean likedByCurrentUser;
 
     private List<CommentDTO> comments;
+    private List<LikeDTO> likes;
 
     public PostDTO(Post post) {
         this.id = post.getId();
@@ -36,7 +37,13 @@ public class PostDTO {
                 ? post.getAuthor().getFirstname() 
                 : "Unknown";
 
-        this.likesCount = post.getLikes() != null ? post.getLikes().size() : 0;
+        this.likes = post.getLikes() != null
+        ? post.getLikes().stream()
+            .map(like -> new LikeDTO(like))
+            .collect(Collectors.toList())
+        : List.of();
+        
+        this.likesCount = this.likes.size();
 
         String currentEmail;
         try {
@@ -84,4 +91,7 @@ public class PostDTO {
 
     public List<CommentDTO> getComments() { return comments; }
     public void setComments(List<CommentDTO> comments) { this.comments = comments; }
+
+    public List<LikeDTO> getLikes() { return likes; }
+    public void setLikes(List<LikeDTO> likes) { this.likes = likes; }
 }

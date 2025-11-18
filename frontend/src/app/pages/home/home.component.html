@@ -2,7 +2,9 @@
   <div class="nav-left">
     <h2 class="logo">01Blog</h2>
     <button type="button" class="nav-btn">🏠 Home</button>
-    <button type="button" class="nav-btn">🔔 Notifications</button>
+    <button type="button" class="nav-btn" routerLink="/notifications">
+     🔔 Notifications
+    </button>
     <button type="button" class="nav-btn">👥 Invitations</button>
   </div>
 
@@ -85,9 +87,9 @@
 
       <div class="post-actions">
         <button type="button" class="like-btn" (click)="toggleLike(post)">
-          <!-- 👍 {{ post.likes?.length || 0 }} -->
-          👍 {{ post.likesCount }}
+               👍 {{ post.likesCount || 0 }}
         </button>
+
         <button type="button" (click)="post.showComments = !post.showComments">
           💬 {{ post.comments?.length || 0 }}
         </button>

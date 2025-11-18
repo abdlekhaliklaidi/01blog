@@ -37,11 +37,12 @@ public class LikeController {
     //     return ResponseEntity.status(HttpStatus.CREATED).body(createdLike);
     // }
 
-    @PostMapping("/toggle")
-    public ResponseEntity<Like> toggleLike(@RequestParam Long postId) {
-        Like like = likeService.toggleLike(postId);
-        return ResponseEntity.ok(like);
+    @PostMapping("/toggle/{postId}")
+    public ResponseEntity<Integer> toggleLike(@PathVariable Long postId) {
+    int count = likeService.toggleLike(postId);
+    return ResponseEntity.ok(count);
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLike(@PathVariable Long id) {

@@ -14,6 +14,7 @@ public class Notification {
 
     private boolean readed = false;
 
+    @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @ManyToOne
@@ -22,7 +23,6 @@ public class Notification {
 
     public Notification() {}
 
-    // Getters & Setters
     public Long getId() { return id; }
 
     public String getMessage() { return message; }

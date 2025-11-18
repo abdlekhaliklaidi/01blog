@@ -28,9 +28,14 @@ export class PostService {
     return this.http.delete<void>(`${this.baseUrl}/posts/${id}`);
   }
 
-  toggleLike(userId: number, postId: number): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/likes/toggle?userId=${userId}&postId=${postId}`, {});
-  }
+  // toggleLike(userId: number, postId: number): Observable<any> {
+  //   return this.http.post<any>(`${this.baseUrl}/likes/toggle?userId=${userId}&postId=${postId}`, {});
+  // }
+
+  toggleLike(postId: number) {
+  return this.http.post<number>(this.baseUrl + "/likes/toggle/" + postId, {});
+}
+
 
   addComment(postId: number, userId: number, content: string): Observable<any> {
     const body = {

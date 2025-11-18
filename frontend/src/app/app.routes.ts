@@ -20,6 +20,11 @@ export const routes: Routes = [
     path: '',
     redirectTo: 'login',
     pathMatch: 'full'
+  },
+  {
+  path: 'notifications',
+  loadComponent: () => import('./pages/notification/notification.component').then(m => m.NotificationsComponent),
+  canActivate: [authGuard]
   }
 ];
 

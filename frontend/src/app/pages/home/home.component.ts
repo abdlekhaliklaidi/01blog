@@ -3,11 +3,13 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PostService } from '../../services/post.service';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,  RouterModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
@@ -82,8 +84,7 @@ export class HomeComponent implements OnInit {
           likes: p.likes || [],
           comments: p.comments || [],
           showComments: false,
-          newComment: '',
-          likedByCurrentUser: (p.likes || []).some((l: any) => l.user?.id === this.userInfo.id)
+          newComment: ''
         }));
       },
       error: (err) => {
@@ -115,13 +116,11 @@ export class HomeComponent implements OnInit {
   }
   
   toggleLike(post: any) {
-  this.postService.toggleLike(this.userInfo.id, post.id).subscribe({
-    next: (res) => {
-      if (res === null) {
-        post.likes = post.likes.filter((l: any) => l.user.id !== this.userInfo.id);
-      } else {
-        post.likes.push({ user: { id: this.userInfo.id } });
-      }
+  this.postService.toggleLike(post.id).subscribe({
+    next: (count: number) => {
+      post.likesCount = count;
+
+      post.likedByCurrentUser = !post.likedByCurrentUser;
     },
     error: (err) => console.error('Error toggling like', err)
   });
@@ -186,7 +185,6 @@ addComment(post: any) {
         newComment: '',
         imageUrl: created.imageUrl 
       });
-
         this.closeCreatePost();
       },
       error: (err) => console.error('Error creating post', err)

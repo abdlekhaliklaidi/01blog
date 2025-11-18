@@ -74,13 +74,13 @@ public class CommentController {
 
     Comment createdComment = commentService.createComment(comment);
 
-    createdComment.setUser(user);
-
-    Notification notif = new Notification();
-    notif.setUser(post.getAuthor());
-    notif.setMessage(user.getFirstname() + " commented on your post: " + post.getTitle());
-    notif.setCreatedAt(LocalDateTime.now());
-    notificationService.create(notif);
+    if (!post.getAuthor().getId().equals(user.getId())) {
+        Notification notif = new Notification();
+        notif.setUser(post.getAuthor());
+        notif.setMessage(user.getFirstname() + " commented on your post: " + post.getTitle());
+        notif.setCreatedAt(LocalDateTime.now());
+        notificationService.create(notif);
+    }
 
     return ResponseEntity.status(HttpStatus.CREATED).body(createdComment);
 }
