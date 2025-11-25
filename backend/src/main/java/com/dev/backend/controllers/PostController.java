@@ -64,15 +64,16 @@ public class PostController {
     }
 
     @PostMapping(consumes = "multipart/form-data")
-public ResponseEntity<PostDTO> createPostWithImage(
+    public ResponseEntity<PostDTO> createPostWithImage(
     @RequestParam("title") String title,
     @RequestParam("content") String content,
-    @RequestParam("authorId") Long authorId,
     @RequestParam(value = "image", required = false) MultipartFile imageFile
 ) throws IOException {
 
-    User author = userRepository.findById(authorId)
-            .orElseThrow(() -> new RuntimeException("Author not found"));
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+    User author = userRepository.findByEmail(username)
+            .orElseThrow(() -> new RuntimeException("User not found"));
 
     Post post = new Post();
     post.setTitle(title);
@@ -93,7 +94,6 @@ public ResponseEntity<PostDTO> createPostWithImage(
 
     return ResponseEntity.status(HttpStatus.CREATED).body(new PostDTO(savedPost));
 }
-
 
     @PutMapping("/{id}")
     public ResponseEntity<Post> updatePost(@PathVariable Long id, @RequestBody Post updatedPost) {

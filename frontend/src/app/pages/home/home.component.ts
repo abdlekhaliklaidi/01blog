@@ -150,7 +150,7 @@ export class HomeComponent implements OnInit {
     const formData = new FormData();
     formData.append('title', this.newPost.title.trim());
     formData.append('content', this.newPost.content.trim());
-    formData.append('authorId', this.userInfo.id.toString());
+    // formData.append('authorId', this.userInfo.id.toString());
 
     if (this.selectedFile) {
       formData.append('image', this.selectedFile);
