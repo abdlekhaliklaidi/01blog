@@ -49,6 +49,22 @@ export class PostService {
   getCommentsByPost(postId: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/comments/post/${postId}`);
   }
+
+  getFollowers(userId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/followers/followers/${userId}`);
+  }
+
+  getFollowing(userId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/followers/following/${userId}`);
+  }
+
+  followUser(followData: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/followers`, followData);
+  }
+
+  unfollowUser(followerId: number, followingId: number): Observable<any> {
+    return this.http.delete<any>(`${this.baseUrl}/followers/${followerId}/${followingId}`);
+  }
 }
 
 

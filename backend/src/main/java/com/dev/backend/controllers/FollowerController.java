@@ -45,10 +45,16 @@ public class FollowerController {
         Follower createdFollower = followerService.followUser(follower);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdFollower);
     }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> unfollowUser(@PathVariable Long id) {
-        followerService.unfollowUser(id);
+    
+    @DeleteMapping("/{followerId}/{followingId}")
+    public ResponseEntity<Void> unfollowUser(@PathVariable Long followerId, @PathVariable Long followingId) {
+        followerService.unfollowUser(followerId, followingId);
         return ResponseEntity.noContent().build();
     }
+
+    // @DeleteMapping("/{id}")
+    // public ResponseEntity<Void> unfollowUser(@PathVariable Long id) {
+    //     followerService.unfollowUser(id);
+    //     return ResponseEntity.noContent().build();
+    // }
 }

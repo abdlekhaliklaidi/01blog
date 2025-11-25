@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { PostService } from '../../services/post.service';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { PostService } from '../../services/post.service';
 import { ReportService } from '../../services/report.service';
 import { AuthService } from '../../services/auth.service';
 
@@ -23,12 +23,9 @@ export class HomeComponent implements OnInit {
   showUserMenu = false;
   showCreatePost = false;
 
-  newPost = {
-    title: '',
-    content: ''
-  };
-
+  newPost = { title: '', content: '' };
   selectedFile: File | null = null;
+
   showReportModal = false;
   reportReason = '';
   selectedPostId: number | null = null;
@@ -47,19 +44,21 @@ export class HomeComponent implements OnInit {
       bio: 'Full Stack Developer | Angular & Spring Boot',
       avatar: 'https://i.pravatar.cc/100?img=12'
     };
+    
+    // this.followers = [
+    //   { id: 1, name: 'Amina Dev', avatar: 'https://i.pravatar.cc/40?img=1', status: 'pending' },
+    //   { id: 2, name: 'Youssef Code', avatar: 'https://i.pravatar.cc/40?img=2', status: 'pending' },
+    //   { id: 3, name: 'Hassan UI', avatar: 'https://i.pravatar.cc/40?img=3', status: 'accepted' }
+    // ];
 
-    this.followers = [
-      { id: 1, name: 'Amina Dev', avatar: 'https://i.pravatar.cc/40?img=1', status: 'pending' },
-      { id: 2, name: 'Youssef Code', avatar: 'https://i.pravatar.cc/40?img=2', status: 'pending' },
-      { id: 3, name: 'Hassan UI', avatar: 'https://i.pravatar.cc/40?img=3', status: 'accepted' }
-    ];
+    // this.following = [
+    //   { id: 1, name: 'Sara Dev', avatar: 'https://i.pravatar.cc/40?img=4', following: true },
+    //   { id: 2, name: 'Omar JS', avatar: 'https://i.pravatar.cc/40?img=5', following: false }
+    // ];
 
-    this.following = [
-      { id: 1, name: 'Sara Dev', avatar: 'https://i.pravatar.cc/40?img=4', following: true },
-      { id: 2, name: 'Omar JS', avatar: 'https://i.pravatar.cc/40?img=5', following: false }
-    ];
-    // console.log('Home Component - Is Admin:', this.auth.isAdmin());
-    // this.auth.debugToken();
+    this.getFollowers(this.userInfo.id);
+    this.getFollowing(this.userInfo.id);
+
     this.loadPosts();
   }
 
@@ -81,27 +80,6 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  toggleUserMenu() {
-    this.showUserMenu = !this.showUserMenu;
-  }
-
-  logout() {
-    localStorage.removeItem('token');
-    this.router.navigate(['/login']);
-  }
-
-  acceptFollower(follower: any) {
-    follower.status = 'accepted';
-  }
-
-  rejectFollower(follower: any) {
-    this.followers = this.followers.filter(f => f.id !== follower.id);
-  }
-
-  toggleFollow(person: any) {
-    person.following = !person.following;
-  }
-  
   toggleLike(post: any) {
     this.postService.toggleLike(post.id).subscribe({
       next: (count: number) => {
@@ -150,7 +128,6 @@ export class HomeComponent implements OnInit {
     const formData = new FormData();
     formData.append('title', this.newPost.title.trim());
     formData.append('content', this.newPost.content.trim());
-    // formData.append('authorId', this.userInfo.id.toString());
 
     if (this.selectedFile) {
       formData.append('image', this.selectedFile);
@@ -164,12 +141,65 @@ export class HomeComponent implements OnInit {
           comments: created.comments || [],
           showComments: false,
           newComment: '',
-          imageUrl: created.imageUrl 
+          imageUrl: created.imageUrl
         });
         this.closeCreatePost();
       },
       error: (err) => console.error('Error creating post', err)
     });
+  }
+
+  getFollowers(userId: number) {
+    this.postService.getFollowers(userId).subscribe({
+      next: (data) => this.followers = data,
+      error: (err) => console.error('Error fetching followers:', err)
+    });
+  }
+
+  getFollowing(userId: number) {
+    this.postService.getFollowing(userId).subscribe({
+      next: (data) => this.following = data,
+      error: (err) => console.error('Error fetching following:', err)
+    });
+  }
+
+  acceptFollower(follower: any) {
+    follower.status = 'accepted';
+  }
+
+  rejectFollower(follower: any) {
+    this.followers = this.followers.filter(f => f.id !== follower.id);
+  }
+
+  toggleFollow(person: any) {
+  if (person.following) {
+    this.postService.unfollowUser(this.userInfo.id, person.id).subscribe({
+      next: () => {
+        person.following = false; 
+      },
+      error: (err) => console.error('Error unfollowing user:', err)
+    });
+  } else {
+    const followData = {
+      followerId: this.userInfo.id,
+      followingId: person.id
+    };
+    this.postService.followUser(followData).subscribe({
+      next: (data) => {
+        person.following = true;
+      },
+      error: (err) => console.error('Error following user:', err)
+    });
+  }
+}
+
+  toggleUserMenu() {
+    this.showUserMenu = !this.showUserMenu;
+  }
+
+  logout() {
+    localStorage.removeItem('token');
+    this.router.navigate(['/login']);
   }
 
   openReportModal(post: any) {

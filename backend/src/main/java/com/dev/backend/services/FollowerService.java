@@ -33,8 +33,14 @@ public class FollowerService {
     public Follower followUser(Follower follower) {
         return followerRepository.save(follower);
     }
+    
+    public void unfollowUser(Long followerId, Long followingId) {
+        Follower follower = followerRepository.findByFollowerIdAndFollowingId(followerId, followingId);
+        if (follower != null) {
+            followerRepository.delete(follower);
+    }
 
-    public void unfollowUser(Long id) {
-        followerRepository.deleteById(id);
+    // public void unfollowUser(Long id) {
+    //     followerRepository.deleteById(id);
     }
 }
