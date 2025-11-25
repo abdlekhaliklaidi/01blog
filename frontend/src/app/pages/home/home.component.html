@@ -2,10 +2,12 @@
   <div class="nav-left">
     <h2 class="logo">01Blog</h2>
     <button type="button" class="nav-btn">🏠 Home</button>
-    <button type="button" class="nav-btn" routerLink="/notifications">
-     🔔 Notifications
-    </button>
-    <button type="button" class="nav-btn">👥 Invitations</button>
+    <button type="button" class="nav-btn" routerLink="/notifications">🔔 Notifications</button>
+    
+    <button *ngIf="auth.isAdmin()" routerLink="/admin/reports-admin" class="nav-btn">
+🚨 Reports
+</button>
+
   </div>
 
   <div class="nav-center">
@@ -34,8 +36,8 @@
           <div class="follower-info">
             <span>{{ follower.name }}</span>
             <div class="actions">
-              <button *ngIf="follower.status === 'pending'" type="button" class="accept-btn" (click)="acceptFollower(follower)">Accept</button>
-              <button *ngIf="follower.status === 'pending'" type="button" class="reject-btn" (click)="rejectFollower(follower)">Reject</button>
+              <button *ngIf="follower.status === 'pending'" class="accept-btn" (click)="acceptFollower(follower)">Accept</button>
+              <button *ngIf="follower.status === 'pending'" class="reject-btn" (click)="rejectFollower(follower)">Reject</button>
               <span *ngIf="follower.status === 'accepted'" class="accepted-label">✔ Accepted</span>
             </div>
           </div>
@@ -50,7 +52,7 @@
           <img [src]="f.avatar" alt="{{ f.name }}">
           <div class="follower-info">
             <span>{{ f.name }}</span>
-            <button type="button" class="follow-btn" [class.unfollow]="f.following" (click)="toggleFollow(f)">
+            <button class="follow-btn" [class.unfollow]="f.following" (click)="toggleFollow(f)">
               {{ f.following ? 'Unfollow' : 'Follow' }}
             </button>
           </div>
@@ -61,7 +63,7 @@
 
   <main class="feed">
     <div class="feed-header">
-      <button type="button" class="create-post-btn" (click)="openCreatePost()">New Post</button>
+      <button class="create-post-btn" (click)="openCreatePost()">New Post</button>
     </div>
 
     <div *ngIf="posts.length === 0" class="no-posts">
@@ -69,51 +71,43 @@
     </div>
 
     <div *ngFor="let post of posts" class="post-card">
+
       <div class="post-header">
-        <!-- <img [src]="post.author?.avatar || 'https://i.pravatar.cc/40'" alt="author avatar" /> -->
         <strong>{{ post.authorFirstName || 'Unknown' }}</strong>
       </div>
 
+      <button class="btn btn-danger" (click)="openReportModal(post)">
+        🚩 Report
+      </button>
+
       <h3>{{ post.title }}</h3>
-      <!-- <img
-  *ngIf="post.imageBase64"
-  [src]="'data:image/png;base64,' + post.imageBase64"
-  alt="post image"
-  class="post-image"
-/> -->
-    <img *ngIf="post.imageUrl" [src]="post.imageUrl" alt="Post image">
+
+      <img *ngIf="post.imageUrl" [src]="post.imageUrl" alt="Post image">
 
       <p>{{ post.content }}</p>
 
       <div class="post-actions">
-        <button type="button" class="like-btn" (click)="toggleLike(post)">
-               👍 {{ post.likesCount || 0 }}
+        <button class="like-btn" (click)="toggleLike(post)">
+          👍 {{ post.likesCount || 0 }}
         </button>
 
-        <button type="button" (click)="post.showComments = !post.showComments">
+        <button (click)="post.showComments = !post.showComments">
           💬 {{ post.comments?.length || 0 }}
         </button>
       </div>
 
       <div *ngIf="post.showComments" class="comments-section">
         <div *ngFor="let c of post.comments" class="comment-box">
-
-  <div class="comment-header">
-
-    <div class="comment-info">
-      <span class="comment-author">{{ c.authorName }}</span>
-        <!-- {{ c.user?.firstname }} {{ c.user?.lastname }} -->
-      <span class="comment-date">
-        {{ c.createdAt | date:'short' }}
-      </span>
-    </div>
-  </div>
-
-  <div class="comment-content">
-    {{ c.content }}
-  </div>
-
-</div>
+          <div class="comment-header">
+            <div class="comment-info">
+              <span class="comment-author">{{ c.authorName }}</span>
+              <span class="comment-date">{{ c.createdAt | date:'short' }}</span>
+            </div>
+          </div>
+          <div class="comment-content">
+            {{ c.content }}
+          </div>
+        </div>
 
         <div class="add-comment">
           <input type="text" [(ngModel)]="post.newComment" placeholder="Write a comment..." />
@@ -128,12 +122,32 @@
       <img [src]="userInfo.avatar" alt="user avatar" class="profile-pic">
       <h3>{{ userInfo.name }}</h3>
       <p class="bio">{{ userInfo.bio }}</p>
-      <button type="button" class="create-post-btn" (click)="openCreatePost()">Create Post</button>
-      <button type="button" class="logout-btn" (click)="logout()">Logout</button>
+      <button class="create-post-btn" (click)="openCreatePost()">Create Post</button>
+      <button class="logout-btn" (click)="logout()">Logout</button>
     </div>
   </aside>
 </div>
 
+<!-- Modal Report -->
+<div class="modal-backdrop" *ngIf="showReportModal"></div>
+
+<div class="modal" *ngIf="showReportModal">
+  <div class="modal-content">
+    <h3>Report Post</h3>
+
+    <textarea [(ngModel)]="reportReason"
+              placeholder="Why are you reporting this post?"
+              rows="4"
+              class="form-control"></textarea>
+
+    <div class="modal-actions">
+      <button class="btn btn-secondary" (click)="closeReportModal()">Cancel</button>
+      <button class="btn btn-danger" (click)="submitReport()">Submit Report</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Create Post -->
 <div class="modal-overlay" *ngIf="showCreatePost">
   <div class="modal">
     <h3>Create a Post</h3>

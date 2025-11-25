@@ -4,12 +4,13 @@ import { CommonModule } from '@angular/common';
 import { PostService } from '../../services/post.service';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-
+import { ReportService } from '../../services/report.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule,  RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
@@ -22,14 +23,22 @@ export class HomeComponent implements OnInit {
   showUserMenu = false;
   showCreatePost = false;
 
- newPost = {
-  title: '',
-  content: ''
+  newPost = {
+    title: '',
+    content: ''
   };
-  
-  selectedFile: File | null = null;
 
-  constructor(private router: Router, private postService: PostService) {}
+  selectedFile: File | null = null;
+  showReportModal = false;
+  reportReason = '';
+  selectedPostId: number | null = null;
+
+  constructor(
+    private router: Router,
+    private postService: PostService,
+    private reportService: ReportService,
+    public auth: AuthService
+  ) {}
 
   ngOnInit() {
     this.userInfo = {
@@ -49,32 +58,10 @@ export class HomeComponent implements OnInit {
       { id: 1, name: 'Sara Dev', avatar: 'https://i.pravatar.cc/40?img=4', following: true },
       { id: 2, name: 'Omar JS', avatar: 'https://i.pravatar.cc/40?img=5', following: false }
     ];
-
+    // console.log('Home Component - Is Admin:', this.auth.isAdmin());
+    // this.auth.debugToken();
     this.loadPosts();
   }
-
-    // this.posts = [
-    //   {
-    //     id: 1,
-    //     author: 'Ali Student',
-    //     content: 'Sharing my first experience with Spring Boot!',
-    //     imageUrl: 'https://picsum.photos/600/300?1',
-    //     likes: 12,
-    //     comments: 3,
-    //     timestamp: '2025-11-02T10:00:00'
-    //   },
-    //   {
-    //     id: 2,
-    //     author: 'Sara Dev',
-    //     content: 'Today I learned how to create a REST API in Angular 🔥',
-    //     imageUrl: 'https://picsum.photos/600/300?2',
-    //     likes: 22,
-    //     comments: 5,
-    //     timestamp: '2025-11-01T14:30:00'
-    //   }
-    // ];
-  //    this.loadPosts();
-  // }
 
   loadPosts() {
     this.postService.getAllPosts().subscribe({
@@ -116,26 +103,26 @@ export class HomeComponent implements OnInit {
   }
   
   toggleLike(post: any) {
-  this.postService.toggleLike(post.id).subscribe({
-    next: (count: number) => {
-      post.likesCount = count;
+    this.postService.toggleLike(post.id).subscribe({
+      next: (count: number) => {
+        post.likesCount = count;
+        post.likedByCurrentUser = !post.likedByCurrentUser;
+      },
+      error: (err) => console.error('Error toggling like', err)
+    });
+  }
 
-      post.likedByCurrentUser = !post.likedByCurrentUser;
-    },
-    error: (err) => console.error('Error toggling like', err)
-  });
-}
+  addComment(post: any) {
+    if (!post.newComment?.trim()) return;
 
-addComment(post: any) {
-  if (!post.newComment?.trim()) return;
-  this.postService.addComment(post.id, this.userInfo.id, post.newComment).subscribe({
-    next: (comment) => {
-      post.comments.push(comment);
-      post.newComment = '';
-    },
-    error: (err) => console.error('Error adding comment', err)
-  });
-}
+    this.postService.addComment(post.id, this.userInfo.id, post.newComment).subscribe({
+      next: (comment) => {
+        post.comments.push(comment);
+        post.newComment = '';
+      },
+      error: (err) => console.error('Error adding comment', err)
+    });
+  }
 
   openCreatePost() {
     this.showCreatePost = true;
@@ -154,7 +141,7 @@ addComment(post: any) {
     }
   }
 
-   createPost() {
+  createPost() {
     if (!this.newPost.title.trim() || !this.newPost.content.trim()) {
       alert('Please enter title and content');
       return;
@@ -164,30 +151,57 @@ addComment(post: any) {
     formData.append('title', this.newPost.title.trim());
     formData.append('content', this.newPost.content.trim());
     formData.append('authorId', this.userInfo.id.toString());
+
     if (this.selectedFile) {
       formData.append('image', this.selectedFile);
     }
 
-   this.postService.createPost(formData).subscribe({
+    this.postService.createPost(formData).subscribe({
       next: (created) => {
-        // this.posts.unshift({
-        //   ...created,
-        //   likes: [],
-        //   comments: [],
-        //   showComments: false,
-        //   newComment: ''
-        // });
         this.posts.unshift({
-            ...created,
-        likes: created.likes || [],
-        comments: created.comments || [],
-        showComments: false,
-        newComment: '',
-        imageUrl: created.imageUrl 
-      });
+          ...created,
+          likes: created.likes || [],
+          comments: created.comments || [],
+          showComments: false,
+          newComment: '',
+          imageUrl: created.imageUrl 
+        });
         this.closeCreatePost();
       },
       error: (err) => console.error('Error creating post', err)
     });
   }
+
+  openReportModal(post: any) {
+    this.selectedPostId = post.id;
+    this.showReportModal = true;
+  }
+
+  closeReportModal() {
+    this.showReportModal = false;
+    this.reportReason = '';
+    this.selectedPostId = null;
+  }
+
+  submitReport() {
+    if (!this.selectedPostId || !this.reportReason.trim()) {
+      alert('Please enter a reason');
+      return;
+    }
+
+    const report = {
+      reason: this.reportReason,
+      user: { id: this.userInfo.id },
+      post: { id: this.selectedPostId }
+    };
+
+    this.reportService.createReport(report).subscribe({
+      next: () => {
+        alert('Report submitted successfully');
+        this.closeReportModal();
+      },
+      error: (err) => console.error('Error submitting report:', err)
+    });
+  }
+
 }

@@ -38,11 +38,11 @@ export class LoginComponent {
     ).subscribe({
       next: (res) => {
         localStorage.setItem('token', res.token);
-
+        // console.log('Token saved:', res.token);
         this.successMessage = 'Connexion réussie!';
         this.errorMessage = '';
-
-        this.getUsersList();
+        
+        // this.getUsersList();
 
         this.router.navigate(['/home']);
       },

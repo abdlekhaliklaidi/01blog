@@ -3,8 +3,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #667eea;
-  color: white;
+  background-color: #e1e2e6;
+  /* color: white; */
   padding: 0.8rem 1.5rem;
   border-radius: 0 0 10px 10px;
   flex-wrap: wrap;
@@ -24,8 +24,8 @@
 
 
 .nav-btn {
-  background: white;
-  color: #667eea;
+  background: #eef;
+  /* color: #667eea; */
   border: none;
   padding: 0.4rem 0.8rem;
   border-radius: 5px;
@@ -35,7 +35,7 @@
 }
 
 .nav-btn:hover {
-  background-color: #eef;
+  background-color: #d3d2d2;
 }
 
 .nav-center {
@@ -51,6 +51,7 @@
   border: none;
   outline: none;
   font-size: 0.95rem;
+  background-color: #d3d2d2;
 }
 
 .nav-right {
@@ -205,12 +206,12 @@
 }
 
 .create-post-btn {
-  background-color: #667eea;
+  /* background-color: #667eea; */
   color: white;
 }
 
 .create-post-btn:hover {
-  background-color: #556cd6;
+  background-color: #bcbdbe;
 }
 
 .logout-btn {
@@ -467,4 +468,34 @@
     padding: 5px 10px;
   }
 }
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  width: 400px;
+  border-radius: 6px;
+  z-index: 1000;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+textarea {
+  width: 100%;
+  padding: 8px;
+}
+
 

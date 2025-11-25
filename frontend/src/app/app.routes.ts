@@ -25,7 +25,32 @@ export const routes: Routes = [
   path: 'notifications',
   loadComponent: () => import('./pages/notification/notification.component').then(m => m.NotificationsComponent),
   canActivate: [authGuard]
-  }
+  },
+  {
+  path: 'reports/user/:userId',
+  loadComponent: () => import('./pages/report/reports-list.component')
+    .then(m => m.ReportsListComponent),
+  canActivate: [authGuard]
+},
+{
+  path: 'reports/post/:postId',
+  loadComponent: () => import('./pages/report/reports-list.component')
+    .then(m => m.ReportsListComponent),
+  canActivate: [authGuard]
+},
+{
+  path: 'report-details/:id',
+  loadComponent: () => import('./pages/report/report-details.component')
+    .then(m => m.ReportDetailsComponent),
+  canActivate: [authGuard]
+},
+{
+  path: 'admin/reports-admin',
+  loadComponent: () =>
+    import('./pages/admin/reports-admin.component')
+      .then(m => m.ReportsAdminComponent),
+  canActivate: [authGuard]
+}
 ];
 
 @NgModule({

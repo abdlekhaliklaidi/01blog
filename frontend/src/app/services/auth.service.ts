@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private baseUrl = 'http://localhost:8080/users';
-  private tokenKey = 'authToken';
+  private tokenKey = 'token';
   private loggedIn = new BehaviorSubject<boolean>(this.hasToken());
 
   constructor(private http: HttpClient) { }
@@ -22,10 +23,14 @@ export class AuthService {
       .pipe(
         tap(res => {
           localStorage.setItem(this.tokenKey, res.token);
+          const decoded: any = jwtDecode(res.token);
+          this.adminStatus.next(decoded.role === 'ROLE_ADMIN');
           this.loggedIn.next(true);
         })
       );
   }
+  private adminStatus = new BehaviorSubject<boolean>(false);
+  isAdmin$ = this.adminStatus.asObservable();
 
   logout(): void {
     localStorage.removeItem(this.tokenKey);
@@ -38,5 +43,31 @@ export class AuthService {
 
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
+  }
+
+  isAdmin(): boolean {
+  const token = this.getToken();
+  if (!token) return false;
+
+  try {
+    const decoded: any = jwtDecode(token);
+    console.log("Decoded role:", decoded.role);
+    return decoded.role === 'ROLE_ADMIN';
+  } catch {
+    return false;
+  }
+}
+
+  getCurrentUserEmail(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    try {
+      const decodedToken: any = jwtDecode(token);
+      return decodedToken.sub || decodedToken.email;
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return null;
+    }
   }
 }

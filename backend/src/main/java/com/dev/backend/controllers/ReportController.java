@@ -2,7 +2,6 @@ package com.dev.backend.controllers;
 
 import com.dev.backend.entities.Report;
 import com.dev.backend.services.ReportService;
-
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,18 +15,28 @@ public class ReportController {
     @Autowired
     private ReportService reportService;
 
-    @PostMapping
-    public Report reportPost(@RequestBody Report report) {
-        return reportService.create(report);
+    @PostMapping("/post/{postId}")
+    public Report reportPost(@PathVariable Long postId, @RequestBody Report report) {
+        return reportService.reportPost(postId, report);
     }
 
-    @GetMapping("/post/{postId}")
-    public List<Report> getReportsForPost(@PathVariable Long postId) {
-        return reportService.getReportsForPost(postId);
+    @PostMapping("/user/{userId}")
+    public Report reportUser(@PathVariable Long userId, @RequestBody Report report) {
+        return reportService.reportUser(userId, report);
     }
 
-    @GetMapping("/user/{userId}")
-    public List<Report> getReportsByUser(@PathVariable Long userId) {
-        return reportService.getReportsByUser(userId);
+    @GetMapping("/posts")
+    public List<Report> getPostReports() {
+        return reportService.getPostReports();
+    }
+
+    @GetMapping("/users")
+    public List<Report> getUserReports() {
+        return reportService.getUserReports();
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteReport(@PathVariable Long id) {
+        reportService.deleteReport(id);
     }
 }

@@ -31,11 +31,12 @@ protected void doFilterInternal(HttpServletRequest request,
                                 FilterChain filterChain) throws ServletException, IOException {
 
     String path = request.getServletPath();
-
-    if (path.equals("/users/login") || path.equals("/users/register") || path.startsWith("/error")) {
-        filterChain.doFilter(request, response);
-        return;
-    }
+    System.out.println("Request Path: " + path);
+   if (path.startsWith("/users/login") ||
+    path.startsWith("/users/register")) {
+    filterChain.doFilter(request, response);
+    return;
+}
 
     final String authorizationHeader = request.getHeader("Authorization");
     String email = null;
@@ -46,8 +47,11 @@ protected void doFilterInternal(HttpServletRequest request,
         email = jwtUtil.extractEmail(jwt);
     }
 
+    System.out.println("Extracted Email: " + email);
+
     if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        System.out.println("UserDetails loaded: " + userDetails.getUsername());
         if (jwtUtil.validateToken(jwt)) {
             UsernamePasswordAuthenticationToken token =
                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -57,6 +61,7 @@ protected void doFilterInternal(HttpServletRequest request,
     }
 
     filterChain.doFilter(request, response);
+
   }
 
 }

@@ -2,7 +2,6 @@ package com.dev.backend.entities;
 
 import jakarta.persistence.*;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
@@ -14,9 +13,7 @@ public class User {
     private Long id;
     
     private String lastname;
-
     private String firstname;
-
     private String genre;
     
     @Column(unique = true)
@@ -25,7 +22,7 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
-   @JsonManagedReference(value = "user-post")
+    @JsonManagedReference(value = "user-post")
     private List<Post> posts;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -44,88 +41,49 @@ public class User {
     @JsonManagedReference(value = "following-follower")
     private List<Follower> followings;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Notification> notifications;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Report> reports;
+    @OneToMany(mappedBy = "reporter", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Report> reportsMade;
 
+    @OneToMany(mappedBy = "reportedUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Report> reportsReceived;
 
-
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    private String role = "USER";
+    
+    public String getRole() {
+    return role;
     }
 
-    public String getFirstname() {
-        return firstname;
-    }
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
+    public void setRole(String role) {
+    this.role = role;
     }
 
-    public String getGenre() {
-        return genre;
-    }
-    public void setGenre(String genre) {
-        this.genre = genre;
-    }
-
-    public String getEmail() { 
-        return email; 
-    }
-    public void setEmail(String email) { 
-        this.email = email; 
-    }
-
-    public String getPassword() { 
-        return password; 
-    }
-    public void setPassword(String password) { 
-        this.password = password; 
-    }
-
-    public List<Post> getPosts() {
-        return posts;
-    }
-    public void setPosts(List<Post> posts) {
-        this.posts = posts;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
-
-    public List<Like> getLikes() {
-        return likes;
-    }
-    public void setLikes(List<Like> likes) {
-        this.likes = likes;
-    }
-
-    public List<Follower> getFollowers() {
-        return followers;
-    }
-    public void setFollowers(List<Follower> followers) {
-        this.followers = followers;
-    }
-
-    public List<Follower> getFollowings() {
-        return followings;
-    }
-    public void setFollowings(List<Follower> followings) {
-        this.followings = followings;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getLastname() { return lastname; }
+    public void setLastname(String lastname) { this.lastname = lastname; }
+    public String getFirstname() { return firstname; }
+    public void setFirstname(String firstname) { this.firstname = firstname; }
+    public String getGenre() { return genre; }
+    public void setGenre(String genre) { this.genre = genre; }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+    public List<Post> getPosts() { return posts; }
+    public void setPosts(List<Post> posts) { this.posts = posts; }
+    public List<Comment> getComments() { return comments; }
+    public void setComments(List<Comment> comments) { this.comments = comments; }
+    public List<Like> getLikes() { return likes; }
+    public void setLikes(List<Like> likes) { this.likes = likes; }
+    public List<Follower> getFollowers() { return followers; }
+    public void setFollowers(List<Follower> followers) { this.followers = followers; }
+    public List<Follower> getFollowings() { return followings; }
+    public void setFollowings(List<Follower> followings) { this.followings = followings; }
+    public List<Report> getReportsMade() { return reportsMade; }
+    public void setReportsMade(List<Report> reportsMade) { this.reportsMade = reportsMade; }
+    public List<Report> getReportsReceived() { return reportsReceived; }
+    public void setReportsReceived(List<Report> reportsReceived) { this.reportsReceived = reportsReceived; }
 }

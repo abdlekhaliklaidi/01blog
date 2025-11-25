@@ -1,0 +1,75 @@
+<div class="admin-container">
+  <h1>🚨 Admin Reports Management</h1>
+
+  <div *ngIf="isLoading" class="loading">
+    <p>Loading reports...</p>
+  </div>
+
+  <div *ngIf="!isLoading">
+
+    <section class="reports-section">
+      <h2>📌 Reports on Posts</h2>
+      
+      <div *ngIf="postReports.length === 0" class="no-reports">
+        <p>No post reports found.</p>
+      </div>
+
+      <div *ngFor="let report of postReports" class="report-card">
+        <div class="report-header">
+          <strong>Report #{{ report.id }}</strong>
+          <span class="report-date">{{ report.createdAt | date:'medium' }}</span>
+        </div>
+        
+        <div class="report-details">
+          <p><strong>Reason:</strong> {{ report.reason }}</p>
+          <p><strong>Reported Post ID:</strong> {{ report.post?.id }}</p>
+          <p><strong>Post Title:</strong> {{ report.post?.title || 'N/A' }}</p>
+          <p><strong>Post Author:</strong> {{ report.post?.author?.name || 'Unknown' }}</p>
+          <p><strong>Reporter:</strong> {{ report.reporter?.name || 'Unknown' }}</p>
+        </div>
+
+        <div class="report-actions">
+          <button class="btn btn-action" (click)="takeAction(report)">
+            Take Action
+          </button>
+          <button class="btn btn-delete" (click)="deleteReport(report.id)">
+            Delete Report
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reports on Users -->
+    <section class="reports-section">
+      <h2>👤 Reports on Users</h2>
+      
+      <div *ngIf="userReports.length === 0" class="no-reports">
+        <p>No user reports found.</p>
+      </div>
+
+      <div *ngFor="let report of userReports" class="report-card">
+        <div class="report-header">
+          <strong>Report #{{ report.id }}</strong>
+          <span class="report-date">{{ report.createdAt | date:'medium' }}</span>
+        </div>
+        
+        <div class="report-details">
+          <p><strong>Reason:</strong> {{ report.reason }}</p>
+          <p><strong>Reported User ID:</strong> {{ report.reportedUser?.id }}</p>
+          <p><strong>Reported User:</strong> {{ report.reportedUser?.name || 'Unknown' }}</p>
+          <p><strong>Reporter:</strong> {{ report.reporter?.name || 'Unknown' }}</p>
+        </div>
+
+        <div class="report-actions">
+          <button class="btn btn-action" (click)="takeAction(report)">
+            Take Action
+          </button>
+          <button class="btn btn-delete" (click)="deleteReport(report.id)">
+            Delete Report
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>

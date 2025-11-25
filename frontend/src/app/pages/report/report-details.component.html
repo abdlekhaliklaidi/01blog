@@ -1,0 +1,21 @@
+<div class="report-details">
+  <h2>Report Details</h2>
+
+  <div *ngIf="report">
+    <p><strong>ID:</strong> {{ report.id }}</p>
+
+    <h3>User Info</h3>
+    <p><strong>User:</strong> {{ report.user?.username }}</p>
+    <p><strong>Email:</strong> {{ report.user?.email }}</p>
+
+    <h3>Post Info</h3>
+    <p><strong>Title:</strong> {{ report.post?.title }}</p>
+    <p><strong>Content:</strong> {{ report.post?.content }}</p>
+
+    <h3>Reason</h3>
+    <p>{{ report.reason }}</p>
+
+    <h3>Date</h3>
+    <p>{{ report.date }}</p>
+  </div>
+</div>

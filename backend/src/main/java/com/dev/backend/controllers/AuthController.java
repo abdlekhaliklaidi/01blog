@@ -34,7 +34,11 @@ public class AuthController {
             );
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getEmail());
-            String token = jwtUtil.generateToken(userDetails.getUsername());
+            String token = jwtUtil.generateToken(loginRequest.getEmail() , 
+                                                userDetails.getAuthorities().stream()
+                                                           .findFirst()
+                                                           .map(auth -> auth.getAuthority())
+                                                           .orElse("USER"));
 
             return ResponseEntity.ok(new AuthResponse(token));
 
