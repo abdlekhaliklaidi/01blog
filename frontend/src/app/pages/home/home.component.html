@@ -32,7 +32,8 @@
       <h3>Followers</h3>
       <ul>
         <li *ngFor="let follower of followers">
-          <img [src]="follower.avatar" alt="{{ follower.name }}">
+          <!-- <img [src]="follower.avatar" alt="{{ follower.name }}"> -->
+          <img [src]="follower.avatar || 'https://i.pravatar.cc/40'" alt="{{ follower.name }}">
           <div class="follower-info">
             <span>{{ follower.name }}</span>
             <div class="actions">

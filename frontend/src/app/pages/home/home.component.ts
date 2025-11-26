@@ -173,22 +173,25 @@ export class HomeComponent implements OnInit {
 
   toggleFollow(person: any) {
   if (person.following) {
+    // UNFOLLOW
     this.postService.unfollowUser(this.userInfo.id, person.id).subscribe({
       next: () => {
-        person.following = false; 
-      },
-      error: (err) => console.error('Error unfollowing user:', err)
+        person.following = false;
+      }
     });
   } else {
+    // FOLLOW
     const followData = {
-      followerId: this.userInfo.id,
-      followingId: person.id
+      follower: { id: this.userInfo.id },
+      following: { id: person.id }
     };
+
     this.postService.followUser(followData).subscribe({
-      next: (data) => {
+      next: () => {
         person.following = true;
+        console.log("FOLLOW sent:", followData);
       },
-      error: (err) => console.error('Error following user:', err)
+      error: (err) => console.error("FOLLOW ERROR:", err)
     });
   }
 }

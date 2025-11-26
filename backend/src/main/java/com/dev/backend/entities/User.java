@@ -21,6 +21,8 @@ public class User {
 
     private String password;
 
+    private String avatar;
+
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference(value = "user-post")
     private List<Post> posts;
@@ -86,4 +88,6 @@ public class User {
     public void setReportsMade(List<Report> reportsMade) { this.reportsMade = reportsMade; }
     public List<Report> getReportsReceived() { return reportsReceived; }
     public void setReportsReceived(List<Report> reportsReceived) { this.reportsReceived = reportsReceived; }
+     public String getAvatar() { return avatar; } 
+    public void setAvatar(String avatar) { this.avatar = avatar; }
 }

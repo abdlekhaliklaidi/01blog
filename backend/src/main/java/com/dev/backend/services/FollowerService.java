@@ -2,8 +2,10 @@ package com.dev.backend.services;
 
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import com.dev.backend.entities.Follower;
 import com.dev.backend.repositories.FollowerRepository;
+import com.dev.backend.repositories.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +15,9 @@ public class FollowerService {
 
     @Autowired
     private FollowerRepository followerRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public List<Follower> getAllFollowers() {
         return followerRepository.findAll();
@@ -31,16 +36,29 @@ public class FollowerService {
     }
 
     public Follower followUser(Follower follower) {
+        Long followerId = follower.getFollower().getId();
+        Long followingId = follower.getFollowing().getId();
+
+        if (!userRepository.existsById(followerId) || !userRepository.existsById(followingId)) {
+            throw new RuntimeException("User not found");
+        }
+
+        Follower existing = followerRepository.findByFollowerIdAndFollowingId(followerId, followingId);
+        if (existing != null) {
+            return existing;
+        }
+
         return followerRepository.save(follower);
     }
-    
+
+    public Follower findByFollowerIdAndFollowingId(Long followerId, Long followingId) {
+        return followerRepository.findByFollowerIdAndFollowingId(followerId, followingId);
+    }
+
     public void unfollowUser(Long followerId, Long followingId) {
         Follower follower = followerRepository.findByFollowerIdAndFollowingId(followerId, followingId);
         if (follower != null) {
             followerRepository.delete(follower);
-    }
-
-    // public void unfollowUser(Long id) {
-    //     followerRepository.deleteById(id);
+        }
     }
 }
