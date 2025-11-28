@@ -20,11 +20,12 @@
   font-size: 1.5rem;
   font-weight: bold;
   margin-right: 1rem;
+  color: #da56e0;
 }
 
 
 .nav-btn {
-  background: #eef;
+  background: #da56e0;
   /* color: #667eea; */
   border: none;
   padding: 0.4rem 0.8rem;
@@ -51,7 +52,7 @@
   border: none;
   outline: none;
   font-size: 0.95rem;
-  background-color: #d3d2d2;
+  background-color: #fff;
 }
 
 .nav-right {
@@ -215,11 +216,12 @@
 
 .create-post-btn {
   /* background-color: #667eea; */
-  color: white;
+  color: black;
+  background-color: #e1e2e6;
 }
 
 .create-post-btn:hover {
-  background-color: #bcbdbe;
+  background-color: #da56e0;
 }
 
 .logout-btn {

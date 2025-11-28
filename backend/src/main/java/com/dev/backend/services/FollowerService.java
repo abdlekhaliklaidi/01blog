@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.dev.backend.entities.Follower;
 import com.dev.backend.repositories.FollowerRepository;
 import com.dev.backend.repositories.UserRepository;
+import com.dev.backend.entities.Notification;
+import com.dev.backend.services.NotificationService;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +20,10 @@ public class FollowerService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private NotificationService notificationService;
+
 
     public List<Follower> getAllFollowers() {
         return followerRepository.findAll();
@@ -48,7 +54,20 @@ public class FollowerService {
             return existing;
         }
 
-        return followerRepository.save(follower);
+        Follower saved = followerRepository.save(follower);
+
+    
+        String message = follower.getFollower().getFirstname() + " " +
+                     follower.getFollower().getLastname() +
+                     " vous a suivi.";
+
+        Notification notif = new Notification();
+        notif.setMessage(message);
+        notif.setUser(follower.getFollowing());
+
+        notificationService.create(notif);
+
+        return saved;
     }
 
     public Follower findByFollowerIdAndFollowingId(Long followerId, Long followingId) {

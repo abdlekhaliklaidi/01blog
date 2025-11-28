@@ -158,8 +158,11 @@ export class HomeComponent implements OnInit {
 
   getFollowing(userId: number) {
     this.postService.getFollowing(userId).subscribe({
-      next: (data) => this.following = data,
-      error: (err) => console.error('Error fetching following:', err)
+      // next: (data) => this.following = data,
+      next: (data) => {
+        this.following = data;
+        // error: (err) => console.error('Error fetching following:', err)
+      }
     });
   }
 

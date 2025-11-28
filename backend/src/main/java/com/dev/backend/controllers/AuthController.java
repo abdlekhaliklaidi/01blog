@@ -8,6 +8,8 @@ import org.springframework.security.authentication.*;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import com.dev.backend.services.CustomUserDetailsService;
+import com.dev.backend.entities.User;
+
 
 @RestController
 @RequestMapping("/users")
@@ -34,13 +36,14 @@ public class AuthController {
             );
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getEmail());
+            User user = userDetailsService.findByEmail(loginRequest.getEmail());
             String token = jwtUtil.generateToken(loginRequest.getEmail() , 
                                                 userDetails.getAuthorities().stream()
                                                            .findFirst()
                                                            .map(auth -> auth.getAuthority())
                                                            .orElse("USER"));
 
-            return ResponseEntity.ok(new AuthResponse(token));
+            return ResponseEntity.ok(new AuthResponse(token, user.getId()));
 
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -50,8 +53,13 @@ public class AuthController {
 
     public static class AuthResponse {
         private String token;
-        public AuthResponse(String token) { this.token = token; }
+         private Long userId;
+        public AuthResponse(String token, Long userId) { 
+            this.token = token; 
+            this.userId = userId;
+        }
         public String getToken() { return token; }
+        public Long getUserId() { return userId; }
     }
 }
 

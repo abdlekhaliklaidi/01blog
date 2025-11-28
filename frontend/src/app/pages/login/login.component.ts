@@ -32,12 +32,13 @@ export class LoginComponent {
       return;
     }
 
-    this.http.post<{ token: string }>(
+    this.http.post<{ token: string, userId: number }>(
       'http://localhost:8080/users/login',
       { email, password }
     ).subscribe({
       next: (res) => {
         localStorage.setItem('token', res.token);
+        localStorage.setItem('userId', res.userId.toString());
         // console.log('Token saved:', res.token);
         this.successMessage = 'Connexion réussie!';
         this.errorMessage = '';
