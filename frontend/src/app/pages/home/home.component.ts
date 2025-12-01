@@ -130,7 +130,7 @@ export class HomeComponent implements OnInit {
     this.selectedFile = null;
   }
   
-  selectedImage: File | null = null;
+selectedImage: File | null = null;
 selectedVideo: File | null = null;
 
 onFileSelected(event: Event) {

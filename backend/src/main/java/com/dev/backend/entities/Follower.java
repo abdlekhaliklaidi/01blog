@@ -18,10 +18,12 @@ public class Follower {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "follower_id")
+    @JsonBackReference("following-follower")
     private User follower;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "following_id")
+    @JsonBackReference("follower-following")
     private User following;
 
     private LocalDateTime followedAt;

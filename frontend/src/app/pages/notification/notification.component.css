@@ -8,7 +8,7 @@ body {
 .notif-container {
   max-width: 600px;
   margin: 40px auto;
-  background: #ffffff;
+  background: #F5FEFF;
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -32,7 +32,7 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: #fafafa;
+  background: #AAC0E1;
   border: 1px solid #dddddd;
   padding: 12px;
   border-radius: 10px;

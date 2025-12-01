@@ -33,7 +33,7 @@ protected void doFilterInternal(HttpServletRequest request,
     String path = request.getServletPath();
     System.out.println("Request Path: " + path);
    if (path.startsWith("/users/login") ||
-    path.startsWith("/users/register")) {
+    path.startsWith("/users/register") || path.startsWith("/videos/")) {
     filterChain.doFilter(request, response);
     return;
 }
@@ -41,11 +41,6 @@ protected void doFilterInternal(HttpServletRequest request,
     final String authorizationHeader = request.getHeader("Authorization");
     String email = null;
     String jwt = null;
-
-    // if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-    //     jwt = authorizationHeader.substring(7);
-    //     email = jwtUtil.extractEmail(jwt);
-    // }
 
      if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
         jwt = authorizationHeader.substring(7);

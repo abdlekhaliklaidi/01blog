@@ -22,9 +22,12 @@ public void addCorsMappings(CorsRegistry registry) {
     }
 
     @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/videos/**")
-                .addResourceLocations("file:uploads/videos/");
-    }
+public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    String videoDirectory = System.getProperty("user.dir") + "/uploads/videos/";
+
+    registry.addResourceHandler("/videos/**")
+            .addResourceLocations("file:" + videoDirectory)
+            .setCachePeriod(0);
+}
 }
 

@@ -40,12 +40,24 @@ public class SecurityConfig {
     http.csrf(AbstractHttpConfigurer::disable)
         .formLogin(AbstractHttpConfigurer::disable)
         .logout(AbstractHttpConfigurer::disable)
-        .cors(cors -> {})
+        // .cors(cors -> {})
+        .cors(cors -> cors.configurationSource(request -> {
+            var config = new org.springframework.web.cors.CorsConfiguration();
+            config.setAllowedOrigins(java.util.List.of("http://localhost:4200"));
+            config.setAllowedMethods(java.util.List.of("GET","POST","PUT","DELETE"));
+            config.setAllowedHeaders(java.util.List.of("*"));
+            config.setAllowCredentials(true);
+            return config;
+        }))
+
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(
                 "/users/login",
                 "/users/register"
             ).permitAll()
+            .requestMatchers("/posts/**").authenticated()
+            .requestMatchers("/videos/**").permitAll()
+            // .requestMatchers("/videos/**").authenticated()
             .requestMatchers("/notifications/**").authenticated()
             .requestMatchers("/followers/**").authenticated()
             .requestMatchers("/admin/**").hasRole("ADMIN")

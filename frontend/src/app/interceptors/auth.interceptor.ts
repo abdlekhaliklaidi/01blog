@@ -1,7 +1,6 @@
 import { HttpInterceptorFn } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = localStorage.getItem('token');
@@ -14,7 +13,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   }
 
   return next(cloned).pipe(
-    catchError((err: any) => {
+    catchError((err) => {
       if (err.status === 401) {
         localStorage.removeItem('token');
         window.location.href = '/login';

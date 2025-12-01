@@ -1,0 +1,60 @@
+<div class="profile-container">
+  <aside class="profile-sidebar">
+    <div class="user-card">
+      <img [src]="userInfo?.avatar" alt="User Avatar" class="profile-pic">
+      <h2>{{ userInfo?.name }}</h2>
+      <p class="bio">{{ userInfo?.bio }}</p>
+      <button (click)="openEditProfile()">Edit Profile</button>
+      <button (click)="openCreatePost()">Create Post</button>
+    </div>
+
+    <div class="followers-following">
+      <p><strong>Followers:</strong> {{ followers.length }}</p>
+      <p><strong>Following:</strong> {{ following.length }}</p>
+    </div>
+  </aside>
+
+  <main class="profile-feed">
+    <div *ngIf="userPosts.length === 0" class="no-posts">
+      <p>No posts yet. Create your first one!</p>
+    </div>
+
+    <div *ngFor="let post of userPosts" class="post-card">
+      <div class="post-header">
+        <strong>{{ post.authorFirstName }}</strong>
+      </div>
+      <h3>{{ post.title }}</h3>
+      <p>{{ post.content }}</p>
+      <img *ngIf="post.imageUrl" [src]="post.imageUrl" alt="Post image">
+      <video *ngIf="post.videoUrl" [src]="post.videoUrl" controls></video>
+      <div class="post-actions">
+        👍 {{ post.likesCount || 0 }}
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="modal-overlay" *ngIf="showEditProfileModal">
+  <div class="modal">
+    <h3>Edit Profile</h3>
+    <input type="text" [(ngModel)]="editName" placeholder="Name">
+    <textarea [(ngModel)]="editBio" placeholder="Bio"></textarea>
+    <div class="modal-actions">
+      <button (click)="saveProfile()">Save</button>
+      <button (click)="showEditProfileModal = false">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="showCreatePost">
+  <div class="modal">
+    <h3>Create Post</h3>
+    <input type="text" [(ngModel)]="newPost.title" placeholder="Title">
+    <textarea [(ngModel)]="newPost.content" placeholder="Content"></textarea>
+    <input type="file" (change)="onFileSelected($event)" accept="image/*,video/*">
+    <div class="modal-actions">
+      <button (click)="createPost()">Publish</button>
+      <button (click)="closeCreatePost()">Cancel</button>
+    </div>
+  </div>
+</div>

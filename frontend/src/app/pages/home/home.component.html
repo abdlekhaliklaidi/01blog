@@ -20,7 +20,7 @@
     </div>
     <div class="user-menu" *ngIf="showUserMenu">
       <p>{{ userInfo?.name }}</p>
-      <button type="button">Profile</button>
+      <button type="button" routerLink="/profile">Profile</button>
       <button type="button" (click)="logout()">Logout</button>
     </div>
   </div>
@@ -84,7 +84,9 @@
       <h3>{{ post.title }}</h3>
 
       <img *ngIf="post.imageUrl" [src]="post.imageUrl" alt="Post image">
+      <!-- <video *ngIf="post.videoUrl" [src]="post.videoUrl" controls></video> -->
       <video *ngIf="post.videoUrl" [src]="post.videoUrl" controls></video>
+      <!-- <video src="http://localhost:8080/videos/filename.mp4" controls></video>. -->
 
       <p>{{ post.content }}</p>
 

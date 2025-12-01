@@ -18,7 +18,7 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        String adminEmail = "admin@system.com";
+        String adminEmail = "admin@gmail.com";
 
         if (userRepository.findByEmail(adminEmail).isEmpty()) {
             User admin = new User();
@@ -29,7 +29,7 @@ public class DataInitializer implements CommandLineRunner {
             admin.setGenre("M");
             admin.setRole("ADMIN");
             userRepository.save(admin);
-            System.out.println("✅ Admin user created: " + adminEmail);
+            System.out.println("Admin user created: " + adminEmail);
         } else {
             System.out.println("Admin user already exists: " + adminEmail);
         }
