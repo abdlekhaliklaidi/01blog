@@ -42,9 +42,24 @@ protected void doFilterInternal(HttpServletRequest request,
     String email = null;
     String jwt = null;
 
-    if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+    // if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+    //     jwt = authorizationHeader.substring(7);
+    //     email = jwtUtil.extractEmail(jwt);
+    // }
+
+     if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
         jwt = authorizationHeader.substring(7);
-        email = jwtUtil.extractEmail(jwt);
+        try {
+            email = jwtUtil.extractEmail(jwt);
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Token expired or invalid. Please login again.");
+            return;
+        }
+    } else {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.getWriter().write("Authorization header missing or invalid");
+        return;
     }
 
     System.out.println("Extracted Email: " + email);
@@ -57,6 +72,10 @@ protected void doFilterInternal(HttpServletRequest request,
                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(token);
+        } else {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Token expired or invalid. Please login again.");
+            return;
         }
     }
 

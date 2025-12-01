@@ -16,10 +16,10 @@
 
   <div class="nav-right">
     <div class="user-avatar" (click)="toggleUserMenu()">
-      <img [src]="userInfo.avatar" alt="User Avatar" />
+      <img [src]="userInfo?.avatar" alt="User Avatar" />
     </div>
     <div class="user-menu" *ngIf="showUserMenu">
-      <p>{{ userInfo.name }}</p>
+      <p>{{ userInfo?.name }}</p>
       <button type="button">Profile</button>
       <button type="button" (click)="logout()">Logout</button>
     </div>
@@ -84,6 +84,7 @@
       <h3>{{ post.title }}</h3>
 
       <img *ngIf="post.imageUrl" [src]="post.imageUrl" alt="Post image">
+      <video *ngIf="post.videoUrl" [src]="post.videoUrl" controls></video>
 
       <p>{{ post.content }}</p>
 
@@ -120,9 +121,9 @@
 
   <aside class="sidebar sidebar-right">
     <div class="user-card">
-      <img [src]="userInfo.avatar" alt="user avatar" class="profile-pic">
-      <h3>{{ userInfo.name }}</h3>
-      <p class="bio">{{ userInfo.bio }}</p>
+      <img [src]="userInfo?.avatar" alt="user avatar" class="profile-pic">
+      <h3>{{ userInfo?.name }}</h3>
+      <p class="bio">{{ userInfo?.bio }}</p>
       <button class="create-post-btn" (click)="openCreatePost()">Create Post</button>
       <button class="logout-btn" (click)="logout()">Logout</button>
     </div>
@@ -154,7 +155,9 @@
     <h3>Create a Post</h3>
     <input type="text" [(ngModel)]="newPost.title" placeholder="Title" />
     <textarea [(ngModel)]="newPost.content" placeholder="Content"></textarea>
-    <input type="file" (change)="onFileSelected($event)" />
+    <!-- <input type="file" (change)="onFileSelected($event)" />
+    <input type="file" (change)="onFileSelected($event)" accept="image/*,video/*" /> -->
+    <input type="file" accept="image/*,video/*" (change)="onFileSelected($event)" />
     <div class="modal-actions">
       <button type="button" (click)="createPost()">Publish</button>
       <button type="button" (click)="closeCreatePost()">Cancel</button>

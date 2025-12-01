@@ -7,6 +7,8 @@ import com.dev.backend.repositories.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import com.dev.backend.util.JwtUtil;
+import com.dev.backend.dto.UserDTO;
 
 import java.util.List;
 
@@ -21,9 +23,25 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     @GetMapping
     public List<User> getUsers() {
         return userRepository.findAll();
+    }
+    
+    @GetMapping("/me")
+    public ResponseEntity<UserDTO> getCurrentUser(@RequestHeader("Authorization") String authHeader) {
+    String token = authHeader.substring(7);
+
+    String email = jwtUtil.extractEmail(token);
+    User user = userRepository.findByEmail(email)
+                              .orElseThrow(() -> new RuntimeException("User not found"));
+
+    UserDTO dto = new UserDTO(user.getId(), user.getFirstname(), user.getLastname(),
+                              user.getEmail(), user.getAvatar());
+    return ResponseEntity.ok(dto);
     }
 
     @PostMapping

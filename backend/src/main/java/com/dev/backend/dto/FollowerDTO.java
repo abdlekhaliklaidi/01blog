@@ -9,18 +9,23 @@ public class FollowerDTO {
     private String status;
     private boolean following;
 
-    public FollowerDTO(Follower f, boolean isFollower) {
-        if (isFollower) {
+    public FollowerDTO(Follower f, Long currentUserId, boolean isFollowerOfMe) {
+
+        if (isFollowerOfMe) {
             this.id = f.getFollower().getId();
             this.name = f.getFollower().getFirstname() + " " + f.getFollower().getLastname();
             this.avatar = f.getFollower().getAvatar();
             this.status = "accepted"; 
-            this.following = false;
+            this.following = (f.getFollower().getId().equals(currentUserId)) ||
+                 (f.getFollower().getFollowers().stream()
+                    .anyMatch(rel -> rel.getFollowing().getId().equals(currentUserId)));
+
+
         } else {
             this.id = f.getFollowing().getId();
             this.name = f.getFollowing().getFirstname() + " " + f.getFollowing().getLastname();
             this.avatar = f.getFollowing().getAvatar();
-            this.status = "accepted";
+            this.status = "accepted"; 
             this.following = true;
         }
     }

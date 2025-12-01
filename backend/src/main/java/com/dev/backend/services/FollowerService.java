@@ -42,30 +42,37 @@ public class FollowerService {
     }
 
     public Follower followUser(Follower follower) {
-        Long followerId = follower.getFollower().getId();
-        Long followingId = follower.getFollowing().getId();
+    Long followerId = follower.getFollower().getId();
+    Long followingId = follower.getFollowing().getId();
 
-        if (!userRepository.existsById(followerId) || !userRepository.existsById(followingId)) {
-            throw new RuntimeException("User not found");
-        }
+    if (followerId.equals(followingId)) {
+        throw new RuntimeException("No pas vous suivre vous-même.");
+    }
 
-        Follower existing = followerRepository.findByFollowerIdAndFollowingId(followerId, followingId);
-        if (existing != null) {
-            return existing;
-        }
+    var followerUser = userRepository.findById(followerId)
+            .orElseThrow(() -> new RuntimeException("Follower user not found"));
 
-        Follower saved = followerRepository.save(follower);
+    var followingUser = userRepository.findById(followingId)
+            .orElseThrow(() -> new RuntimeException("Following user not found"));
 
-    
-        String message = follower.getFollower().getFirstname() + " " +
-                     follower.getFollower().getLastname() +
+    Follower existing = followerRepository.findByFollowerIdAndFollowingId(followerId, followingId);
+    if (existing != null) {
+        throw new RuntimeException("Vous suivez déjà cet utilisateur.");
+    }
+
+    follower.setFollower(followerUser);
+    follower.setFollowing(followingUser);
+    Follower saved = followerRepository.save(follower);
+
+    String message = followerUser.getFirstname() + " " +
+                     followerUser.getLastname() +
                      " vous a suivi.";
 
-        Notification notif = new Notification();
-        notif.setMessage(message);
-        notif.setUser(follower.getFollowing());
+    Notification notif = new Notification();
+    notif.setMessage(message);
+    notif.setUser(followingUser);
 
-        notificationService.create(notif);
+    notificationService.create(notif);
 
         return saved;
     }

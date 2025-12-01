@@ -16,14 +16,12 @@ public class Follower {
     private Long id;
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "follower_id")
-    @JsonBackReference(value = "following-follower")
     private User follower;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "following_id")
-    @JsonBackReference(value = "follower-following")
     private User following;
 
     private LocalDateTime followedAt;

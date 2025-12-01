@@ -12,6 +12,7 @@ public class PostDTO {
     private String title;
     private String content;
     private String imageUrl;
+    private String videoUrl;
     private LocalDateTime createdAt;
     private String authorFirstName;
 
@@ -30,6 +31,12 @@ public class PostDTO {
             this.imageUrl = "data:image/jpeg;base64," + post.getImageBase64();
         } else {
             this.imageUrl = null;
+        }
+
+        if (post.getVideoUrl() != null) {
+            this.videoUrl = "http://localhost:8080" + post.getVideoUrl();
+        } else {
+            this.videoUrl = null;
         }
 
         this.createdAt = post.getCreatedAt();
@@ -94,4 +101,8 @@ public class PostDTO {
 
     public List<LikeDTO> getLikes() { return likes; }
     public void setLikes(List<LikeDTO> likes) { this.likes = likes; }
+
+    public String getVideoUrl() { return videoUrl; }
+    public void setVideoUrl(String videoUrl) { this.videoUrl = videoUrl; }
+
 }

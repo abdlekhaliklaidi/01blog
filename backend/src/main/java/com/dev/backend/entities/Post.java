@@ -26,6 +26,9 @@ public class Post {
     @Column(length = 10000000)
     private String imageBase64;
 
+    // @Lob
+    private String videoUrl;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
@@ -73,4 +76,7 @@ public class Post {
 
     public String getImageBase64() { return imageBase64; }
     public void setImageBase64(String imageBase64) { this.imageBase64 = imageBase64; }
+
+    public String getVideoUrl() { return videoUrl; }
+    public void setVideoUrl(String videoUrl) { this.videoUrl = videoUrl; }
 }

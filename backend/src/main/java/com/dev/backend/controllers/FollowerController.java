@@ -33,7 +33,7 @@ public class FollowerController {
     public List<FollowerDTO> getFollowing(@PathVariable Long userId) {
         return followerService.getFollowingOfUser(userId)
                 .stream()
-                .map(f -> new FollowerDTO(f, false)) 
+                .map(f -> new FollowerDTO(f, userId, false)) 
                 .collect(Collectors.toList());
     }
 
@@ -41,7 +41,7 @@ public class FollowerController {
     public List<FollowerDTO> getFollowers(@PathVariable Long userId) {
         return followerService.getFollowersOfUser(userId)
                 .stream()
-                .map(f -> new FollowerDTO(f, true))
+                .map(f -> new FollowerDTO(f, userId, true))
                 .collect(Collectors.toList());
     }
 

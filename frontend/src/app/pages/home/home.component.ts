@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { PostService } from '../../services/post.service';
 import { ReportService } from '../../services/report.service';
 import { AuthService } from '../../services/auth.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-home',
@@ -34,16 +35,39 @@ export class HomeComponent implements OnInit {
     private router: Router,
     private postService: PostService,
     private reportService: ReportService,
+    private userService: UserService,
     public auth: AuthService
   ) {}
-
+  
   ngOnInit() {
-    this.userInfo = {
-      id: 1,
-      name: 'Ali Student',
-      bio: 'Full Stack Developer | Angular & Spring Boot',
-      avatar: 'https://i.pravatar.cc/100?img=12'
-    };
+  this.userService.getMe().subscribe({
+    next: (user) => {
+      this.userInfo = {
+        id: user.id,
+        name: "Wilcom" + ' ' + user.firstname + ' ' + user.lastname,
+        // bio: 'Full Stack Developer | Angular & Spring Boot',
+        bio: 'Zone01 Oujda',
+        avatar: 'https://i.pravatar.cc/100?img=12'
+      };
+
+      this.getFollowers(this.userInfo.id);
+      this.getFollowing(this.userInfo.id);
+      this.loadPosts();
+    },
+    error: (err) => {
+      console.error('Error loading user info:', err);
+      this.router.navigate(['/login']);
+    }
+  });
+}
+
+    // this.userInfo = {
+    //   id: 1,
+    //   name: 'Ali Student',
+    //   bio: 'Full Stack Developer | Angular & Spring Boot',
+    //   avatar: 'https://i.pravatar.cc/100?img=12'
+    // };
+
     
     // this.followers = [
     //   { id: 1, name: 'Amina Dev', avatar: 'https://i.pravatar.cc/40?img=1', status: 'pending' },
@@ -55,12 +79,6 @@ export class HomeComponent implements OnInit {
     //   { id: 1, name: 'Sara Dev', avatar: 'https://i.pravatar.cc/40?img=4', following: true },
     //   { id: 2, name: 'Omar JS', avatar: 'https://i.pravatar.cc/40?img=5', following: false }
     // ];
-
-    this.getFollowers(this.userInfo.id);
-    this.getFollowing(this.userInfo.id);
-
-    this.loadPosts();
-  }
 
   loadPosts() {
     this.postService.getAllPosts().subscribe({
@@ -111,43 +129,85 @@ export class HomeComponent implements OnInit {
     this.newPost = { title: '', content: '' };
     this.selectedFile = null;
   }
+  
+  selectedImage: File | null = null;
+selectedVideo: File | null = null;
 
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.selectedFile = input.files[0];
-    }
+onFileSelected(event: Event) {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files.length > 0) {
+    const file = input.files[0];
+    if (file.type.startsWith('image/')) this.selectedImage = file;
+    else if (file.type.startsWith('video/')) this.selectedVideo = file;
+  }
+}
+
+createPost() {
+  if (!this.newPost.title.trim() || !this.newPost.content.trim()) {
+    alert('Please enter title and content');
+    return;
   }
 
-  createPost() {
-    if (!this.newPost.title.trim() || !this.newPost.content.trim()) {
-      alert('Please enter title and content');
-      return;
-    }
+  const formData = new FormData();
+  formData.append('title', this.newPost.title.trim());
+  formData.append('content', this.newPost.content.trim());
 
-    const formData = new FormData();
-    formData.append('title', this.newPost.title.trim());
-    formData.append('content', this.newPost.content.trim());
+  if (this.selectedImage) formData.append('image', this.selectedImage);
+  if (this.selectedVideo) formData.append('video', this.selectedVideo);
 
-    if (this.selectedFile) {
-      formData.append('image', this.selectedFile);
-    }
+  this.postService.createPost(formData).subscribe({
+    next: (created) => {
+      this.posts.unshift({
+        ...created,
+        likes: created.likes || [],
+        comments: created.comments || [],
+        showComments: false,
+        newComment: '',
+        imageUrl: created.imageUrl,
+        videoUrl: created.videoUrl
+      });
+      this.closeCreatePost();
+    },
+    error: (err) => console.error('Error creating post', err)
+  });
+}
 
-    this.postService.createPost(formData).subscribe({
-      next: (created) => {
-        this.posts.unshift({
-          ...created,
-          likes: created.likes || [],
-          comments: created.comments || [],
-          showComments: false,
-          newComment: '',
-          imageUrl: created.imageUrl
-        });
-        this.closeCreatePost();
-      },
-      error: (err) => console.error('Error creating post', err)
-    });
-  }
+  // onFileSelected(event: Event) {
+  //   const input = event.target as HTMLInputElement;
+  //   if (input.files && input.files.length > 0) {
+  //     this.selectedFile = input.files[0];
+  //   }
+  // }
+
+  // createPost() {
+  //   if (!this.newPost.title.trim() || !this.newPost.content.trim()) {
+  //     alert('Please enter title and content');
+  //     return;
+  //   }
+
+  //   const formData = new FormData();
+  //   formData.append('title', this.newPost.title.trim());
+  //   formData.append('content', this.newPost.content.trim());
+
+  //   if (this.selectedFile) {
+  //     formData.append('image', this.selectedFile);
+  //   }
+
+  //   this.postService.createPost(formData).subscribe({
+  //     next: (created) => {
+  //       this.posts.unshift({
+  //         ...created,
+  //         likes: created.likes || [],
+  //         comments: created.comments || [],
+  //         showComments: false,
+  //         newComment: '',
+  //         imageUrl: created.imageUrl
+  //       });
+  //       this.closeCreatePost();
+  //     },
+  //     error: (err) => console.error('Error creating post', err)
+  //   });
+  // }
 
   getFollowers(userId: number) {
     this.postService.getFollowers(userId).subscribe({
@@ -175,6 +235,11 @@ export class HomeComponent implements OnInit {
   }
 
   toggleFollow(person: any) {
+   if (this.userInfo.id === person.id) {
+    console.error("No pas vous suivre vous-même.");
+    return;
+  }
+  
   if (person.following) {
     // UNFOLLOW
     this.postService.unfollowUser(this.userInfo.id, person.id).subscribe({
