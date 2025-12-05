@@ -1,4 +1,79 @@
+<a routerLink="/home" class="back">⬅ Back to Home</a>
 <div class="admin-container">
+  <h1>Admin Dashboard</h1>
+
+  <section class="table-section">
+    <h2>❌ Post Reports</h2>
+
+    <table *ngIf="postReports.length > 0" class="styled-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Reason</th>
+          <th>Post ID</th>
+          <th>Post Title</th>
+          <th>Author</th>
+          <th>Reporter</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let report of postReports">
+          <td>{{ report.id }}</td>
+          <td>{{ report.reason }}</td>
+          <td>{{ report.post?.id }}</td>
+          <td>{{ report.post?.title }}</td>
+          <td>{{ report.post?.author?.name }}</td>
+          <td>{{ report.reporter?.name }}</td>
+          <td>
+            <button class="btn btn-warning" (click)="deletePost(report.post.id)">Delete Post</button>
+            <button class="btn btn-danger" (click)="deleteReport(report.id)">Delete Report</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p *ngIf="postReports.length === 0" class="no-data">No post reports found.</p>
+  </section>
+
+  <section class="table-section">
+    <h2>👤 User Reports</h2>
+
+    <table *ngIf="userReports.length > 0" class="styled-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Reason</th>
+          <th>User ID</th>
+          <th>Reported User</th>
+          <th>Reporter</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let report of userReports">
+          <td>{{ report.id }}</td>
+          <td>{{ report.reason }}</td>
+          <td>{{ report.reportedUser?.id }}</td>
+          <td>{{ report.reportedUser?.name }}</td>
+          <td>{{ report.reporter?.name }}</td>
+          <td>
+            <button class="btn btn-warning" (click)="banUser(report.reportedUser.id)">Ban User</button>
+            <button class="btn btn-danger" (click)="deleteReport(report.id)">Delete Report</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p *ngIf="userReports.length === 0" class="no-data">No user reports found.</p>
+  </section>
+
+</div>
+
+
+<!-- <div class="admin-container">
   <h1>🚨 Admin Reports Management</h1>
 
   <div *ngIf="isLoading" class="loading">
@@ -39,7 +114,6 @@
       </div>
     </section>
 
-    <!-- Reports on Users -->
     <section class="reports-section">
       <h2>👤 Reports on Users</h2>
       
@@ -72,4 +146,4 @@
     </section>
 
   </div>
-</div>
+</div> -->

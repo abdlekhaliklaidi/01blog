@@ -16,6 +16,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.http.HttpMethod;
+
 
 
 @Configuration
@@ -51,6 +53,7 @@ public class SecurityConfig {
         }))
 
         .authorizeHttpRequests(auth -> auth
+            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .requestMatchers(
                 "/users/login",
                 "/users/register"
