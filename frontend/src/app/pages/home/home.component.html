@@ -129,7 +129,20 @@
       <button class="create-post-btn" (click)="openCreatePost()">Create Post</button>
       <button class="logout-btn" (click)="logout()">Logout</button>
     </div>
-  </aside>
+
+    <div class="all-users-section">
+  <h3>Discover Users</h3>
+  <ul>
+    <li *ngFor="let user of allUsers">
+      <img [src]="user.avatar || 'https://i.pravatar.cc/40'" alt="{{ user.firstname }}">
+      <span>{{ user.firstname }} {{ user.lastname }}</span>
+      <button class="follow-btn" [class.unfollow]="user.following" (click)="toggleFollow(user)">
+        {{ user.following ? 'Unfollow' : 'Follow' }}
+      </button>
+    </li>
+  </ul>
+</div>
+</aside>
 </div>
 
 <!-- Modal Report -->

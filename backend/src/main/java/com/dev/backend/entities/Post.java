@@ -23,10 +23,13 @@ public class Post {
     private LocalDateTime createdAt;
 
     @Lob
+    @Basic(fetch = FetchType.LAZY)
     @Column(length = 10000000)
     private String imageBase64;
 
     // @Lob
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
     private String videoUrl;
 
     @PrePersist

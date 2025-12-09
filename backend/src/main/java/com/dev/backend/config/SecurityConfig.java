@@ -58,6 +58,8 @@ public class SecurityConfig {
                 "/users/login",
                 "/users/register"
             ).permitAll()
+          .requestMatchers(HttpMethod.GET, "/users", "/users/me").permitAll()
+            // .requestMatchers("/users/**").authenticated()
             .requestMatchers("/posts/**").authenticated()
             .requestMatchers("/videos/**").permitAll()
             // .requestMatchers("/videos/**").authenticated()

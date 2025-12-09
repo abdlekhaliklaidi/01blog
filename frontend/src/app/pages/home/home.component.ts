@@ -20,6 +20,7 @@ export class HomeComponent implements OnInit {
   posts: any[] = [];
   followers: any[] = [];
   following: any[] = [];
+  allUsers: any[] = [];
   userInfo: any;
   showUserMenu = false;
   showCreatePost = false;
@@ -53,6 +54,7 @@ export class HomeComponent implements OnInit {
       this.getFollowers(this.userInfo.id);
       this.getFollowing(this.userInfo.id);
       this.loadPosts();
+      this.loadAllUsers();
     },
     error: (err) => {
       console.error('Error loading user info:', err);
@@ -61,6 +63,19 @@ export class HomeComponent implements OnInit {
   });
 }
 
+  loadAllUsers() {
+  this.userService.getAllUsers().subscribe({
+    next: (users) => {
+      this.allUsers = users.filter((u: any) => u.id !== this.userInfo.id);
+
+      this.allUsers = this.allUsers.map((u: any) => {
+        const following = this.following.find(f => f.id === u.id);
+        return { ...u, following: following ? following.following : false };
+      });
+    },
+    error: (err) => console.error('Error loading users:', err)
+  });
+}   
     // this.userInfo = {
     //   id: 1,
     //   name: 'Ali Student',
@@ -79,24 +94,36 @@ export class HomeComponent implements OnInit {
     //   { id: 1, name: 'Sara Dev', avatar: 'https://i.pravatar.cc/40?img=4', following: true },
     //   { id: 2, name: 'Omar JS', avatar: 'https://i.pravatar.cc/40?img=5', following: false }
     // ];
-
   loadPosts() {
-    this.postService.getAllPosts().subscribe({
-      next: (data) => {
-        this.posts = (data || []).map((p: any) => ({
-          ...p,
-          likes: p.likes || [],
-          comments: p.comments || [],
-          showComments: false,
-          newComment: ''
-        }));
-      },
-      error: (err) => {
-        console.error('Error loading posts:', err);
-        this.posts = [];
-      }
-    });
-  }
+  this.postService.getFeed(this.userInfo.id).subscribe({
+  next: (data) => {
+    this.posts = data.map((p: any) => ({
+      ...p,
+      likes: p.likes || [],
+      comments: p.comments || [],
+      showComments: false,
+      newComment: ''
+    }));
+    }
+  });
+}
+  // loadPosts() {
+  //   this.postService.getAllPosts().subscribe({
+  //     next: (data) => {
+  //       this.posts = (data || []).map((p: any) => ({
+  //         ...p,
+  //         likes: p.likes || [],
+  //         comments: p.comments || [],
+  //         showComments: false,
+  //         newComment: ''
+  //       }));
+  //     },
+  //     error: (err) => {
+  //       console.error('Error loading posts:', err);
+  //       this.posts = [];
+  //     }
+  //   });
+  // }
 
   toggleLike(post: any) {
     this.postService.toggleLike(post.id).subscribe({
@@ -253,7 +280,6 @@ createPost() {
       follower: { id: this.userInfo.id },
       following: { id: person.id }
     };
-
     this.postService.followUser(followData).subscribe({
       next: () => {
         person.following = true;

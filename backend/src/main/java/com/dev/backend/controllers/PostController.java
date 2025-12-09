@@ -26,6 +26,7 @@ import java.util.List;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.Files;
+import com.dev.backend.services.FollowerService;
 
 
 @RestController
@@ -44,6 +45,9 @@ public class PostController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private FollowerService followerService;
 
     @GetMapping
     public List<PostDTO> getAllPosts() {
@@ -66,6 +70,24 @@ public class PostController {
             .map(PostDTO::new)
             .collect(Collectors.toList());
     }
+    
+    @GetMapping("/feed/{userId}")
+    public List<PostDTO> getFeed(@PathVariable Long userId) {
+
+    List<Long> followingIds = new java.util.ArrayList<>(
+        followerService.getFollowingOfUser(userId)
+            .stream()
+            .map(f -> f.getFollowing().getId())
+            .toList()
+    );
+
+    followingIds.add(userId);
+
+    return postService.getPostsByAuthors(followingIds)
+            .stream()
+            .map(PostDTO::new)
+            .collect(Collectors.toList());
+}
 
 //     @PostMapping(consumes = "multipart/form-data")
 //     public ResponseEntity<PostDTO> createPostWithImage(

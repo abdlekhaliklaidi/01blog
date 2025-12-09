@@ -15,6 +15,10 @@ export class PostService {
   getAllPosts(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/posts`);
   }
+  
+  getFeed(userId: number) {
+    return this.http.get<any[]>(`${this.baseUrl}/posts/feed/${userId}`);
+  }
 
   getPostsByAuthor(authorId: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/posts/author/${authorId}`);

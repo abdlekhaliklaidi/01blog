@@ -12,5 +12,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT DISTINCT p FROM Post p LEFT JOIN FETCH p.likes LEFT JOIN FETCH p.comments ORDER BY p.createdAt DESC")
     List<Post> findAllWithLikesAndComments();
     List<Post> findByAuthorId(Long authorId);
+    List<Post> findByAuthorIdIn(List<Long> authorIds);
+
 
 }

@@ -19,7 +19,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         // String role = "admin@gmail.com".equalsIgnoreCase(email) ? "ADMIN" : "USER";
         String role = user.getRole();
-
+               
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getEmail())
                 .password(user.getPassword())

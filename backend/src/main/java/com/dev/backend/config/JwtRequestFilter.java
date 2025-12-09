@@ -32,8 +32,10 @@ protected void doFilterInternal(HttpServletRequest request,
 
     String path = request.getServletPath();
     System.out.println("Request Path: " + path);
-   if (path.startsWith("/users/login") ||
-    path.startsWith("/users/register") || path.startsWith("/videos/")) {
+    if (path.equals("/users") ||
+    path.equals("/users/") ||
+    path.startsWith("/users/login") ||
+    path.startsWith("/users/register") || path.startsWith("/users") ||  path.startsWith("/videos/")) {
     filterChain.doFilter(request, response);
     return;
 }
