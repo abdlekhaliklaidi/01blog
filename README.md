@@ -6,11 +6,11 @@
 Les utilisateurs peuvent publier du contenu, interagir entre eux, suivre d’autres profils et signaler les comportements inappropriés.
 Les administrateurs disposent d’un espace dédié pour modérer les utilisateurs et les publications.
 
-L’application est développée en **Fullstack** avec :
+L’application est développée en **Fullstack Abdelkhalik Laidi** avec :
 
 * **Backend :** Spring Boot (Java)
 * **Frontend :** Angular
-* **Base de données :** PostgreSQL / MySQL
+* **Base de données :** PostgreSQL
 
 ---
 
