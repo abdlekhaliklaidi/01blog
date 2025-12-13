@@ -18,8 +18,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.http.HttpMethod;
 
-
-
 @Configuration
 public class SecurityConfig {
 
@@ -59,10 +57,8 @@ public class SecurityConfig {
                 "/users/register"
             ).permitAll()
           .requestMatchers(HttpMethod.GET, "/users", "/users/me").permitAll()
-            // .requestMatchers("/users/**").authenticated()
             .requestMatchers("/posts/**").authenticated()
-            .requestMatchers("/videos/**").permitAll()
-            // .requestMatchers("/videos/**").authenticated()
+            .requestMatchers("/images/**", "/videos/**").permitAll()
             .requestMatchers("/notifications/**").authenticated()
             .requestMatchers("/followers/**").authenticated()
             .requestMatchers("/admin/**").hasRole("ADMIN")

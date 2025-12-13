@@ -1,6 +1,5 @@
 package com.dev.backend.config;
 
-// import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -22,12 +21,16 @@ public void addCorsMappings(CorsRegistry registry) {
     }
 
     @Override
-public void addResourceHandlers(ResourceHandlerRegistry registry) {
-    String videoDirectory = System.getProperty("user.dir") + "/uploads/videos/";
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+
+    String imageDir = System.getProperty("user.dir") + "/uploads/images/";
+    String videoDir = System.getProperty("user.dir") + "/uploads/videos/";
+
+    registry.addResourceHandler("/images/**")
+            .addResourceLocations("file:" + imageDir);
 
     registry.addResourceHandler("/videos/**")
-            .addResourceLocations("file:" + videoDirectory)
-            .setCachePeriod(0);
-}
+            .addResourceLocations("file:" + videoDir);
+    }
 }
 

@@ -89,38 +89,6 @@ public class PostController {
             .collect(Collectors.toList());
 }
 
-//     @PostMapping(consumes = "multipart/form-data")
-//     public ResponseEntity<PostDTO> createPostWithImage(
-//     @RequestParam("title") String title,
-//     @RequestParam("content") String content,
-//     @RequestParam(value = "image", required = false) MultipartFile imageFile
-//     ) throws IOException {
-
-//     String username = SecurityContextHolder.getContext().getAuthentication().getName();
-
-//     User author = userRepository.findByEmail(username)
-//             .orElseThrow(() -> new RuntimeException("User not found"));
-
-//     Post post = new Post();
-//     post.setTitle(title);
-//     post.setContent(content);
-//     post.setAuthor(author);
-
-//     if (imageFile != null && !imageFile.isEmpty()) {
-//         String base64 = Base64.getEncoder().encodeToString(imageFile.getBytes());
-//         post.setImageBase64(base64);
-//     }
-
-//     Post savedPost = postRepository.save(post);
-
-//     Notification notif = new Notification();
-//     notif.setUser(author);
-//     notif.setMessage("Your post \"" + savedPost.getTitle() + "\" has been published successfully!");
-//     notificationService.create(notif);
-
-//     return ResponseEntity.status(HttpStatus.CREATED).body(new PostDTO(savedPost));
-// }
-
     @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<PostDTO> createPostWithMedia(
         @RequestParam("title") String title,
@@ -130,7 +98,8 @@ public class PostController {
     ) throws IOException {
 
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
-    User author = userRepository.findByEmail(username).orElseThrow(() -> new RuntimeException("User not found"));
+    User author = userRepository.findByEmail(username)
+            .orElseThrow(() -> new RuntimeException("User not found"));
 
     Post post = new Post();
     post.setTitle(title);
@@ -138,30 +107,29 @@ public class PostController {
     post.setAuthor(author);
 
     if (imageFile != null && !imageFile.isEmpty()) {
-        String base64Image = Base64.getEncoder().encodeToString(imageFile.getBytes());
-        post.setImageBase64(base64Image);
+        String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
+        Path imagePath = Paths.get("uploads/images/" + fileName);
+
+        Files.createDirectories(imagePath.getParent());
+        Files.write(imagePath, imageFile.getBytes());
+
+        post.setImagePath("/images/" + fileName);
     }
 
     if (videoFile != null && !videoFile.isEmpty()) {
-    String fileName = System.currentTimeMillis() + "_" + videoFile.getOriginalFilename();
-    Path uploadPath = Paths.get("uploads/videos/" + fileName);
+        String fileName = System.currentTimeMillis() + "_" + videoFile.getOriginalFilename();
+        Path videoPath = Paths.get("uploads/videos/" + fileName);
 
-    Files.createDirectories(uploadPath.getParent());
-    Files.write(uploadPath, videoFile.getBytes());
+        Files.createDirectories(videoPath.getParent());
+        Files.write(videoPath, videoFile.getBytes());
 
-    post.setVideoUrl("/videos/" + fileName);
+        post.setVideoUrl("/videos/" + fileName);
     }
 
     Post savedPost = postRepository.save(post);
 
-    Notification notif = new Notification();
-    notif.setUser(author);
-    notif.setMessage("Your post \"" + savedPost.getTitle() + "\" has been published successfully!");
-    notificationService.create(notif);
-
     return ResponseEntity.status(HttpStatus.CREATED).body(new PostDTO(savedPost));
     }
-
 
     @PutMapping("/{id}")
     public ResponseEntity<Post> updatePost(@PathVariable Long id, @RequestBody Post updatedPost) {

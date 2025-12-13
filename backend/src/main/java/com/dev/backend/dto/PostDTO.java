@@ -27,10 +27,10 @@ public class PostDTO {
         this.title = post.getTitle();
         this.content = post.getContent();
 
-        if (post.getImageBase64() != null && !post.getImageBase64().isEmpty()) {
-            this.imageUrl = "data:image/jpeg;base64," + post.getImageBase64();
+        if (post.getImagePath() != null) {
+        this.imageUrl = "http://localhost:8080" + post.getImagePath();
         } else {
-            this.imageUrl = null;
+        this.imageUrl = null;
         }
 
         if (post.getVideoUrl() != null) {

@@ -21,15 +21,12 @@ public class Post {
     private String content;
 
     private LocalDateTime createdAt;
-
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column(length = 10000000)
-    private String imageBase64;
+    
+    @Column(length = 500)
+    private String imagePath;
 
     // @Lob
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
+    // @Basic(fetch = FetchType.LAZY)
     private String videoUrl;
 
     @PrePersist
@@ -77,8 +74,13 @@ public class Post {
     public List<Like> getLikes() { return likes; }
     public void setLikes(List<Like> likes) { this.likes = likes; }
 
-    public String getImageBase64() { return imageBase64; }
-    public void setImageBase64(String imageBase64) { this.imageBase64 = imageBase64; }
+    public String getImagePath() {
+    return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+    this.imagePath = imagePath;
+    }
 
     public String getVideoUrl() { return videoUrl; }
     public void setVideoUrl(String videoUrl) { this.videoUrl = videoUrl; }

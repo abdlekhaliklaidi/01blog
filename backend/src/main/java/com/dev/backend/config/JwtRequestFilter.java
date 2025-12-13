@@ -35,10 +35,11 @@ protected void doFilterInternal(HttpServletRequest request,
     if (path.equals("/users") ||
     path.equals("/users/") ||
     path.startsWith("/users/login") ||
-    path.startsWith("/users/register") || path.startsWith("/users") ||  path.startsWith("/videos/")) {
+    path.startsWith("/users/register") || path.startsWith("/users") || path.startsWith("/videos/") ||
+    path.startsWith("/images/")) { 
     filterChain.doFilter(request, response);
     return;
-}
+    }
 
     final String authorizationHeader = request.getHeader("Authorization");
     String email = null;
