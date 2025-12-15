@@ -127,9 +127,9 @@ button:hover {
 }
 
 .cover-image {
-  width: 100%;
-  height: 200px;
+  width: 24%;
+  height: 376px;
   background: url(https://images.alphacoders.com/137/thumbbig-1378190.webp);
   border-radius: 10px 10px 0 0;
-  margin-bottom: -75px;
+  margin-bottom: -15px;
 }
