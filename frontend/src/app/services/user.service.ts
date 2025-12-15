@@ -46,4 +46,11 @@ export class UserService {
   unfollowUser(followerId: number, followingId: number): Observable<any> {
     return this.http.delete(`http://localhost:8080/followers/${followerId}/${followingId}`);
   }
+
+  isFollowing(followerId: number, followingId: number) {
+  return this.http.get<boolean>(
+    `/api/follow/is-following?followerId=${followerId}&followingId=${followingId}`
+  );
+}
+
 }

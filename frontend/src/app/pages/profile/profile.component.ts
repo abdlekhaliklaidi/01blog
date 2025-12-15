@@ -27,6 +27,8 @@ export class ProfileComponent implements OnInit {
   showCreatePostModal = false;
   newPostContent = '';
 
+  isFollowingUser = false;
+
   constructor(
     private userService: UserService,
     private route: ActivatedRoute,
@@ -50,13 +52,18 @@ export class ProfileComponent implements OnInit {
        };
             this.loadFollowers(user.id);
             this.loadFollowing(user.id);
-          },
-          error: err => console.error('Error loading user by id:', err)
-        });
-      },
-      error: err => console.error('Error loading current user:', err)
-    });
-  }
+            if (this.currentUser.id !== this.userInfo.id) {
+            this.userService
+              .isFollowing(this.currentUser.id, this.userInfo.id)
+              .subscribe(res => this.isFollowingUser = res);
+          }
+        },
+        error: err => console.error('Error loading user by id:', err)
+      });
+    },
+    error: err => console.error('Error loading current user:', err)
+  });
+}
 
   loadFollowers(userId: number) {
     this.userService.getFollowers(userId).subscribe({
@@ -98,18 +105,22 @@ export class ProfileComponent implements OnInit {
   }
 
   toggleFollow() {
-    if (!this.userInfo || !this.currentUser) return;
+  if (!this.userInfo || !this.currentUser) return;
 
-    if (this.isFollowing(this.userInfo)) {
-      this.userService.unfollowUser(this.currentUser.id, this.userInfo.id).subscribe(() => {
-        this.loadFollowing(this.currentUser.id);
+  if (this.isFollowingUser) {
+    this.userService
+      .unfollowUser(this.currentUser.id, this.userInfo.id)
+      .subscribe(() => {
+        this.isFollowingUser = false;
       });
-    } else {
-      this.userService.followUser(this.currentUser.id, this.userInfo.id).subscribe(() => {
-        this.loadFollowing(this.currentUser.id);
+  } else {
+    this.userService
+      .followUser(this.currentUser.id, this.userInfo.id)
+      .subscribe(() => {
+        this.isFollowingUser = true;
       });
-    }
   }
+}
 
   isFollowing(user: User): boolean {
     if (!this.following || !user) return false;

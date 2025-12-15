@@ -6,14 +6,21 @@
     <img [src]="userInfo?.avatar" alt="User Avatar" class="avatar">
     <h2>{{ userInfo?.name }}</h2>
     <p class="bio">{{ userInfo?.bio }}</p>
+    
+    <button
+    *ngIf="!isCurrentUserProfile()"
+    class="follow-btn"
+    (click)="toggleFollow()">
+    {{ isFollowingUser ? 'Unfollow' : 'Follow' }}
+    </button>
 
     <button *ngIf="isCurrentUserProfile()" (click)="openEditProfile()">Edit Profile</button>
 
     <button class="create-post-btn" *ngIf="isCurrentUserProfile()" (click)="openCreatePost()">Create Post</button>
 
-    <button *ngIf="!isCurrentUserProfile()" (click)="toggleFollow()">
+    <!-- <button *ngIf="!isCurrentUserProfile()" (click)="toggleFollow()">
       {{ isFollowing() ? 'Following' : 'Follow' }}
-    </button>
+    </button> -->
   </div>
 
   <div class="profile-stats">

@@ -36,7 +36,8 @@
       <ul>
         <li *ngFor="let follower of followers">
           <!-- <img [src]="follower.avatar" alt="{{ follower.name }}"> -->
-          <img [src]="follower.avatar || 'https://i.pravatar.cc/40'" alt="{{ follower.name }}">
+          <img [src]="follower.avatar || 'https://i.pravatar.cc/100?img=12'" alt="{{ follower.name }}">
+          <!-- https://i.pravatar.cc/40 -->
           <div class="follower-info">
             <span>{{ follower.name }}</span>
             <div class="actions">
@@ -53,7 +54,7 @@
       <h3>Following</h3>
       <ul>
         <li *ngFor="let f of following">
-          <img [src]="f.avatar" alt="{{ f.name }}">
+          <img [src]="f?.avatar || 'https://i.pravatar.cc/100?img=12'" alt="{{ f.name }}">
           <div class="follower-info">
             <span>{{ f.name }}</span>
             <button class="follow-btn" [class.unfollow]="f.following" (click)="toggleFollow(f)">
@@ -137,8 +138,14 @@
   <h3>Discover Users</h3>
   <ul>
     <li *ngFor="let user of allUsers">
-      <img [src]="user.avatar || 'https://i.pravatar.cc/40'" alt="{{ user.firstname }}">
-      <span>{{ user.firstname }} {{ user.lastname }}</span>
+      <img [src]="user.avatar || 'https://i.pravatar.cc/100?img=12'" alt="{{ user.firstname }}">
+      <!-- <span>{{ user.firstname }} {{ user.lastname }}</span> -->
+      <span
+      class="user-name"
+      [routerLink]="['/profile', user.id]"
+      >
+      {{ user.firstname }} {{ user.lastname }}
+      </span>
       <button class="follow-btn" [class.unfollow]="user.following" (click)="toggleFollow(user)">
         {{ user.following ? 'Unfollow' : 'Follow' }}
       </button>

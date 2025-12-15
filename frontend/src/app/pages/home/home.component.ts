@@ -94,24 +94,7 @@ this.userService.getMe().subscribe({
     error: (err) => console.error('Error loading users:', err)
   });
 }   
-    // this.userInfo = {
-    //   id: 1,
-    //   name: 'Ali Student',
-    //   bio: 'Full Stack Developer | Angular & Spring Boot',
-    //   avatar: 'https://i.pravatar.cc/100?img=12'
-    // };
-
-    
-    // this.followers = [
-    //   { id: 1, name: 'Amina Dev', avatar: 'https://i.pravatar.cc/40?img=1', status: 'pending' },
-    //   { id: 2, name: 'Youssef Code', avatar: 'https://i.pravatar.cc/40?img=2', status: 'pending' },
-    //   { id: 3, name: 'Hassan UI', avatar: 'https://i.pravatar.cc/40?img=3', status: 'accepted' }
-    // ];
-
-    // this.following = [
-    //   { id: 1, name: 'Sara Dev', avatar: 'https://i.pravatar.cc/40?img=4', following: true },
-    //   { id: 2, name: 'Omar JS', avatar: 'https://i.pravatar.cc/40?img=5', following: false }
-    // ];
+  
   loadPosts() {
   this.postService.getFeed(this.userInfo.id).subscribe({
   next: (data) => {
@@ -125,24 +108,7 @@ this.userService.getMe().subscribe({
     }
   });
 }
-  // loadPosts() {
-  //   this.postService.getAllPosts().subscribe({
-  //     next: (data) => {
-  //       this.posts = (data || []).map((p: any) => ({
-  //         ...p,
-  //         likes: p.likes || [],
-  //         comments: p.comments || [],
-  //         showComments: false,
-  //         newComment: ''
-  //       }));
-  //     },
-  //     error: (err) => {
-  //       console.error('Error loading posts:', err);
-  //       this.posts = [];
-  //     }
-  //   });
-  // }
-
+  
   toggleLike(post: any) {
     this.postService.toggleLike(post.id).subscribe({
       next: (count: number) => {
@@ -216,43 +182,6 @@ createPost() {
     error: (err) => console.error('Error creating post', err)
   });
 }
-
-  // onFileSelected(event: Event) {
-  //   const input = event.target as HTMLInputElement;
-  //   if (input.files && input.files.length > 0) {
-  //     this.selectedFile = input.files[0];
-  //   }
-  // }
-
-  // createPost() {
-  //   if (!this.newPost.title.trim() || !this.newPost.content.trim()) {
-  //     alert('Please enter title and content');
-  //     return;
-  //   }
-
-  //   const formData = new FormData();
-  //   formData.append('title', this.newPost.title.trim());
-  //   formData.append('content', this.newPost.content.trim());
-
-  //   if (this.selectedFile) {
-  //     formData.append('image', this.selectedFile);
-  //   }
-
-  //   this.postService.createPost(formData).subscribe({
-  //     next: (created) => {
-  //       this.posts.unshift({
-  //         ...created,
-  //         likes: created.likes || [],
-  //         comments: created.comments || [],
-  //         showComments: false,
-  //         newComment: '',
-  //         imageUrl: created.imageUrl
-  //       });
-  //       this.closeCreatePost();
-  //     },
-  //     error: (err) => console.error('Error creating post', err)
-  //   });
-  // }
 
   getFollowers(userId: number) {
     this.postService.getFollowers(userId).subscribe({
