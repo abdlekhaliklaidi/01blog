@@ -1,13 +1,15 @@
 <a routerLink="/home" class="back">⬅ Back to Home</a>
-<div class="profile-page">
+
+<div class="profile-page" *ngIf="userInfo">
+  <div class="cover-image"></div>
   <div class="profile-header">
-    <img [src]="userInfo.avatar" alt="User Avatar" class="avatar">
-    <h2>{{ userInfo.name }}</h2>
-    <p class="bio">{{ userInfo.bio }}</p>
+    <img [src]="userInfo?.avatar" alt="User Avatar" class="avatar">
+    <h2>{{ userInfo?.name }}</h2>
+    <p class="bio">{{ userInfo?.bio }}</p>
 
-    <button (click)="openEditProfile()">Edit Profile</button>
-    <button class="create-post-btn" (click)="openCreatePost()">Create Post</button>
+    <button *ngIf="isCurrentUserProfile()" (click)="openEditProfile()">Edit Profile</button>
 
+    <button class="create-post-btn" *ngIf="isCurrentUserProfile()" (click)="openCreatePost()">Create Post</button>
 
     <button *ngIf="!isCurrentUserProfile()" (click)="toggleFollow()">
       {{ isFollowing() ? 'Following' : 'Follow' }}
@@ -25,7 +27,6 @@
     </div>
   </div>
 
-  
   <div class="modal-overlay" *ngIf="showEditProfileModal">
     <div class="modal">
       <h3>Edit Profile</h3>
@@ -38,17 +39,18 @@
     </div>
   </div>
 
-<div class="modal-overlay" *ngIf="showCreatePostModal">
-  <div class="modal">
-    <h3>Create New Post</h3>
-    <textarea [(ngModel)]="newPostContent" placeholder="What's on your mind?"></textarea>
-
-    <div class="modal-actions">
-      <button (click)="savePost()">Post</button>
-      <button (click)="showCreatePostModal = false">Cancel</button>
+  <div class="modal-overlay" *ngIf="showCreatePostModal">
+    <div class="modal">
+      <h3>Create New Post</h3>
+      <textarea [(ngModel)]="newPostContent" placeholder="What's on your mind?"></textarea>
+      <div class="modal-actions">
+        <button (click)="savePost()">Post</button>
+        <button (click)="showCreatePostModal = false">Cancel</button>
+      </div>
     </div>
   </div>
 </div>
 
-
+<div *ngIf="!userInfo">
+  Loading profile...
 </div>

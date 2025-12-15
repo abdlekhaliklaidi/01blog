@@ -20,6 +20,9 @@
     </div>
     <div class="user-menu" *ngIf="showUserMenu">
       <p>{{ userInfo?.name }}</p>
+      <button type="button" (click)="toggleTheme()">
+      {{ isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode' }}
+      </button>
       <button type="button" routerLink="/profile">Profile</button>
       <button type="button" (click)="logout()">Logout</button>
     </div>

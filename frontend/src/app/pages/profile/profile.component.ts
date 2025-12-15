@@ -1,57 +1,83 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { UserService, User } from '../../services/user.service';
+import { HttpClient } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-
-interface User {
-  id: number;
-  name: string;
-  avatar: string;
-  bio?: string;
-}
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
-  imports: [RouterModule],
-  styleUrls: ['./profile.component.css']
+  styleUrls: ['./profile.component.css'],
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterModule]
 })
 export class ProfileComponent implements OnInit {
+  currentUser!: User;
+  userInfo!: User;
 
-  currentUser: User = {
-    id: 1,
-    name: 'John Doe',
-    avatar: 'https://i.pravatar.cc/100?img=12',
-    bio: 'This is my bio.'
-  };
-
-  userInfo: User = {
-    id: 2,
-    name: 'Jane Smith',
-    avatar: 'https://i.pravatar.cc/150?img=2',
-    bio: 'Hello there!'
-  };
-
-  followers: User[] = [
-    { id: 3, name: 'Bob Johnson', avatar: 'https://i.pravatar.cc/40?img=3' }
-  ];
-
-  following: User[] = [
-    { id: 1, name: 'John Doe', avatar: 'https://i.pravatar.cc/40?img=1' }
-  ];
+  followers: User[] = [];
+  following: User[] = [];
 
   showEditProfileModal = false;
   editName = '';
   editBio = '';
 
-  constructor() { }
+  showCreatePostModal = false;
+  newPostContent = '';
 
-  ngOnInit(): void { }
+  constructor(
+    private userService: UserService,
+    private route: ActivatedRoute,
+    private http: HttpClient
+  ) {}
+
+  ngOnInit(): void {
+    this.userService.getMe().subscribe({
+      next: currentUser => {
+        this.currentUser = currentUser;
+
+        const userId = Number(this.route.snapshot.paramMap.get('id')) || this.currentUser.id;
+
+        this.userService.getUserById(userId).subscribe({
+          next: user => {
+            this.userInfo = {
+            id: user.id,
+            name: "Wilcom" + ' ' + user.firstname + ' ' + user.lastname,
+            bio: 'Zone01 Oujda',
+            avatar: 'https://i.pravatar.cc/100?img=12'
+       };
+            this.loadFollowers(user.id);
+            this.loadFollowing(user.id);
+          },
+          error: err => console.error('Error loading user by id:', err)
+        });
+      },
+      error: err => console.error('Error loading current user:', err)
+    });
+  }
+
+  loadFollowers(userId: number) {
+    this.userService.getFollowers(userId).subscribe({
+      next: data => this.followers = data,
+      error: err => console.error('Error loading followers:', err)
+    });
+  }
+
+  loadFollowing(userId: number) {
+    this.userService.getFollowing(userId).subscribe({
+      next: data => this.following = data,
+      error: err => console.error('Error loading following:', err)
+    });
+  }
 
   isCurrentUserProfile(): boolean {
-    return this.currentUser.id === this.userInfo.id;
+    return this.currentUser && this.userInfo && this.currentUser.id === this.userInfo.id;
   }
 
   openEditProfile() {
-    this.editName = this.userInfo.name;
+    this.editName = this.userInfo.name || '';
     this.editBio = this.userInfo.bio || '';
     this.showEditProfileModal = true;
   }
@@ -61,28 +87,32 @@ export class ProfileComponent implements OnInit {
     this.userInfo.bio = this.editBio;
     this.showEditProfileModal = false;
   }
-  
-  showCreatePostModal = false;
-  newPostContent = '';
 
-openCreatePost() {
-  this.showCreatePostModal = true;
-}
+  openCreatePost() {
+    this.showCreatePostModal = true;
+  }
 
-savePost() {
-  console.log("New Post:", this.newPostContent);
-  this.showCreatePostModal = false;
-}
+  savePost() {
+    console.log("New Post:", this.newPostContent);
+    this.showCreatePostModal = false;
+  }
 
   toggleFollow() {
-    if (this.isFollowing()) {
-      this.following = this.following.filter(u => u.id !== this.userInfo.id);
+    if (!this.userInfo || !this.currentUser) return;
+
+    if (this.isFollowing(this.userInfo)) {
+      this.userService.unfollowUser(this.currentUser.id, this.userInfo.id).subscribe(() => {
+        this.loadFollowing(this.currentUser.id);
+      });
     } else {
-      this.following.push(this.userInfo);
+      this.userService.followUser(this.currentUser.id, this.userInfo.id).subscribe(() => {
+        this.loadFollowing(this.currentUser.id);
+      });
     }
   }
 
-  isFollowing(): boolean {
-    return this.following.some(u => u.id === this.userInfo.id);
+  isFollowing(user: User): boolean {
+    if (!this.following || !user) return false;
+    return this.following.some(f => f.id === user.id);
   }
 }

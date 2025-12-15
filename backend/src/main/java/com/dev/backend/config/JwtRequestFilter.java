@@ -30,12 +30,17 @@ protected void doFilterInternal(HttpServletRequest request,
                                 HttpServletResponse response,
                                 FilterChain filterChain) throws ServletException, IOException {
 
+    if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+    filterChain.doFilter(request, response);
+    return;
+    }
+    
     String path = request.getServletPath();
     System.out.println("Request Path: " + path);
     if (path.equals("/users") ||
     path.equals("/users/") ||
     path.startsWith("/users/login") ||
-    path.startsWith("/users/register") || path.startsWith("/users") || path.startsWith("/videos/") ||
+    path.startsWith("/users/register") || path.startsWith("/videos/") ||
     path.startsWith("/images/")) { 
     filterChain.doFilter(request, response);
     return;

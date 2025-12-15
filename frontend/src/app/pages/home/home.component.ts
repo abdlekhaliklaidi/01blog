@@ -24,6 +24,7 @@ export class HomeComponent implements OnInit {
   userInfo: any;
   showUserMenu = false;
   showCreatePost = false;
+  isDarkMode = false;
 
   newPost = { title: '', content: '' };
   selectedFile: File | null = null;
@@ -41,7 +42,12 @@ export class HomeComponent implements OnInit {
   ) {}
   
   ngOnInit() {
-  this.userService.getMe().subscribe({
+    console.log('ngOnInit started');
+  const savedTheme = localStorage.getItem('theme');
+  this.isDarkMode = savedTheme === 'dark';
+  document.body.classList.toggle('dark-mode', this.isDarkMode);
+  console.log('Theme applied:', this.isDarkMode);
+this.userService.getMe().subscribe({
     next: (user) => {
       this.userInfo = {
         id: user.id,
@@ -61,6 +67,18 @@ export class HomeComponent implements OnInit {
       this.router.navigate(['/login']);
     }
   });
+}
+    
+  toggleTheme() {
+  this.isDarkMode = !this.isDarkMode;
+
+  if (this.isDarkMode) {
+    document.body.classList.add('dark-mode');
+    localStorage.setItem('theme', 'dark');
+  } else {
+    document.body.classList.remove('dark-mode');
+    localStorage.setItem('theme', 'light');
+  }
 }
 
   loadAllUsers() {
