@@ -210,7 +210,7 @@ createPost() {
 
   toggleFollow(person: any) {
    if (this.userInfo.id === person.id) {
-    console.error("No pas vous suivre vous-même.");
+    console.error("No pas vous suivre vous-mÃªme.");
     return;
   }
   

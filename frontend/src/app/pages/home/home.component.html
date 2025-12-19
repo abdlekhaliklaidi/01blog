@@ -68,7 +68,7 @@
 
   <main class="feed">
     <div class="feed-header">
-      <button class="create-post-btn" (click)="openCreatePost()">New Post</button>
+      <!-- <button class="create-post-btn" (click)="openCreatePost()">New Post</button> -->
     </div>
 
     <div *ngIf="posts.length === 0" class="no-posts">
@@ -79,12 +79,19 @@
 
       <div class="post-header">
         <strong>{{ post.authorFirstName || 'Unknown' }}</strong>
-      </div>
-
-      <button class="btn btn-danger" (click)="openReportModal(post)">
+       <div class="post-header-right">
+      <!-- <button class="btn btn-danger" (click)="openReportModal(post)">
         Report
-      </button>
+      </button> -->
 
+      <div class="more-options">
+  <button class="more-btn" (click)="post.showOptions = !post.showOptions">⋮</button>
+  <div class="options-menu" *ngIf="post.showOptions">
+    <button class="report-option" (click)="openReportModal(post)">Report</button>
+  </div>
+</div>
+</div>  
+</div>  
       <h3>{{ post.title }}</h3>
 
       <img *ngIf="post.imageUrl" [src]="post.imageUrl">
