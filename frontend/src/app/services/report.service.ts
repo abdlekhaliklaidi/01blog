@@ -32,4 +32,9 @@ export class ReportService {
     
     return this.http.post<any>(`${this.baseUrl}/post/${report.post.id}`, report);
   }
+  
+  reportUser(userId: number, report: any) {
+  return this.http.post(`http://localhost:8080/reports/user/${userId}`, report);
+ }
+
 }

@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { ReportService } from '../../services/report.service';
 
 @Component({
   selector: 'app-profile',
@@ -26,11 +27,15 @@ export class ProfileComponent implements OnInit {
 
   showCreatePostModal = false;
   newPostContent = '';
+  
+  showReportUserModal = false;
+  reportUserReason = '';
 
   isFollowingUser = false;
 
   constructor(
     private userService: UserService,
+    private reportService: ReportService,
     private route: ActivatedRoute,
     private http: HttpClient
   ) {}
@@ -126,4 +131,34 @@ export class ProfileComponent implements OnInit {
     if (!this.following || !user) return false;
     return this.following.some(f => f.id === user.id);
   }
+
+  openReportUserModal() {
+  this.showReportUserModal = true;
+}
+
+  closeReportUserModal() {
+  this.showReportUserModal = false;
+  this.reportUserReason = '';
+}
+  
+submitReportUser() {
+  if (!this.reportUserReason.trim()) {
+    alert('Please enter a reason for reporting.');
+    return;
+  }
+
+  const report = {
+    reason: this.reportUserReason,
+    reporter: { id: this.currentUser.id }
+  };
+
+  this.reportService.reportUser(this.userInfo.id, report).subscribe({
+    next: () => {
+      alert('Report submitted successfully!');
+      this.closeReportUserModal();
+    },
+    error: err => console.error('Error reporting user:', err)
+  });
+}
+
 }

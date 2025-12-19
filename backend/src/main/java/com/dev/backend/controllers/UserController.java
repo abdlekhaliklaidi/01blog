@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.dev.backend.util.JwtUtil;
 import com.dev.backend.dto.UserDTO;
+import java.util.stream.Collectors;
 
 import java.util.List;
 
@@ -26,11 +27,19 @@ public class UserController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    // @GetMapping
+    // public List<User> getUsers() {
+    //     return userRepository.findAll();
+    // }
+
     @GetMapping
-    public List<User> getUsers() {
-        return userRepository.findAll();
+    public List<UserDTO> getUsers() {
+    List<User> users = userRepository.findAll();
+    return users.stream()
+                .map(u -> new UserDTO(u.getId(), u.getFirstname(), u.getLastname(), u.getEmail(), u.getAvatar()))
+                .collect(Collectors.toList());
     }
-    
+
     @GetMapping("/me")
     public ResponseEntity<UserDTO> getCurrentUser(@RequestHeader("Authorization") String authHeader) {
     String token = authHeader.substring(7);

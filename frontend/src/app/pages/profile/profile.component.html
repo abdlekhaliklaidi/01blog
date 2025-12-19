@@ -6,7 +6,7 @@
     <img [src]="userInfo?.avatar" alt="User Avatar" class="avatar">
     <h2>{{ userInfo?.name }}</h2>
     <p class="bio">{{ userInfo?.bio }}</p>
-    
+    <div class="profile-actions">
     <button
     *ngIf="!isCurrentUserProfile()"
     class="follow-btn"
@@ -17,6 +17,14 @@
     <button *ngIf="isCurrentUserProfile()" (click)="openEditProfile()">Edit Profile</button>
 
     <button class="create-post-btn" *ngIf="isCurrentUserProfile()" (click)="openCreatePost()">Create Post</button>
+
+    <button
+    *ngIf="!isCurrentUserProfile()"
+    class="report-btn"
+    (click)="openReportUserModal()">
+    Report User
+    </button>
+  </div>
 
     <!-- <button *ngIf="!isCurrentUserProfile()" (click)="toggleFollow()">
       {{ isFollowing() ? 'Following' : 'Follow' }}
@@ -54,6 +62,19 @@
         <button (click)="savePost()">Post</button>
         <button (click)="showCreatePostModal = false">Cancel</button>
       </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" *ngIf="showReportUserModal">
+  <div class="modal">
+    <h3>Report User</h3>
+    <textarea [(ngModel)]="reportUserReason"
+              placeholder="Why are you reporting this user?"
+              rows="4"
+              class="form-control"></textarea>
+    <div class="modal-actions">
+      <button (click)="closeReportUserModal()">Cancel</button>
+      <button (click)="submitReportUser()">Submit Report</button>
     </div>
   </div>
 </div>

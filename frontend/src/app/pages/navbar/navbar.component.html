@@ -1,0 +1,33 @@
+<nav class="navbar">
+  <div class="nav-left">
+    <h2 class="logo">01Blog</h2>
+    <button class="nav-btn" routerLink="/">🏠 Home</button>
+    <button class="nav-btn" routerLink="/notifications">🔔 Notifications</button>
+
+    <button *ngIf="auth.isAdmin()"
+            routerLink="/admin/reports-admin"
+            class="nav-btn">
+      🚨 Reports
+    </button>
+  </div>
+
+  <div class="nav-center">
+    <input type="text" placeholder="Search..." class="search-input" />
+  </div>
+
+  <div class="nav-right">
+    <div class="user-avatar" (click)="toggleUserMenu()">
+      <img src="https://i.pravatar.cc/100?img=12" alt="avatar">
+    </div>
+
+    <div class="user-menu" *ngIf="showUserMenu">
+      <p>{{ userInfo?.name }}</p>
+      <!-- <p>{{ userEmail }}</p> -->
+      <button (click)="toggleTheme()">
+        {{ isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode' }}
+      </button>
+      <button routerLink="/profile">Profile</button>
+      <button (click)="logout()">Logout</button>
+    </div>
+  </div>
+</nav>

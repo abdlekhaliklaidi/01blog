@@ -49,8 +49,11 @@ export class UserService {
 
   isFollowing(followerId: number, followingId: number) {
   return this.http.get<boolean>(
-    `/api/follow/is-following?followerId=${followerId}&followingId=${followingId}`
+    `http://localhost:8080/followers/is-following?followerId=${followerId}&followingId=${followingId}`
   );
+}
+  reportUser(userId: number, report: any) {
+  return this.http.post(`http://localhost:8080/reports/user/${userId}`, report);
 }
 
 }
