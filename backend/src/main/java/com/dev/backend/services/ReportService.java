@@ -6,6 +6,7 @@ import com.dev.backend.entities.User;
 import com.dev.backend.repositories.ReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.dev.backend.repositories.UserRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,6 +17,9 @@ public class ReportService {
     @Autowired
     private ReportRepository reportRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     public Report reportPost(Long postId, Report report) {
         Post post = new Post();
         post.setId(postId);
@@ -23,11 +27,18 @@ public class ReportService {
         return reportRepository.save(report);
     }
 
+    // public Report reportUser(Long userId, Report report) {
+    //     User user = new User();
+    //     user.setId(userId);
+    //     report.setReportedUser(user);
+    //     return reportRepository.save(report);
+    // }
+
     public Report reportUser(Long userId, Report report) {
-        User user = new User();
-        user.setId(userId);
-        report.setReportedUser(user);
-        return reportRepository.save(report);
+    User user = userRepository.findById(userId)
+                  .orElseThrow(() -> new RuntimeException("User not found"));
+    report.setReportedUser(user);
+    return reportRepository.save(report);
     }
 
     public List<Report> getPostReports() {

@@ -3,7 +3,7 @@
   <h1>Admin Dashboard</h1>
 
   <section class="table-section">
-    <h2>❌ Post Reports</h2>
+    <h2> Post Reports</h2>
 
     <table *ngIf="postReports.length > 0" class="styled-table">
       <thead>
@@ -61,6 +61,13 @@
           <td>{{ report.reporter?.name }}</td>
           <td>
             <button class="btn btn-warning" (click)="banUser(report.reportedUser.id)">Ban User</button>
+            <!-- <button 
+              class="btn btn-warning" 
+              (click)="report.reportedUser ? banUser(report.reportedUser.id) : null" 
+              [disabled]="!report.reportedUser">
+              Ban User
+            </button> -->
+
             <button class="btn btn-danger" (click)="deleteReport(report.id)">Delete Report</button>
           </td>
         </tr>

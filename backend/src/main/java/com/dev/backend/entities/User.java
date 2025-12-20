@@ -23,6 +23,8 @@ public class User {
 
     private String avatar;
 
+    private boolean banned = false;
+
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference(value = "user-post")
     private List<Post> posts;
@@ -58,6 +60,14 @@ public class User {
     
     public String getRole() {
     return role;
+    }
+    
+    public boolean isBanned() {
+    return banned;
+    }
+
+    public void setBanned(boolean banned) {
+    this.banned = banned;
     }
 
     public void setRole(String role) {

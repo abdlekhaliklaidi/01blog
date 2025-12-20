@@ -44,6 +44,14 @@ public class FollowerController {
                 .map(f -> new FollowerDTO(f, userId, true))
                 .collect(Collectors.toList());
     }
+    
+    @GetMapping("/is-following")
+    public boolean isFollowing(
+        @RequestParam Long followerId,
+        @RequestParam Long followingId
+    ) {
+    return followerService.isFollowing(followerId, followingId);
+   }
 
     @PostMapping
     public ResponseEntity<?> followUser(@RequestBody Follower follower) {

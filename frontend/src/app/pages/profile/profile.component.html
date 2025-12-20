@@ -55,15 +55,28 @@
   </div>
 
   <div class="modal-overlay" *ngIf="showCreatePostModal">
-    <div class="modal">
-      <h3>Create New Post</h3>
-      <textarea [(ngModel)]="newPostContent" placeholder="What's on your mind?"></textarea>
-      <div class="modal-actions">
-        <button (click)="savePost()">Post</button>
-        <button (click)="showCreatePostModal = false">Cancel</button>
-      </div>
+  <div class="modal">
+    <h3>Create a Post</h3>
+
+    <input type="text"
+           [(ngModel)]="newPost.title"
+           placeholder="Title" />
+
+    <textarea [(ngModel)]="newPost.content"
+              placeholder="Content"></textarea>
+
+    <input type="file"
+           accept="image/*,video/*"
+           (change)="onFileSelected($event)" />
+
+    <div class="modal-actions">
+      <button type="button" (click)="createPost()">Publish</button>
+      <button type="button" (click)="showCreatePostModal = false">
+        Cancel
+      </button>
     </div>
   </div>
+</div>
 
   <div class="modal-overlay" *ngIf="showReportUserModal">
   <div class="modal">

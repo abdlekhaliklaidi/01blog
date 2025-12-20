@@ -10,8 +10,12 @@ export class AdminService {
 
   constructor(private http: HttpClient) {}
 
+  // deletePost(postId: number) {
+  //   return this.http.delete(`${this.api}/delete-post/${postId}`);
+  // }
+  
   deletePost(postId: number) {
-    return this.http.delete(`${this.api}/delete-post/${postId}`);
+    return this.http.delete(`http://localhost:8080/admin/delete-post/${postId}`);
   }
 
   banUser(userId: number) {

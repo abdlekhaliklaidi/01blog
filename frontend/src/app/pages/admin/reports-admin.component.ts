@@ -90,6 +90,20 @@ export class ReportsAdminComponent implements OnInit {
   });
 }
 
+  banUser(userId: number) {
+  if (confirm('Are you sure you want to ban this user?')) {
+    this.adminService.banUser(userId).subscribe({
+      next: () => {
+        alert('User banned successfully');
+        this.loadReports();
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Error banning user');
+      }
+    });
+  }
+}
   takeAction(report: any) {
     alert(`Taking action on report ${report.id}\nReason: ${report.reason}`);
   }

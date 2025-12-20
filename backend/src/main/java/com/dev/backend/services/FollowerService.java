@@ -80,6 +80,11 @@ public class FollowerService {
     public Follower findByFollowerIdAndFollowingId(Long followerId, Long followingId) {
         return followerRepository.findByFollowerIdAndFollowingId(followerId, followingId);
     }
+    
+    public boolean isFollowing(Long followerId, Long followingId) {
+    return followerRepository
+            .findByFollowerIdAndFollowingId(followerId, followingId) != null;
+    }
 
     public void unfollowUser(Long followerId, Long followingId) {
         Follower follower = followerRepository.findByFollowerIdAndFollowingId(followerId, followingId);

@@ -26,7 +26,13 @@ export class ProfileComponent implements OnInit {
   editBio = '';
 
   showCreatePostModal = false;
-  newPostContent = '';
+  // newPostContent = '';
+
+  newPost = {
+  title: '',
+  content: '',
+  file: null as File | null
+  };
   
   showReportUserModal = false;
   reportUserReason = '';
@@ -51,7 +57,7 @@ export class ProfileComponent implements OnInit {
           next: user => {
             this.userInfo = {
             id: user.id,
-            name: "Wilcom" + ' ' + user.firstname + ' ' + user.lastname,
+            name: user.firstname + ' ' + user.lastname,
             bio: 'Zone01 Oujda',
             avatar: 'https://i.pravatar.cc/100?img=12'
        };
@@ -104,10 +110,20 @@ export class ProfileComponent implements OnInit {
     this.showCreatePostModal = true;
   }
 
-  savePost() {
-    console.log("New Post:", this.newPostContent);
-    this.showCreatePostModal = false;
+  onFileSelected(event: any) {
+  this.newPost.file = event.target.files[0];
   }
+
+  createPost() {
+  console.log('New Post:', this.newPost);
+  this.newPost = {
+    title: '',
+    content: '',
+    file: null
+  };
+
+  this.showCreatePostModal = false;
+}
 
   toggleFollow() {
   if (!this.userInfo || !this.currentUser) return;
