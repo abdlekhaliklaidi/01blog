@@ -18,6 +18,7 @@ export class ReportsAdminComponent implements OnInit {
 
   postReports: any[] = [];
   userReports: any[] = [];
+  showTable: 'post' | 'user' = 'post';
   isLoading = true;
 
   constructor(
@@ -96,6 +97,9 @@ export class ReportsAdminComponent implements OnInit {
       next: () => {
         alert('User banned successfully');
         this.loadReports();
+        // const user = this.userReports.find(u => u.reportedUserId === userId);
+        // if (user) user.isBanned = true;
+        // alert('User banned successfully');
       },
       error: (err) => {
         console.error(err);
@@ -104,6 +108,22 @@ export class ReportsAdminComponent implements OnInit {
     });
   }
 }
+
+  unbanUser(userId: number) {
+  if (confirm('Êtes-vous sûr de vouloir débloquer cet utilisateur ?')) {
+    this.adminService.unbanUser(userId).subscribe({
+      next: () => {
+        alert('Utilisateur débloqué avec succès');
+        this.loadReports();
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Erreur lors du déblocage');
+      }
+    });
+  }
+}
+
   takeAction(report: any) {
     alert(`Taking action on report ${report.id}\nReason: ${report.reason}`);
   }

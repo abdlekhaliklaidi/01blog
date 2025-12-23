@@ -211,13 +211,21 @@
   margin-bottom: 0.5rem;
   cursor: pointer;
   font-weight: 500;
-  width: 61%;
+  width: 50%;
 }
 
 .create-post-btn {
   /* background-color: #667eea; */
-  color: black;
-  background-color: #AAC0E1;
+  /* color: black;
+  background-color: #AAC0E1; */
+  padding: 8px 16px;
+  border: 1px solid #0E2F76;
+  background-color: #fff;
+  color: #0E2F76;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .create-post-btn:hover {
@@ -225,8 +233,16 @@
 }
 
 .logout-btn {
-  background-color: #0E2F76;
-  color: white;
+  /* background-color: #0E2F76;
+  color: white; */
+  padding: 8px 16px;
+  border: 1px solid #0E2F76;
+  background-color: #fff;
+  color: #0E2F76;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .logout-btn:hover {

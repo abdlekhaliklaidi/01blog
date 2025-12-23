@@ -27,12 +27,19 @@ export class ReportService {
   return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 
-  createReport(report: any): Observable<any> {
-    console.log(report);
+  // createReport(report: any): Observable<any> {
+  //   console.log(report);
     
-    return this.http.post<any>(`${this.baseUrl}/post/${report.post.id}`, report);
-  }
+  //   return this.http.post<any>(`${this.baseUrl}/post/${report.post.id}`, report);
+  // }
   
+  createReport(report: any, reporterId: number): Observable<any> {
+  return this.http.post<any>(
+    `${this.baseUrl}/post/${report.post.id}/reporter/${reporterId}`, 
+    report
+  );
+}
+
   reportUser(userId: number, report: any) {
   return this.http.post(`http://localhost:8080/reports/user/${userId}`, report);
  }

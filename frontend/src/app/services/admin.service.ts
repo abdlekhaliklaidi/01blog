@@ -21,4 +21,9 @@ export class AdminService {
   banUser(userId: number) {
     return this.http.post(`${this.api}/ban-user/${userId}`, {});
   }
+
+  unbanUser(userId: number) {
+  return this.http.post(`http://localhost:8080/admin/unban-user/${userId}`, {});
+  }
+
 }

@@ -11,6 +11,8 @@ import com.dev.backend.entities.User;
 import com.dev.backend.repositories.UserRepository;
 
 import com.dev.backend.services.PostService;
+import com.dev.backend.services.ReportService;
+import com.dev.backend.services.AdminService;
 
 @RestController
 @RequestMapping("/admin")
@@ -23,17 +25,23 @@ public class AdminController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private AdminService adminService;
 
     @DeleteMapping("/delete-post/{postId}")
     public void deletePost(@PathVariable Long postId) {
         postService.deletePost(postId);
     }
 
-    @PostMapping("/ban-user/{userId}")
-    public User banUser(@PathVariable Long userId) {
-        User user = userRepository.findById(userId)
-                      .orElseThrow(() -> new RuntimeException("User not found"));
-        user.setBanned(true);
-        return userRepository.save(user);
+    @PostMapping("/ban-user/{id}")
+    public ResponseEntity<Void> banUser(@PathVariable Long id) {
+    adminService.banUser(id);
+    return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/unban-user/{id}")
+    public ResponseEntity<Void> unbanUser(@PathVariable Long id) {
+    adminService.unbanUser(id);
+    return ResponseEntity.ok().build();
     }
 }

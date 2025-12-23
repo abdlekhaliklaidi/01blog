@@ -84,16 +84,22 @@ this.userService.getMe().subscribe({
   loadAllUsers() {
   this.userService.getAllUsers().subscribe({
     next: (users) => {
-      this.allUsers = users.filter((u: any) => u.id !== this.userInfo.id);
+      this.allUsers = users.filter(u => u.id !== this.userInfo.id);
 
-      this.allUsers = this.allUsers.map((u: any) => {
-        const following = this.following.find(f => f.id === u.id);
-        return { ...u, following: following ? following.following : false };
+      this.postService.getFollowing(this.userInfo.id).subscribe({
+        next: (followingData) => {
+          this.following = followingData;
+          this.allUsers = this.allUsers.map(u => ({
+            ...u,
+            following: !!this.following.find(f => f.id === u.id)
+          }));
+        },
+        error: (err) => console.error('Error fetching following:', err)
       });
     },
     error: (err) => console.error('Error loading users:', err)
   });
-}   
+}
   
   loadPosts() {
   this.postService.getFeed(this.userInfo.id).subscribe({
@@ -209,17 +215,16 @@ createPost() {
   }
 
   toggleFollow(person: any) {
-   if (this.userInfo.id === person.id) {
-    console.error("No pas vous suivre vous-mÃªme.");
-    return;
-  }
-  
+  if (this.userInfo.id === person.id) return;
+
   if (person.following) {
     // UNFOLLOW
     this.postService.unfollowUser(this.userInfo.id, person.id).subscribe({
       next: () => {
         person.following = false;
-      }
+        this.getFollowing(this.userInfo.id);
+      },
+      error: (err) => console.error('Error unfollowing user', err)
     });
   } else {
     // FOLLOW
@@ -230,9 +235,9 @@ createPost() {
     this.postService.followUser(followData).subscribe({
       next: () => {
         person.following = true;
-        console.log("FOLLOW sent:", followData);
+        this.getFollowing(this.userInfo.id);
       },
-      error: (err) => console.error("FOLLOW ERROR:", err)
+      error: (err) => console.error('Error following user', err)
     });
   }
 }
@@ -258,24 +263,25 @@ createPost() {
   }
 
   submitReport() {
-    if (!this.selectedPostId || !this.reportReason.trim()) {
-      alert('Please enter a reason');
-      return;
-    }
-
-    const report = {
-      reason: this.reportReason,
-      user: { id: this.userInfo.id },
-      post: { id: this.selectedPostId }
-    };
-
-    this.reportService.createReport(report).subscribe({
-      next: () => {
-        alert('Report submitted successfully');
-        this.closeReportModal();
-      },
-      error: (err) => console.error('Error submitting report:', err)
-    });
+  if (!this.selectedPostId || !this.reportReason.trim()) {
+    alert('Please enter a reason');
+    return;
   }
+
+  const report = {
+    reason: this.reportReason,
+    post: { id: this.selectedPostId }
+  };
+
+  const reporterId = this.userInfo.id;
+
+  this.reportService.createReport(report, reporterId).subscribe({
+    next: () => {
+      alert('Report submitted successfully');
+      this.closeReportModal();
+    },
+    error: (err) => console.error('Error submitting report:', err)
+  });
+}
 
 }

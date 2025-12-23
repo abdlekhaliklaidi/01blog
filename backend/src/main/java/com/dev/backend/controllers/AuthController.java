@@ -27,29 +27,41 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        try {
-            authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                    loginRequest.getEmail(),
-                    loginRequest.getPassword()
-                )
-            );
-
-            UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getEmail());
-            User user = userDetailsService.findByEmail(loginRequest.getEmail());
-            String token = jwtUtil.generateToken(loginRequest.getEmail() , 
-                                                userDetails.getAuthorities().stream()
-                                                           .findFirst()
-                                                           .map(auth -> auth.getAuthority())
-                                                           .orElse("USER"));
-
-            return ResponseEntity.ok(new AuthResponse(token, user.getId()));
-
-        } catch (BadCredentialsException e) {
+    try {
+        User user = userDetailsService.findByEmail(loginRequest.getEmail());
+        if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                                  .body("Email ou mot de passe invalide");
         }
+
+        if (user.isBanned()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                                 .body("Your account has been banned. Please contact admin.");
+        }
+
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                loginRequest.getEmail(),
+                loginRequest.getPassword()
+            )
+        );
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getEmail());
+        String token = jwtUtil.generateToken(
+            loginRequest.getEmail(), 
+            userDetails.getAuthorities().stream()
+                       .findFirst()
+                       .map(auth -> auth.getAuthority())
+                       .orElse("USER")
+        );
+
+        return ResponseEntity.ok(new AuthResponse(token, user.getId()));
+
+    } catch (BadCredentialsException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                             .body("Email ou mot de passe invalide");
     }
+}
 
     public static class AuthResponse {
         private String token;

@@ -41,13 +41,27 @@ h1 {
 }
 
 .btn-danger {
-  background: #c0392b;
-  color: white;
+  /* background: #c0392b;
+  color: white; */
+  padding: 8px 16px;
+  border: 1px solid #007bff;
+  background-color: #fff;
+  color: #c0392b;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .btn-warning {
-  background: #AAC0E1;
-  color: white;
+  padding: 8px 16px;
+  border: 1px solid #007bff;
+  background-color: #fff;
+  color: #007bff;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .no-data {
@@ -55,6 +69,26 @@ h1 {
   margin-top: 10px;
 }
 
+.banned {
+  background-color: #f8d7da; 
+}
+
+.toggle-buttons {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.toggle-buttons button {
+  padding: 8px 16px;
+  border: 1px solid #007bff;
+  background-color: #fff;
+  color: #007bff;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s, color 0.3s;
+}
 
 
 

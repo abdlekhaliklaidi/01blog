@@ -1,8 +1,14 @@
 <a routerLink="/home" class="back">⬅ Back to Home</a>
 <div class="admin-container">
   <h1>Admin Dashboard</h1>
-
-  <section class="table-section">
+  
+  <div class="toggle-buttons">
+    <button (click)="showTable = 'post'" 
+            [class.active]="showTable === 'post'">Post Reports</button>
+    <button (click)="showTable = 'user'" 
+            [class.active]="showTable === 'user'">User Reports</button>
+  </div>
+  <section class="table-section" *ngIf="showTable === 'post'">
     <h2> Post Reports</h2>
 
     <table *ngIf="postReports.length > 0" class="styled-table">
@@ -22,10 +28,10 @@
         <tr *ngFor="let report of postReports">
           <td>{{ report.id }}</td>
           <td>{{ report.reason }}</td>
-          <td>{{ report.post?.id }}</td>
-          <td>{{ report.post?.title }}</td>
-          <td>{{ report.post?.author?.name }}</td>
-          <td>{{ report.reporter?.name }}</td>
+          <td>{{ report.postId }}</td>
+          <td>{{ report.postTitle }}</td>
+          <td>{{ report.authorName }}</td>
+          <td>{{ report.reporterEmail }}</td>
           <td>
             <button class="btn btn-warning" (click)="deletePost(report.post.id)">Delete Post</button>
             <button class="btn btn-danger" (click)="deleteReport(report.id)">Delete Report</button>
@@ -37,7 +43,7 @@
     <p *ngIf="postReports.length === 0" class="no-data">No post reports found.</p>
   </section>
 
-  <section class="table-section">
+  <section class="table-section" *ngIf="showTable === 'user'">
     <h2>👤 User Reports</h2>
 
     <table *ngIf="userReports.length > 0" class="styled-table">
@@ -53,22 +59,16 @@
       </thead>
 
       <tbody>
-        <tr *ngFor="let report of userReports">
+        <tr *ngFor="let report of userReports" [class.banned]="report.isBanned">
           <td>{{ report.id }}</td>
           <td>{{ report.reason }}</td>
-          <td>{{ report.reportedUser?.id }}</td>
-          <td>{{ report.reportedUser?.name }}</td>
-          <td>{{ report.reporter?.name }}</td>
+          <td>{{ report.reportedUserId }}</td>
+          <td>{{ report.reportedUserName }}</td>
+          <td>{{ report.reporterEmail }}</td>
           <td>
-            <button class="btn btn-warning" (click)="banUser(report.reportedUser.id)">Ban User</button>
-            <!-- <button 
-              class="btn btn-warning" 
-              (click)="report.reportedUser ? banUser(report.reportedUser.id) : null" 
-              [disabled]="!report.reportedUser">
-              Ban User
-            </button> -->
-
-            <button class="btn btn-danger" (click)="deleteReport(report.id)">Delete Report</button>
+            <button class="btn btn-warning" (click)="banUser(report.reportedUserId)">Ban User</button>
+            <button class="btn btn-warning" (click)="unbanUser(report.reportedUserId)">Unban User</button>
+            <button class="btn btn-danger" (click)="deletePost(report.postId)">Delete Report</button>
           </td>
         </tr>
       </tbody>

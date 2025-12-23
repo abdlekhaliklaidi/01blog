@@ -48,14 +48,14 @@ export class LoginComponent {
         this.router.navigate(['/home']);
       },
       error: (err) => {
-        if (err.status === 401) {
-          this.errorMessage = 'Email ou mot de passe incorrect';
-        } else if (err.status === 403) {
-          this.errorMessage = 'Accès interdit';
-        } else {
-          this.errorMessage = 'Erreur serveur, veuillez réessayer';
-        }
-        this.successMessage = '';
+      if (err.status === 401) {
+         this.errorMessage = 'Email ou mot de passe incorrect';
+      } else if (err.status === 403) {
+         this.errorMessage = 'Votre compte a été banni. Veuillez contacter l\'administrateur.';
+      } else {
+         this.errorMessage = 'Erreur serveur, veuillez réessayer';
+      }
+         this.successMessage = '';
       }
     });
   }

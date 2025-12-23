@@ -4,6 +4,9 @@ import com.dev.backend.entities.Report;
 import com.dev.backend.services.ReportService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.dev.backend.dto.ReportDTO;
+import org.springframework.http.ResponseEntity;
+import com.dev.backend.dto.UserReportDTO;
 
 import java.util.List;
 
@@ -15,24 +18,33 @@ public class ReportController {
     @Autowired
     private ReportService reportService;
 
-    @PostMapping("/post/{postId}")
-    public Report reportPost(@PathVariable Long postId, @RequestBody Report report) {
-        return reportService.reportPost(postId, report);
+    @PostMapping("/post/{postId}/reporter/{reporterId}")
+    public ResponseEntity<Void> reportPost(
+        @PathVariable Long postId,
+        @PathVariable Long reporterId,
+        @RequestBody Report report) {
+
+    reportService.reportPost(postId, reporterId, report);
+    return ResponseEntity.ok().build();
     }
 
     @PostMapping("/user/{userId}")
-    public Report reportUser(@PathVariable Long userId, @RequestBody Report report) {
-        return reportService.reportUser(userId, report);
-    }
+    public ResponseEntity<Void> reportUser(
+        @PathVariable Long userId,
+        @RequestBody Report report) {
 
+    reportService.reportUser(userId, report);
+    return ResponseEntity.ok().build();
+    }
+    
     @GetMapping("/posts")
-    public List<Report> getPostReports() {
-        return reportService.getPostReports();
+    public List<ReportDTO> getPostReports() {
+    return reportService.getPostReports();
     }
 
     @GetMapping("/users")
-    public List<Report> getUserReports() {
-        return reportService.getUserReports();
+    public List<UserReportDTO> getUserReports() {
+    return reportService.getUserReports();
     }
 
     @DeleteMapping("/{id}")
