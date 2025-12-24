@@ -24,14 +24,14 @@
 
 
 .nav-btn {
-  background: #AAC0E1;
-  /* color: #667eea; */
-  border: none;
-  padding: 0.4rem 0.8rem;
-  border-radius: 5px;
+  padding: 8px 16px;
+  border: 1px solid #007bff;
+  background-color: #fff;
+  color: #007bff;
   cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s ease;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .nav-btn:hover {

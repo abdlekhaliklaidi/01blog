@@ -33,6 +33,9 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit(): void {
     if (!this.isBrowser) return;
+    if (this.router.url === '/login' || this.router.url === '/register') {
+    return;
+  }
 
     // this.userEmail = this.auth.getCurrentUserEmail();
      this.userService.getMe().subscribe({
@@ -44,6 +47,7 @@ export class NavbarComponent implements OnInit {
       },
       error: () => {
         this.router.navigate(['/login']);
+        // console.log('User not authenticated');
       }
     });
     this.loadTheme();

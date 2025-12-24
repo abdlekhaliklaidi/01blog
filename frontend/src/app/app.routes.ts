@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+// import { NgModule } from '@angular/core';
+import { Routes } from '@angular/router';
 import { authGuard } from './auth.guard';
 import { publicGuard } from '../app/auth.guard';
 
@@ -18,6 +18,16 @@ export const routes: Routes = [
     path: 'home', 
     loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent),
     canActivate: [authGuard]
+  },
+  {
+    path: 'profile/:id',
+    loadComponent: () => import('./pages/profile/profile.component').then(m => m.ProfileComponent),
+    canActivate: [authGuard]
+  },
+  {
+  path: 'profile',
+  loadComponent: () => import('./pages/profile/profile.component').then(m => m.ProfileComponent),
+  canActivate: [authGuard]
   },
   {
     path: '',
@@ -56,8 +66,8 @@ export const routes: Routes = [
 }
 ];
 
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
-})
-export class AppRoutingModule {}
+// @NgModule({
+//   imports: [RouterModule.forRoot(routes)],
+//   exports: [RouterModule]
+// })
+// export class AppRoutingModule {}
