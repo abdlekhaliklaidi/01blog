@@ -3,105 +3,94 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #f4f4f4;
-  padding: 20px;
+  padding: 2rem;
 }
 
 .auth-card {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  padding: 30px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
   width: 100%;
-  max-width: 400px;
+  max-width: 900px;
+  overflow: hidden;
+  animation: slideUp 0.5s ease-out;
 }
 
-.auth-header {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #667eea;
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.auth-header h2 {
-  margin: 0;
-  font-size: 24px;
-  color: #667eea;
+.auth-card.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 
-.form-group {
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  display: flex;
-  align-items: center;
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
-.form-group .icon {
-  margin-right: 5px;
-}
-
-.form-control {
-  width: 100%;
-  padding: 8px 12px;
-  font-size: 14px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  box-sizing: border-box;
-}
-
-.error {
-  color: #e74c3c;
-  font-size: 12px;
-  margin-top: 5px;
-}
-
-.form-actions {
-  margin-top: 20px;
-  text-align: center;
-}
-
-.btn-primary {
-  background-color: #667eea;
+.auth-left {
+  position: relative;
+  padding: 3.5rem;
+  background: linear-gradient(135deg, #3f6ed3, #2b4ea2);
   color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  width: 100%;
-  font-weight: bold;
-  transition: background-color 0.2s ease-in-out;
+  overflow: hidden;
 }
 
-.btn-primary:hover {
-  background-color: #2980b9;
+.auth-left h1 {
+  font-size: 2.3rem;
+  font-weight: 800;
 }
 
-.alert {
-  margin-top: 15px;
-  padding: 10px;
-  border-radius: 4px;
-  font-size: 14px;
-  text-align: center;
+.auth-left h3 {
+  margin-top: 0.5rem;
+  font-weight: 500;
+  opacity: 0.9;
 }
 
-.alert-success {
-  background-color: #dff0d8;
-  color: #3c763d;
+.auth-left p {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  opacity: 0.85;
 }
 
-.alert-error {
-  background-color: #f2dede;
-  color: #a94442;
+.circle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
 }
 
-.link-primary {
-  color: #3498db;
-  text-decoration: none;
-}
+.c1 { width: 200px; height: 200px; bottom: -70px; left: -70px; }
+.c2 { width: 130px; height: 130px; bottom: 40px; right: 40px; }
+.c3 { width: 90px; height: 90px; top: 40px; right: 90px; }
 
-.link-primary:hover {
-  text-decoration: underline;
+.auth-right { padding: 3rem; }
+
+.auth-header { text-align: center; margin-bottom: 20px; }
+.auth-header h2 { margin: 0; font-size: 24px; color: #667eea; }
+.auth-header p { font-size: 14px; color: #555; }
+
+.form-group { margin-bottom: 15px; }
+.form-group label { display: flex; align-items: center; font-weight: bold; margin-bottom: 5px; }
+.form-group .icon { margin-right: 5px; }
+.form-control { width: 100%; padding: 8px 12px; font-size: 14px; border-radius: 4px; border: 1px solid #ccc; }
+.form-control:focus { outline: none; border-color: #667eea; box-shadow: 0 0 5px rgba(102,126,234,0.2); }
+
+.error { color: #e74c3c; font-size: 12px; margin-top: 5px; }
+
+.form-actions { margin-top: 20px; text-align: center; }
+.btn-primary { background-color: #667eea; color: white; border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; transition: background-color 0.2s; }
+.btn-primary:hover { background-color: #2980b9; }
+
+.alert { margin-top: 15px; padding: 10px; border-radius: 4px; font-size: 14px; text-align: center; }
+.alert-success { background-color: #dff0d8; color: #3c763d; }
+.alert-error { background-color: #f2dede; color: #a94442; }
+
+
+.auth-footer { text-align: center; margin-top: 20px; }
+.link-primary { color: #3498db; text-decoration: none; font-weight: bold; }
+.link-primary:hover { text-decoration: underline; }
+
+
+@media (max-width: 768px) {
+  .auth-card.split { grid-template-columns: 1fr; }
+  .auth-left { display: none; }
 }
