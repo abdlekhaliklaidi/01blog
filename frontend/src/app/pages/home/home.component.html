@@ -78,7 +78,16 @@
     <div *ngFor="let post of posts" class="post-card">
 
       <div class="post-header">
-        <strong>{{ post.authorFirstName || 'Unknown' }}</strong>
+      <div class="post-author">
+      <img
+      class="avatar"
+      [src]="user?.avatar || 'https://i.pravatar.cc/100?img=12'"
+      alt="avatar"
+    />
+    <strong class="author-name">
+      {{ post.authorFirstName || 'Unknown' }}
+    </strong>
+  </div>
        <div class="post-header-right">
       <!-- <button class="btn btn-danger" (click)="openReportModal(post)">
         Report
@@ -93,13 +102,9 @@
 </div>  
 </div>  
       <h3>{{ post.title }}</h3>
-
-      <img *ngIf="post.imageUrl" [src]="post.imageUrl">
-      <!-- <video *ngIf="post.videoUrl" [src]="post.videoUrl" controls></video> -->
-      <video *ngIf="post.videoUrl" [src]="post.videoUrl" controls></video>
-      <!-- <video src="http://localhost:8080/videos/filename.mp4" controls></video>. -->
-
       <p>{{ post.content }}</p>
+      <img *ngIf="post.imageUrl" [src]="post.imageUrl">
+      <video *ngIf="post.videoUrl" [src]="post.videoUrl" controls></video>
 
       <div class="post-actions">
         <button class="like-btn" (click)="toggleLike(post)">

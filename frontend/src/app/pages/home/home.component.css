@@ -115,7 +115,7 @@
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   padding: 1rem;
 }
-.sidebar-left { width: 25%; }
+.sidebar-left { width: 15%; }
 .sidebar-right { width: 20%; text-align: center; }
 
 .sidebar-left ul { list-style: none; padding: 0; }
@@ -143,7 +143,7 @@
 
 .accept-btn { background-color: #4caf50; color: white; }
 .reject-btn { background-color: #e74c3c; color: white; margin-left: 0.4rem; }
-.follow-btn { background-color: #667eea; color: white; }
+.follow-btn { background-color: #667eea; color: white; margin-left: 37%;}
 .follow-btn.unfollow { background-color: #999; }
 
 .accepted-label {
@@ -589,7 +589,7 @@ textarea {
   border-radius: 5px;
   border: none;
   cursor: pointer;
-  background-color: #667eea;
+  background-color: #7b61ff;
   color: white;
   transition: all 0.2s;
 }
@@ -643,6 +643,26 @@ body.dark-mode textarea {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.post-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 3%;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #ddd;
+}
+
+.author-name {
+  font-size: 15px;
+  font-weight: 600;
 }
 
 .post-header-right {

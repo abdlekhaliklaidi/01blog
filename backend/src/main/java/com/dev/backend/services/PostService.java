@@ -23,12 +23,14 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public List<Post> getAllPosts() {
-        return postRepository.findAll();
+        // return postRepository.findAll();
+        return postRepository.findAllWithLikesAndComments();
     }
 
     @Transactional(readOnly = true)
     public List<Post> getPostsByAuthor(Long authorId) {
-        return postRepository.findByAuthorId(authorId);
+        // return postRepository.findByAuthorId(authorId);
+        return postRepository.findByAuthorIdOrderByCreatedAtDesc(authorId);
     }
 
     @Transactional(readOnly = true)
@@ -38,9 +40,10 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public List<Post> getPostsByAuthors(List<Long> authorIds) {
-        return postRepository.findByAuthorIdIn(authorIds);
+        // return postRepository.findByAuthorIdIn(authorIds);
+        return postRepository.findByAuthorIdInOrderByCreatedAtDesc(authorIds);
     }
-
+    
     @Transactional
     public Post createPost(Post post) {
         User author = userRepository.findById(post.getAuthor().getId())
