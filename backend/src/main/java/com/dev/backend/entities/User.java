@@ -23,6 +23,8 @@ public class User {
 
     private String avatar;
 
+    private String bio;
+
     private boolean banned = false;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -100,6 +102,10 @@ public class User {
     public void setReportsMade(List<Report> reportsMade) { this.reportsMade = reportsMade; }
     public List<Report> getReportsReceived() { return reportsReceived; }
     public void setReportsReceived(List<Report> reportsReceived) { this.reportsReceived = reportsReceived; }
-     public String getAvatar() { return avatar; } 
+    public String getAvatar() { return avatar; } 
     public void setAvatar(String avatar) { this.avatar = avatar; }
+    public String getBio() { return bio; }
+    public void setBio(String bio) { this.bio = bio; }
+    public List<Notification> getNotifications() { return notifications; }
+    public void setNotifications(List<Notification> notifications) { this.notifications = notifications; }
 }

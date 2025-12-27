@@ -36,7 +36,7 @@ public class UserController {
     public List<UserDTO> getUsers() {
     List<User> users = userRepository.findAll();
     return users.stream()
-                .map(u -> new UserDTO(u.getId(), u.getFirstname(), u.getLastname(), u.getEmail(), u.getAvatar()))
+                .map(u -> new UserDTO(u.getId(), u.getFirstname(), u.getLastname(), u.getEmail(), u.getAvatar(), u.getBio()))
                 .collect(Collectors.toList());
     }
 
@@ -49,7 +49,7 @@ public class UserController {
                               .orElseThrow(() -> new RuntimeException("User not found"));
 
     UserDTO dto = new UserDTO(user.getId(), user.getFirstname(), user.getLastname(),
-                              user.getEmail(), user.getAvatar());
+                              user.getEmail(), user.getAvatar(), user.getBio());
     return ResponseEntity.ok(dto);
     }
     
@@ -58,7 +58,7 @@ public class UserController {
     User user = userRepository.findById(id)
         .orElseThrow(() -> new RuntimeException("User not found"));
     UserDTO dto = new UserDTO(user.getId(), user.getFirstname(), user.getLastname(),
-                              user.getEmail(), user.getAvatar());
+                              user.getEmail(), user.getAvatar(), user.getBio());
     return ResponseEntity.ok(dto);
     }
 
@@ -69,20 +69,31 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
-        return userRepository.findById(id)
-            .map(user -> {
-                user.setFirstname(updatedUser.getFirstname());
-                user.setLastname(updatedUser.getLastname());
-                user.setGenre(updatedUser.getGenre());
-                user.setEmail(updatedUser.getEmail());
-                if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
-                    user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
-                }
-                return userRepository.save(user);
-            })
-            .orElseThrow(() -> new RuntimeException("User not found"));
-    }
+    public ResponseEntity<UserDTO> updateUser(
+        @PathVariable Long id,
+        @RequestBody User updatedUser) {
+
+    User user = userRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("User not found"));
+
+    user.setFirstname(updatedUser.getFirstname());
+    user.setLastname(updatedUser.getLastname());
+    user.setBio(updatedUser.getBio());
+    user.setAvatar(updatedUser.getAvatar());
+
+    userRepository.save(user);
+
+    return ResponseEntity.ok(
+        new UserDTO(
+            user.getId(),
+            user.getFirstname(),
+            user.getLastname(),
+            user.getEmail(),
+            user.getAvatar(),
+            user.getBio()
+        )
+    );
+}
 
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id) {

@@ -132,18 +132,25 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Post> updatePost(@PathVariable Long id, @RequestBody Post updatedPost) {
-        try {
-            Post post = postService.updatePost(id, updatedPost);
-            return ResponseEntity.ok(post);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    public ResponseEntity<PostDTO> updatePost(
+        @PathVariable Long id,
+        @RequestBody Post updatedPost) {
+
+    String email = SecurityContextHolder.getContext()
+            .getAuthentication().getName();
+
+    Post post = postService.updatePost(id, updatedPost, email);
+    return ResponseEntity.ok(new PostDTO(post));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
-        postService.deletePost(id);
-        return ResponseEntity.noContent().build();
+
+    String email = SecurityContextHolder.getContext()
+            .getAuthentication().getName();
+
+    postService.deletePost(id, email);
+    return ResponseEntity.noContent().build();
     }
+
 }

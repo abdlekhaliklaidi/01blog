@@ -56,22 +56,38 @@ public class PostService {
     }
 
     @Transactional
-    public Post updatePost(Long id, Post updatedPost) {
-        return postRepository.findById(id)
-            .map(post -> {
-                post.setTitle(updatedPost.getTitle());
-                post.setContent(updatedPost.getContent());
+    public Post updatePost(Long id, Post updatedPost, String currentEmail) {
 
-                post.setImagePath(updatedPost.getImagePath());
-                post.setVideoUrl(updatedPost.getVideoUrl());
-
-                return postRepository.save(post);
-            })
+    Post post = postRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Post not found"));
+
+    if (!post.getAuthor().getEmail().equals(currentEmail)) {
+        throw new RuntimeException("Unauthorized");
+    }
+
+    post.setTitle(updatedPost.getTitle());
+    post.setContent(updatedPost.getContent());
+    post.setImagePath(updatedPost.getImagePath());
+    post.setVideoUrl(updatedPost.getVideoUrl());
+
+    return postRepository.save(post);
     }
 
     @Transactional
-    public void deletePost(Long id) {
-        postRepository.deleteById(id);
+    public void deletePost(Long id, String currentEmail) {
+
+    Post post = postRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Post not found"));
+
+    if (!post.getAuthor().getEmail().equals(currentEmail)) {
+        throw new RuntimeException("Unauthorized");
+    }
+
+    postRepository.delete(post);
+    }
+    
+    @Transactional
+    public void deletePostAsAdmin(Long id) {
+    postRepository.deleteById(id);
     }
 }

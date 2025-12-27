@@ -122,7 +122,13 @@
 .sidebar-left li {
   display: flex;
   align-items: center;
-  margin-bottom: 1rem;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  background-color: #F5FEFF;
+  padding: 6px 8px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: background-color 0.2s;
 }
 .sidebar-left img {
   width: 35px;
@@ -143,7 +149,16 @@
 
 .accept-btn { background-color: #4caf50; color: white; }
 .reject-btn { background-color: #e74c3c; color: white; margin-left: 0.4rem; }
-.follow-btn { background-color: #667eea; color: white; margin-left: 37%;}
+.follow-btn { background-color: #667eea; color: white; padding: 4px 8px;
+  font-size: 0.8rem;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  /* background-color: #7b61ff; */
+  /* color: white; */
+  transition: all 0.2s;
+  margin-left: 10%;
+}
 .follow-btn.unfollow { background-color: #999; }
 
 .accepted-label {
@@ -681,7 +696,7 @@ body.dark-mode textarea {
   position: absolute;
   top: 0;
   right: 100%; 
-  background-color: #AAC0E1;
+  /* background-color: #AAC0E1; */
   border: 1px solid #ccc;
   border-radius: 6px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
@@ -690,14 +705,15 @@ body.dark-mode textarea {
 }
 
 .options-menu button {
-  padding: 8px 16px;
+  padding: 2px 16px;
   border: 1px solid #0E2F76;
   background-color: #fff;
   color: #0E2F76;
   cursor: pointer;
   border-radius: 5px;
-  font-weight: bold;
+  /* font-weight: bold; */
   transition: background-color 0.3s, color 0.3s;
+  margin-top: 5%;
 }
 
 .options-menu button:hover {

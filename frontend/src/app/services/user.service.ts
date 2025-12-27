@@ -55,5 +55,9 @@ export class UserService {
   reportUser(userId: number, report: any) {
   return this.http.post(`http://localhost:8080/reports/user/${userId}`, report);
 }
+  
+  updateUser(id: number, data: any) {
+  return this.http.put<any>(`${this.apiUrl}/${id}`, data);
+  }
 
 }

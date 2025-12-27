@@ -96,6 +96,18 @@
       <div class="more-options">
   <button class="more-btn" (click)="post.showOptions = !post.showOptions">⋮</button>
   <div class="options-menu" *ngIf="post.showOptions">
+    <button
+    *ngIf="post.authorId === userInfo.id"
+    (click)="editPost(post)">
+     Edit
+  </button>
+
+  <button
+    *ngIf="post.authorId === userInfo.id"
+    (click)="deletePost(post)">
+     Delete
+  </button>
+
     <button class="report-option" (click)="openReportModal(post)">Report</button>
   </div>
 </div>

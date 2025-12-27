@@ -25,6 +25,9 @@ export class HomeComponent implements OnInit {
   showUserMenu = false;
   showCreatePost = false;
   isDarkMode = false;
+  editingPost: any = null;
+  isEditMode = false;
+
 
   newPost = { title: '', content: '' };
   selectedFile: File | null = null;
@@ -142,11 +145,9 @@ this.userService.getMe().subscribe({
   }
 
   closeCreatePost() {
-    this.showCreatePost = false;
-    this.newPost = { title: '', content: '' };
-    this.selectedFile = null;
+  this.resetPostForm();
   }
-  
+
 selectedImage: File | null = null;
 selectedVideo: File | null = null;
 
@@ -160,8 +161,33 @@ onFileSelected(event: Event) {
 }
 
 createPost() {
+
   if (!this.newPost.title.trim() || !this.newPost.content.trim()) {
     alert('Please enter title and content');
+    return;
+  }
+
+  if (this.isEditMode && this.editingPost) {
+
+    const updateData = {
+      title: this.newPost.title.trim(),
+      content: this.newPost.content.trim()
+    };
+
+    this.postService.updatePost(this.editingPost.id, updateData).subscribe({
+      next: (updated) => {
+        const index = this.posts.findIndex(p => p.id === updated.id);
+      if (index !== -1) {
+      this.posts[index] = {
+      ...this.posts[index],
+      ...updated
+      };
+    }
+        this.resetPostForm();
+      },
+      error: err => console.error('Update error', err)
+    });
+
     return;
   }
 
@@ -179,14 +205,21 @@ createPost() {
         likes: created.likes || [],
         comments: created.comments || [],
         showComments: false,
-        newComment: '',
-        imageUrl: created.imageUrl,
-        videoUrl: created.videoUrl
+        newComment: ''
       });
-      this.closeCreatePost();
+      this.resetPostForm();
     },
-    error: (err) => console.error('Error creating post', err)
+    error: err => console.error('Create error', err)
   });
+}
+
+  resetPostForm() {
+  this.showCreatePost = false;
+  this.isEditMode = false;
+  this.editingPost = null;
+  this.newPost = { title: '', content: '' };
+  this.selectedImage = null;
+  this.selectedVideo = null;
 }
 
   getFollowers(userId: number) {
@@ -283,5 +316,32 @@ createPost() {
     error: (err) => console.error('Error submitting report:', err)
   });
 }
+
+deletePost(post: any) {
+  if (!confirm('Are you sure you want to delete this post?')) return;
+
+  this.postService.deletePost(post.id).subscribe({
+    next: () => {
+      this.posts = this.posts.filter(p => p.id !== post.id);
+    },
+    error: err => console.error('Delete error', err)
+  });
+}
+
+editPost(post: any) {
+  if (post.authorId !== this.userInfo.id) return;
+
+  this.isEditMode = true;
+  this.editingPost = post;
+
+  this.newPost = {
+    title: post.title,
+    content: post.content
+  };
+
+  this.selectedImage = null;
+  this.selectedVideo = null;
+  this.showCreatePost = true;
+  }
 
 }

@@ -31,6 +31,10 @@ export class PostService {
   deletePost(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/posts/${id}`);
   }
+  
+  updatePost(postId: number, data: any) {
+  return this.http.put<any>(`${this.baseUrl}/posts/${postId}`, data);
+  }
 
   // toggleLike(userId: number, postId: number): Observable<any> {
   //   return this.http.post<any>(`${this.baseUrl}/likes/toggle?userId=${userId}&postId=${postId}`, {});

@@ -101,10 +101,30 @@ export class ProfileComponent implements OnInit {
   }
 
   saveProfile() {
-    this.userInfo.name = this.editName;
-    this.userInfo.bio = this.editBio;
-    this.showEditProfileModal = false;
-  }
+  const parts = this.editName.trim().split(' ');
+  const firstname = parts.shift() || '';
+  const lastname = parts.join(' ');
+
+  const updatedUser = {
+    firstname,
+    lastname,
+    bio: this.editBio,
+    avatar: this.userInfo.avatar
+  };
+
+  this.userService.updateUser(this.currentUser.id, updatedUser)
+    .subscribe({
+      next: (updated) => {
+        this.userInfo = {
+          ...this.userInfo,
+          name: updated.firstname + ' ' + updated.lastname,
+          bio: updated.bio
+        };
+        this.showEditProfileModal = false;
+      },
+      error: err => console.error('Update profile error', err)
+    });
+}
 
   openCreatePost() {
     this.showCreatePostModal = true;

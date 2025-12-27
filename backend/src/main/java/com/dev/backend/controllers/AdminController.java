@@ -28,9 +28,10 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
-    @DeleteMapping("/delete-post/{postId}")
-    public void deletePost(@PathVariable Long postId) {
-        postService.deletePost(postId);
+    @DeleteMapping("/posts/{id}")
+    public ResponseEntity<Void> deletePostAsAdmin(@PathVariable Long id) {
+    postService.deletePostAsAdmin(id);
+    return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/ban-user/{id}")

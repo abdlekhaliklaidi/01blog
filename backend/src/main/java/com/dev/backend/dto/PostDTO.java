@@ -21,11 +21,14 @@ public class PostDTO {
 
     private List<CommentDTO> comments;
     private List<LikeDTO> likes;
+    
+    private Long authorId;
 
     public PostDTO(Post post) {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
+        this.authorId = post.getAuthor() != null ? post.getAuthor().getId() : null;
 
         if (post.getImagePath() != null) {
         this.imageUrl = "http://localhost:8080" + post.getImagePath();
@@ -104,5 +107,8 @@ public class PostDTO {
 
     public String getVideoUrl() { return videoUrl; }
     public void setVideoUrl(String videoUrl) { this.videoUrl = videoUrl; }
+
+    public Long getAuthorId() { return authorId; }
+    public void setAuthorId(Long authorId) { this.authorId = authorId; }
 
 }
