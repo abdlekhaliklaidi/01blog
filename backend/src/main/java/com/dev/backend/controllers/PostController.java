@@ -27,7 +27,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.Files;
 import com.dev.backend.services.FollowerService;
-
+import java.util.ArrayList;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 
 @RestController
 @RequestMapping("/posts")
@@ -72,9 +74,12 @@ public class PostController {
     }
     
     @GetMapping("/feed/{userId}")
-    public List<PostDTO> getFeed(@PathVariable Long userId) {
+    public List<PostDTO> getFeed(
+        @PathVariable Long userId,
+        @RequestParam(required = false) Long lastPostId
+    ) {
 
-    List<Long> followingIds = new java.util.ArrayList<>(
+    List<Long> followingIds = new ArrayList<>(
         followerService.getFollowingOfUser(userId)
             .stream()
             .map(f -> f.getFollowing().getId())
@@ -83,20 +88,22 @@ public class PostController {
 
     followingIds.add(userId);
 
-    return postService.getPostsByAuthors(followingIds)
+    return postService
+            .getFeedPaginated(followingIds, lastPostId, 6)
             .stream()
             .map(PostDTO::new)
             .collect(Collectors.toList());
-}
+    }
 
     @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<PostDTO> createPostWithMedia(
+    public ResponseEntity<?> createPostWithMedia(
         @RequestParam("title") String title,
         @RequestParam("content") String content,
         @RequestParam(value = "image", required = false) MultipartFile imageFile,
         @RequestParam(value = "video", required = false) MultipartFile videoFile
     ) throws IOException {
-
+    
+        try {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
     User author = userRepository.findByEmail(username)
             .orElseThrow(() -> new RuntimeException("User not found"));
@@ -126,10 +133,21 @@ public class PostController {
         post.setVideoUrl("/videos/" + fileName);
     }
 
-    Post savedPost = postRepository.save(post);
+    // Post savedPost = postRepository.save(post);
+    Post savedPost = postService.createPost(post);
 
     return ResponseEntity.status(HttpStatus.CREATED).body(new PostDTO(savedPost));
+    } catch (RuntimeException e) {
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(e.getMessage());
     }
+}
+
+    @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
+    public class RateLimitException extends RuntimeException {
+    public RateLimitException(String message) {
+        super(message);
+    }
+}
 
     @PutMapping("/{id}")
     public ResponseEntity<PostDTO> updatePost(

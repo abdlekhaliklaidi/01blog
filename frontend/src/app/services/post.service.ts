@@ -16,8 +16,12 @@ export class PostService {
     return this.http.get<any[]>(`${this.baseUrl}/posts`);
   }
   
-  getFeed(userId: number) {
-    return this.http.get<any[]>(`${this.baseUrl}/posts/feed/${userId}`);
+  getFeed(userId: number, lastPostId?: number) {
+  let url = `${this.baseUrl}/posts/feed/${userId}`;
+  if (lastPostId) {
+    url += `?lastPostId=${lastPostId}`;
+  }
+  return this.http.get<any[]>(url);
   }
 
   getPostsByAuthor(authorId: number): Observable<any[]> {

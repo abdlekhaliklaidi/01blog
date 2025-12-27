@@ -7,6 +7,16 @@ import com.dev.backend.entities.User;
 import com.dev.backend.repositories.PostRepository;
 import com.dev.backend.repositories.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.time.Duration;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,6 +30,8 @@ public class PostService {
 
     @Autowired
     private UserRepository userRepository;
+
+    private static final long POST_COOLDOWN_SECONDS = 30;
 
     @Transactional(readOnly = true)
     public List<Post> getAllPosts() {
@@ -44,10 +56,48 @@ public class PostService {
         return postRepository.findByAuthorIdInOrderByCreatedAtDesc(authorIds);
     }
     
-    @Transactional
+    @Transactional(readOnly = true)
+    public List<Post> getFeedPaginated(
+        List<Long> authorIds,
+        Long lastPostId,
+        int limit
+    ) {
+    Pageable pageable = PageRequest.of(0, limit);
+    return postRepository.findFeedWithPagination(authorIds, lastPostId, pageable);
+    }
+
+    // @Transactional
+    // public Post createPost(Post post) {
+    //     User author = userRepository.findById(post.getAuthor().getId())
+    //             .orElseThrow(() -> new RuntimeException("User not found"));
+
+    //     post.setAuthor(author);
+    //     post.setCreatedAt(LocalDateTime.now());
+
+    //     return postRepository.save(post);
+    // }
+
     public Post createPost(Post post) {
+
         User author = userRepository.findById(post.getAuthor().getId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Optional<Post> lastPostOpt =
+                postRepository.findTopByAuthorIdOrderByCreatedAtDesc(author.getId());
+
+        if (lastPostOpt.isPresent()) {
+            LocalDateTime lastPostTime = lastPostOpt.get().getCreatedAt();
+            long secondsSinceLastPost =
+                    Duration.between(lastPostTime, LocalDateTime.now()).getSeconds();
+
+            if (secondsSinceLastPost < POST_COOLDOWN_SECONDS) {
+                throw new RuntimeException(
+                        "Please wait " +
+                        (POST_COOLDOWN_SECONDS - secondsSinceLastPost) +
+                        " seconds before creating another post"
+                );
+            }
+        }
 
         post.setAuthor(author);
         post.setCreatedAt(LocalDateTime.now());

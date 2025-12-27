@@ -4,6 +4,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.dev.backend.entities.Post;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.domain.Pageable;
+import java.util.Optional;
+import java.time.LocalDateTime;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,5 +22,17 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     // List<Post> findByAuthorIdIn(List<Long> authorIds);
     List<Post> findByAuthorIdInOrderByCreatedAtDesc(@Param("authorIds") List<Long> authorIds);
 
+    @Query("""
+        SELECT p FROM Post p
+        WHERE p.author.id IN :authorIds
+        AND (:lastId IS NULL OR p.id < :lastId)
+        ORDER BY p.id DESC
+    """)
+    List<Post> findFeedWithPagination(
+        @Param("authorIds") List<Long> authorIds,
+        @Param("lastId") Long lastId,
+        Pageable pageable
+    );
 
+    Optional<Post> findTopByAuthorIdOrderByCreatedAtDesc(Long authorId);
 }

@@ -78,7 +78,7 @@ export class AuthService {
 
     try {
       const decoded: any = jwtDecode(token);
-      console.log("Decoded role:", decoded.role);
+      // console.log("Decoded role:", decoded.role);
       return decoded.role === 'ROLE_ADMIN';
     } catch {
       return false;

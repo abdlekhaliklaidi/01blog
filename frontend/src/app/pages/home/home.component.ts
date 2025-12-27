@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -27,6 +27,9 @@ export class HomeComponent implements OnInit {
   isDarkMode = false;
   editingPost: any = null;
   isEditMode = false;
+  lastPostId: number | null = null;
+  loadingMore = false;
+  noMorePosts = false;
 
 
   newPost = { title: '', content: '' };
@@ -106,16 +109,67 @@ this.userService.getMe().subscribe({
   
   loadPosts() {
   this.postService.getFeed(this.userInfo.id).subscribe({
-  next: (data) => {
-    this.posts = data.map((p: any) => ({
-      ...p,
-      likes: p.likes || [],
-      comments: p.comments || [],
-      showComments: false,
-      newComment: ''
-    }));
+    next: (data) => {
+      console.log('First load count:', data.length);
+      this.posts = data.map(p => ({
+        ...p,
+        showComments: false,
+        newComment: ''
+      }));
+
+      if (data.length > 0) {
+        this.lastPostId = data[data.length - 1].id;
+        console.log('Posts in array:', this.posts.length);
+      } else {
+        this.noMorePosts = true;
+      }
     }
   });
+}
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+  if (this.loadingMore || this.noMorePosts) return;
+
+  const threshold = 200;
+  const position = window.innerHeight + window.scrollY;
+  const height = document.body.offsetHeight;
+
+  if (position >= height - threshold) {
+    this.loadMorePosts();
+  }
+}
+
+
+ loadMorePosts() {
+  if (!this.lastPostId) return;
+
+  this.loadingMore = true;
+  this.postService
+    .getFeed(this.userInfo.id, this.lastPostId)
+    .subscribe({
+      next: (data) => {
+        console.log('Loaded on scroll:', data.length);
+        if (data.length === 0) {
+          this.noMorePosts = true;
+          this.loadingMore = false;
+          return;
+        }
+
+        this.posts.push(
+          ...data.map(p => ({
+            ...p,
+            showComments: false,
+            newComment: ''
+          }))
+        );
+        console.log('Total posts now:', this.posts.length);
+
+        this.lastPostId = data[data.length - 1].id;
+        this.loadingMore = false;
+      },
+      error: () => (this.loadingMore = false)
+    });
 }
   
   toggleLike(post: any) {
@@ -185,11 +239,15 @@ createPost() {
     }
         this.resetPostForm();
       },
-      error: err => console.error('Update error', err)
-    });
-
-    return;
-  }
+      error: (err) => {
+      if (err.status === 429) {
+        alert(err.error);
+      } else {
+        console.error('Create error', err);
+      }
+    }
+  });
+}
 
   const formData = new FormData();
   formData.append('title', this.newPost.title.trim());

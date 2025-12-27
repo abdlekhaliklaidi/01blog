@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.dev.backend.entities.User;
 
 @Entity
 @Table(name = "post")
@@ -19,7 +20,8 @@ public class Post {
 
     @Column(length = 10000)
     private String content;
-
+    
+    @Column(nullable = false)
     private LocalDateTime createdAt;
     
     @Column(length = 500)
