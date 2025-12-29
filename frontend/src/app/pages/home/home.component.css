@@ -1,6 +1,11 @@
 /* 🔹 Navbar */
 .navbar {
-  display: flex;
+  /* display: flex; */
+  display: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 3000;
   justify-content: space-between;
   align-items: center;
   background-color: #0E2F76;
@@ -107,6 +112,24 @@
   /* max-width: 1200px; */
   margin: 2rem auto;
   font-family: 'Segoe UI', Tahoma, sans-serif;
+  /* margin-top: 80px; */
+}
+
+/* .sidebar-left,
+.sidebar-right {
+  position: sticky;
+  top: 90px;
+  height: calc(100vh - 100px);
+  overflow-y: auto;
+} */
+
+.feed {
+  height: calc(100vh - 100px); 
+  overflow-y: auto;
+}
+
+body {
+  overflow: hidden;
 }
 
 .sidebar {
