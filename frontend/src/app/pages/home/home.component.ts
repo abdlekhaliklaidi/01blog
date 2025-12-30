@@ -112,10 +112,11 @@ this.userService.getMe().subscribe({
     next: (data) => {
       console.log('First load count:', data.length);
       this.posts = data.map(p => ({
-        ...p,
-        showComments: false,
-        newComment: ''
-      }));
+      ...p,
+      showComments: false,
+      newComment: '',
+      comments: p.comments.map(c => ({ ...c, showOptions: false }))
+    }));
 
       if (data.length > 0) {
         this.lastPostId = data[data.length - 1].id;
@@ -160,7 +161,8 @@ this.userService.getMe().subscribe({
           ...data.map(p => ({
             ...p,
             showComments: false,
-            newComment: ''
+            newComment: '',
+            comments: (p.comments || []).map(c => ({ ...c, showOptions: false }))
           }))
         );
         console.log('Total posts now:', this.posts.length);
@@ -261,7 +263,7 @@ createPost() {
       this.posts.unshift({
         ...created,
         likes: created.likes || [],
-        comments: created.comments || [],
+        comments: (created.comments || []).map(c => ({ ...c, showOptions: false })),
         showComments: false,
         newComment: ''
       });
@@ -400,6 +402,17 @@ editPost(post: any) {
   this.selectedImage = null;
   this.selectedVideo = null;
   this.showCreatePost = true;
+  }
+
+  deleteComment(post: any, comment: any) {
+  if (!confirm('Are you sure you want to delete this comment?')) return;
+
+  this.postService.deleteComment(comment.id).subscribe({
+    next: () => {
+      post.comments = post.comments.filter((c: any) => c.id !== comment.id);
+    },
+    error: (err) => console.error('Error deleting comment:', err)
+  });
   }
 
 }

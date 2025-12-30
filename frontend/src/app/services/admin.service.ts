@@ -14,8 +14,12 @@ export class AdminService {
   //   return this.http.delete(`${this.api}/delete-post/${postId}`);
   // }
   
+  // deletePost(postId: number) {
+  //   return this.http.delete(`http://localhost:8080/admin/delete-post/${postId}`);
+  // }
+
   deletePost(postId: number) {
-    return this.http.delete(`http://localhost:8080/admin/delete-post/${postId}`);
+  return this.http.delete(`http://localhost:8080/admin/posts/${postId}`);
   }
 
   banUser(userId: number) {
@@ -24,6 +28,22 @@ export class AdminService {
 
   unbanUser(userId: number) {
   return this.http.post(`http://localhost:8080/admin/unban-user/${userId}`, {});
+  }
+  
+  getAllUsers() {
+  return this.http.get<any[]>('http://localhost:8080/admin/users');
+  }
+
+  getAllPosts() {
+  return this.http.get<any[]>('http://localhost:8080/admin/posts');
+  }
+
+  hidePost(postId: number) {
+  return this.http.post(`http://localhost:8080/admin/hide-post/${postId}`, {});
+  }
+
+  unhidePost(postId: number) {
+  return this.http.post(`http://localhost:8080/admin/unhide-post/${postId}`, {});
   }
 
 }

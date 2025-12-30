@@ -742,3 +742,36 @@ body.dark-mode textarea {
 .options-menu button:hover {
   background-color: #f3f3f3;
 }
+
+.comment-options {
+  position: relative;
+}
+
+.comment-options .options-menu {
+  position: absolute;
+  top: 100%; /* يظهر تحت الزر */
+  right: 0;
+  z-index: 1000;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  padding: 5px 0;
+  min-width: 80px;
+}
+
+.comment-options .options-menu button {
+  display: block;
+  width: 100%;
+  padding: 5px 10px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.comment-options .options-menu button:hover {
+  background-color: #f3f3f3;
+}
+

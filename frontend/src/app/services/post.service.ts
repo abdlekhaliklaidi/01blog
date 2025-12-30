@@ -62,6 +62,10 @@ export class PostService {
     return this.http.get<any[]>(`${this.baseUrl}/comments/post/${postId}`);
   }
 
+  deleteComment(commentId: number) {
+  return this.http.delete(`${this.baseUrl}/comments/${commentId}`);
+  }
+
   getFollowers(userId: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/followers/followers/${userId}`);
   }

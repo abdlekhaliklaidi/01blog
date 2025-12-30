@@ -1,0 +1,14 @@
+<div class="modal-backdrop" *ngIf="visible">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>{{ post?.title }}</h3>
+      <button class="close-btn" (click)="hide()">×</button>
+    </div>
+    <div class="modal-body">
+      <p><strong>Author:</strong> {{ post?.authorName }}</p>
+      <p><strong>Status:</strong> {{ post?.hidden ? 'Hidden' : 'Visible' }}</p>
+      <p><strong>Content:</strong></p>
+      <p>{{ post?.content }}</p>
+    </div>
+  </div>
+</div>

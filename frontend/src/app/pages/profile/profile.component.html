@@ -58,6 +58,55 @@
         </div>
       </div>
 
+      <div class="user-posts">
+  <h3>Posts</h3>
+
+  <div class="posts-grid">
+    <div *ngFor="let post of posts" class="post-card">
+
+      <div class="post-header">
+        <div class="post-author">
+          <img
+            [src]="userInfo.avatar || 'https://i.pravatar.cc/50?img=12'"
+            alt="avatar"
+          />
+          <div>
+            <strong>{{ userInfo.name }}</strong>
+            <span class="post-date">
+              {{ post.createdAt | date:'mediumDate' }}
+            </span>
+          </div>
+        </div>
+
+        <div *ngIf="isCurrentUserProfile()" class="post-actions">
+          <button class="edit" (click)="editPost(post)">Edit</button>
+          <button class="delete" (click)="deletePost(post.id)">Delete</button>
+        </div>
+      </div>
+
+      <div class="post-content">
+        <h4>{{ post.title }}</h4>
+        <p>{{ post.content }}</p>
+      </div>
+
+      <img
+        *ngIf="post.imagePath"
+        class="post-media"
+        [src]="'http://localhost:8080' + post.imagePath"
+        alt="post image"
+      />
+
+      <video
+        *ngIf="post.videoUrl"
+        class="post-media"
+        controls
+        [src]="'http://localhost:8080' + post.videoUrl">
+      </video>
+
+    </div>
+  </div>
+</div>
+
     </div>
   </main>
 
@@ -83,5 +132,19 @@
       </div>
     </div>
   </div>
+
+  <div class="modal-overlay" *ngIf="showEditPostModal">
+  <div class="modal">
+    <h3>Edit Post</h3>
+    <input type="text" [(ngModel)]="editPostTitle" placeholder="Title" />
+    <textarea [(ngModel)]="editPostContent" placeholder="Content"></textarea>
+    <input type="file" (change)="onEditPostFileSelected($event)" accept="image/*,video/*" />
+    <div class="modal-actions">
+      <button (click)="savePostEdits()">Save</button>
+      <button (click)="closeEditPostModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
 
 </div>

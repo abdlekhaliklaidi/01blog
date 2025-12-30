@@ -9,10 +9,14 @@ import com.dev.backend.util.JwtUtil;
 import com.dev.backend.dto.LoginRequest;
 import com.dev.backend.entities.User;
 import com.dev.backend.repositories.UserRepository;
+import com.dev.backend.dto.AdminUserDTO;
 
 import com.dev.backend.services.PostService;
 import com.dev.backend.services.ReportService;
 import com.dev.backend.services.AdminService;
+import com.dev.backend.dto.AdminPostDTO;
+import com.dev.backend.entities.Post;
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
@@ -45,4 +49,27 @@ public class AdminController {
     adminService.unbanUser(id);
     return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<AdminUserDTO>> getAllUsers() {
+    return ResponseEntity.ok(adminService.getAllUsers());
+    }
+
+    @GetMapping("/posts")
+    public ResponseEntity<List<AdminPostDTO>> getAllPosts() {
+    return ResponseEntity.ok(adminService.getAllPosts());
+    }
+
+    @PostMapping("/hide-post/{id}")
+    public ResponseEntity<Void> hidePost(@PathVariable Long id) {
+    adminService.hidePost(id);
+    return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/unhide-post/{id}")
+    public ResponseEntity<Void> unhidePost(@PathVariable Long id) {
+    adminService.unhidePost(id);
+    return ResponseEntity.ok().build();
+}
+
 }

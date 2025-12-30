@@ -152,3 +152,44 @@ h2 {
   background: #7b61ff;
   color: white;
 }
+
+
+.sidebar-users {
+  margin-top: 20px;
+}
+
+.user-item {
+  background: #1e1e1e;
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+}
+
+.user-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.banned {
+  color: red;
+}
+
+.user-actions {
+  margin-top: 6px;
+  display: flex;
+  gap: 5px;
+}
+
+.btn.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: #333;
+}
+
+.btn.icon-btn:hover {
+  color: #007bff;
+}
+

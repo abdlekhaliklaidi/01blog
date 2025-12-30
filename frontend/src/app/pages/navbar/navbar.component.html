@@ -1,18 +1,19 @@
 <nav class="navbar">
   <div class="nav-left">
-    <h2 class="logo">01Blog</h2>
+    <!-- <h2 class="logo">01Blog</h2> -->
     <button class="nav-btn" routerLink="/">🏠 Home</button>
     <button class="nav-btn" routerLink="/notifications">🔔 Notifications</button>
 
     <button *ngIf="auth.isAdmin()"
             routerLink="/admin/reports-admin"
             class="nav-btn">
-      🚨 Reports
+      🚨 Dashboard
     </button>
   </div>
 
   <div class="nav-center">
-    <input type="text" placeholder="Search..." class="search-input" />
+    <!-- <input type="text" placeholder="Search..." class="search-input" /> -->
+     <h2 class="logo">01Blog</h2>
   </div>
 
   <div class="nav-right">

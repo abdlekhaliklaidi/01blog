@@ -11,6 +11,15 @@ export interface User {
   bio?: string;
 }
 
+export interface Post {
+  id: number;
+  title: string;
+  content: string;
+  authorId: number;
+  createdAt?: string; 
+  updatedAt?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private apiUrl = 'http://localhost:8080/users';
@@ -58,6 +67,18 @@ export class UserService {
   
   updateUser(id: number, data: any) {
   return this.http.put<any>(`${this.apiUrl}/${id}`, data);
+  }
+  
+  getUserPosts(userId: number) {
+  return this.http.get<Post[]>(`http://localhost:8080/posts/author/${userId}`);
+}
+
+  updatePost(postId: number, data: any) {
+  return this.http.put<Post>(`http://localhost:8080/posts/${postId}`, data);
+  }
+
+  deletePost(postId: number) {
+  return this.http.delete(`http://localhost:8080/posts/${postId}`);
   }
 
 }

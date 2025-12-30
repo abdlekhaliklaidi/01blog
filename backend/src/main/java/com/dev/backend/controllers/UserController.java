@@ -36,6 +36,7 @@ public class UserController {
     public List<UserDTO> getUsers() {
     List<User> users = userRepository.findAll();
     return users.stream()
+                .filter(u -> !u.getEmail().equals("admin@gmail.com"))
                 .map(u -> new UserDTO(u.getId(), u.getFirstname(), u.getLastname(), u.getEmail(), u.getAvatar(), u.getBio()))
                 .collect(Collectors.toList());
     }

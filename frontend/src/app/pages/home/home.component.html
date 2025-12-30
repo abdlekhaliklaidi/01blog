@@ -108,7 +108,13 @@
      Delete
   </button>
 
-    <button class="report-option" (click)="openReportModal(post)">Report</button>
+  <button 
+  class="report-option" 
+  *ngIf="post.authorId !== userInfo.id"
+  (click)="openReportModal(post)">
+  Report
+  </button>
+
   </div>
 </div>
 </div>  
@@ -129,23 +135,33 @@
       </div>
 
       <div *ngIf="post.showComments" class="comments-section">
-        <div *ngFor="let c of post.comments" class="comment-box">
-          <div class="comment-header">
-            <div class="comment-info">
-              <span class="comment-author">{{ c.authorName }}</span>
-              <span class="comment-date">{{ c.createdAt | date:'short' }}</span>
-            </div>
-          </div>
-          <div class="comment-content">
-            {{ c.content }}
-          </div>
-        </div>
+  <div *ngFor="let c of post.comments" class="comment-box">
+    <div class="comment-header">
+      <div class="comment-info">
+        <span class="comment-author">{{ c.authorName }}</span>
+        <span class="comment-date">{{ c.createdAt | date:'short' }}</span>
+      </div>
 
-        <div class="add-comment">
-          <input type="text" [(ngModel)]="post.newComment" placeholder="Write a comment..." />
-          <button (click)="addComment(post)">Send</button>
+      <div class="comment-options">
+        <button class="more-btn" (click)="c.showOptions = !c.showOptions">⋮</button>
+        <div class="options-menu" *ngIf="c.showOptions">
+          <button *ngIf="c.userId === userInfo.id" (click)="deleteComment(post, c)">
+            Delete
+          </button>
         </div>
       </div>
+    </div>
+
+    <div class="comment-content">
+      {{ c.content }}
+    </div>
+  </div>
+
+  <div class="add-comment">
+    <input type="text" [(ngModel)]="post.newComment" placeholder="Write a comment..." />
+    <button (click)="addComment(post)">Send</button>
+  </div>
+  </div>
     </div>
   </main>
 

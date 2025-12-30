@@ -9,11 +9,41 @@
       <li>Reports</li> -->
       <!-- <li>Settings</li> -->
     </ul>
+
+     <div class="sidebar-users">
+    <h4>Users</h4>
+
+    <div class="user-item" *ngFor="let user of users">
+      <div class="user-info">
+        <!-- <span>{{ user.username }}</span> -->
+        <span>{{ user.firstname }} {{ user.lastname }}</span>
+        <small [class.banned]="user.banned">
+          {{ user.banned ? 'Banned' : 'Active' }}
+        </small>
+      </div>
+
+      <div class="user-actions">
+        <button
+          class="btn primary"
+          *ngIf="!user.banned"
+          (click)="banUser(user.id)">
+          Ban
+        </button>
+
+        <button
+          class="btn gray"
+          *ngIf="user.banned"
+          (click)="unbanUser(user.id)">
+          Unban
+        </button>
+      </div>
+    </div>
+  </div>
   </aside>
 
   <div class="main">
     <header class="topbar">
-      <input type="text" placeholder="Search Dashboard" />
+      <!-- <input type="text" placeholder="Search Dashboard" /> -->
       <!-- <div class="topbar-right">
         <span>English</span>
         <img src="https://i.pravatar.cc/40" />
@@ -25,12 +55,18 @@
       <h2>Reports Management</h2>
 
       <div class="toggle-buttons">
+        <button
+        (click)="showPostsManagement()"
+        [class.active]="showTable === 'posts'">
+        Posts Management
+        </button>
         <button (click)="showTable = 'post'" [class.active]="showTable === 'post'">
           Post Reports
         </button>
         <button (click)="showTable = 'user'" [class.active]="showTable === 'user'">
           User Reports
         </button>
+
       </div>
 
       <div class="card" *ngIf="showTable === 'post'">
@@ -44,6 +80,7 @@
               <th>Post</th>
               <th>Author</th>
               <th>Reporter</th>
+              <th>Show Post</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -54,6 +91,14 @@
               <td>{{ report.postTitle }}</td>
               <td>{{ report.authorName }}</td>
               <td>{{ report.reporterEmail }}</td>
+              <td>
+              <button class="btn icon-btn" (click)="showPost(report.postId)" title="View Post">
+              <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7zm0 12c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8a3 3 0 100 6 3 3 0 000-6z"/>
+              </svg>
+              </button>
+              </td>
+
               <td>
                 <button class="btn danger" (click)="deletePost(report.postId)">Delete Post</button>
                 <button class="btn gray" (click)="deleteReport(report.id)">Delete Report</button>
@@ -94,6 +139,60 @@
         </table>
       </div>
 
+      <div class="card" *ngIf="showTable === 'posts'">
+  <h3>Posts Management</h3>
+
+  <table class="dashboard-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let post of allPosts">
+        <td>{{ post.id }}</td>
+        <td>{{ post.title }}</td>
+        <td>{{ post.authorName }}</td>
+        <td>
+          <span [class.hidden]="post.hidden">
+            {{ post.hidden ? 'Hidden' : 'Visible' }}
+          </span>
+        </td>
+        <td>
+          <button class="btn danger" (click)="deletePost(post.id)">
+            Delete
+          </button>
+
+          <button
+            class="btn gray"
+            *ngIf="!post.hidden"
+            (click)="hidePost(post.id)">
+            Hide
+          </button>
+
+          <button
+            class="btn primary"
+            *ngIf="post.hidden"
+            (click)="unhidePost(post.id)">
+            Unhide
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
     </div>
   </div>
 </div>
+
+<app-post-modal
+  [post]="selectedPost"
+  [visible]="showPostModal"
+  (close)="closePostModal()">
+</app-post-modal>

@@ -5,12 +5,13 @@ import { AuthService } from '../../services/auth.service';
 import { HttpClient} from '@angular/common/http';
 import { AdminService } from '../../services/admin.service';
 import { RouterModule } from '@angular/router';
+import { PostModalComponent } from '../post-modal/post-modal.component';
 
 
 @Component({
   selector: 'app-reports-admin',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, PostModalComponent],
   templateUrl: './reports-admin.component.html',
   styleUrls: ['./reports-admin.component.css']
 })
@@ -18,8 +19,14 @@ export class ReportsAdminComponent implements OnInit {
 
   postReports: any[] = [];
   userReports: any[] = [];
-  showTable: 'post' | 'user' = 'post';
+  // showTable: 'post' | 'user' = 'post';
   isLoading = true;
+  users: any[] = [];
+  allPosts: any[] = [];
+  showTable: 'post' | 'user' | 'posts' = 'posts';
+  selectedPost: any = null;
+  showPostModal = false;
+
 
   constructor(
     private http: HttpClient,
@@ -30,7 +37,36 @@ export class ReportsAdminComponent implements OnInit {
 
   ngOnInit() {
     this.loadReports();
+    this.loadUsers();
+    if (this.showTable === 'posts') {
+      this.loadAllPosts();
+    }
   }
+  
+  loadUsers() {
+  this.adminService.getAllUsers().subscribe({
+    next: (data) => {
+      this.users = data;
+    },
+    error: (err) => {
+      console.error('Error loading users:', err);
+      console.error('Status:', err.status);
+      console.error('Message:', err.message);
+    }
+  });
+}
+  
+  loadAllPosts() {
+  this.adminService.getAllPosts().subscribe({
+    next: (data) => this.allPosts = data,
+    error: (err) => console.error('Error loading posts', err)
+  });
+}
+
+  showPostsManagement() {
+  this.showTable = 'posts';
+  this.loadAllPosts();
+}
 
   loadReports() {
     this.http.get('http://localhost:8080/reports/posts').subscribe({
@@ -79,16 +115,18 @@ export class ReportsAdminComponent implements OnInit {
   }
 
   deletePost(postId: number) {
-  this.adminService.deletePost(postId).subscribe({
-    next: () => {
-      alert("Post deleted!");
-      this.loadReports();
-    },
-    error: (err) => {
-      console.error(err);
-      alert("Error deleting post");
-    }
-  });
+  if (confirm("Are you sure you want to delete this post?")) {
+    this.adminService.deletePost(postId).subscribe({
+      next: () => {
+        alert("Post deleted successfully");
+        this.loadAllPosts();
+      },
+      error: (err) => {
+        console.error(err);
+        alert("Error deleting post");
+      }
+    });
+  }
 }
 
   banUser(userId: number) {
@@ -122,6 +160,43 @@ export class ReportsAdminComponent implements OnInit {
       }
     });
   }
+}
+
+  hidePost(postId: number) {
+  this.adminService.hidePost(postId).subscribe({
+    next: () => {
+      this.loadAllPosts();
+    },
+    error: (err) => {
+      console.error('Error hiding post', err);
+    }
+  });
+}
+
+  unhidePost(postId: number) {
+  this.adminService.unhidePost(postId).subscribe({
+    next: () => {
+      this.loadAllPosts();
+    },
+    error: (err) => {
+      console.error('Error unhiding post', err);
+    }
+  });
+}
+   
+  showPost(postId: number) {
+  const post = this.allPosts.find(p => p.id === postId);
+  if (post) {
+    this.selectedPost = post;
+    this.showPostModal = true;
+  } else {
+    alert('Post not found.');
+  }
+}
+
+closePostModal() {
+  this.showPostModal = false;
+  this.selectedPost = null;
 }
 
   takeAction(report: any) {

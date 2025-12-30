@@ -6,6 +6,10 @@ import com.dev.backend.services.NotificationService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.springframework.http.ResponseEntity;
+import java.util.Map;
+import java.util.HashMap;
 
 import java.util.List;
 
@@ -31,6 +35,11 @@ public class NotificationController {
     //         .findByUserIdAndIdGreaterThanOrderByIdDesc(userId, lastId);
     // }
     
+    // @GetMapping("/user/{userId}/stream")
+    // public SseEmitter streamNotifications(@PathVariable Long userId) {
+    //     return notificationService.subscribe(userId);
+    // }
+
     @GetMapping("/user/{userId}")
     public Page<Notification> getNotifications(
             @PathVariable Long userId,
@@ -39,6 +48,24 @@ public class NotificationController {
     ) {
         return notificationService.getNotifications(userId, page, size);
     }
+
+//     @GetMapping("/user/{userId}")
+//     public Map<String, Object> getNotifications(
+//         @PathVariable Long userId,
+//         @RequestParam(defaultValue = "0") int page,
+//         @RequestParam(defaultValue = "6") int size
+//     ) {
+//     Page<Notification> notificationsPage = notificationService.getNotifications(userId, page, size);
+
+//     Map<String, Object> response = new HashMap<>();
+//     response.put("content", notificationsPage.getContent());
+//     response.put("page", notificationsPage.getNumber());
+//     response.put("size", notificationsPage.getSize());
+//     response.put("totalElements", notificationsPage.getTotalElements());
+//     response.put("totalPages", notificationsPage.getTotalPages());
+
+//     return response;
+// }
 
     @GetMapping("/user/{userId}/latest")
     public List<Notification> getLatest(

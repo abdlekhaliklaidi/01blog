@@ -33,6 +33,30 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   }
 }
 
+//    ngOnInit() {
+//   this.userId = Number(localStorage.getItem('userId'));
+
+//   if (this.userId) {
+//     this.loadNotifications();
+//     this.initSSE();
+//   }
+// }
+
+// initSSE() {
+//   const eventSource = new EventSource(`http://localhost:8080/notifications/user/${this.userId}/stream`);
+  
+//   eventSource.onmessage = (event) => {
+//     const notification = JSON.parse(event.data);
+//     this.notifications = [notification, ...this.notifications];
+//     this.lastNotificationId = notification.id;
+//   };
+
+//   eventSource.onerror = () => {
+//     console.error('SSE connection error');
+//     eventSource.close();
+//   };
+// }
+
   ngOnDestroy() {
   clearInterval(this.timer);
 }

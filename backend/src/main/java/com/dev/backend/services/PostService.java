@@ -21,6 +21,11 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import com.dev.backend.entities.Follower;
+import com.dev.backend.repositories.FollowerRepository;
+import com.dev.backend.services.NotificationService;
+import com.dev.backend.entities.Notification;
+
 
 @Service
 public class PostService {
@@ -30,6 +35,12 @@ public class PostService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private NotificationService notificationService;
+
+    @Autowired
+    private FollowerRepository followerRepository;
 
     private static final long POST_COOLDOWN_SECONDS = 30;
 
@@ -101,6 +112,14 @@ public class PostService {
 
         post.setAuthor(author);
         post.setCreatedAt(LocalDateTime.now());
+
+        List<Follower> followers = followerRepository.findByFollowingId(author.getId());
+    for (Follower f : followers) {
+        Notification notif = new Notification();
+        notif.setUser(f.getFollower());
+        notif.setMessage(author.getFirstname() + " " + author.getLastname() + "He published a new post.");
+        notificationService.create(notif);
+    }
 
         return postRepository.save(post);
     }

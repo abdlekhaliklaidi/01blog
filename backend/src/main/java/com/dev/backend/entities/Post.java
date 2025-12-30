@@ -20,6 +20,8 @@ public class Post {
 
     @Column(length = 10000)
     private String content;
+
+    private boolean hidden;
     
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -86,4 +88,11 @@ public class Post {
 
     public String getVideoUrl() { return videoUrl; }
     public void setVideoUrl(String videoUrl) { this.videoUrl = videoUrl; }
+
+    public boolean isHidden() {
+    return hidden;
+    }
+    public void setHidden(boolean hidden) {
+    this.hidden = hidden;
+    }
 }

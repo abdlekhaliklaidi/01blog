@@ -7,6 +7,15 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ReportService } from '../../services/report.service';
 
+export interface Post {
+  id: number;
+  title: string;
+  content: string;
+  authorId: number;
+  createdAt?: string; 
+  updatedAt?: string;
+}
+
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
@@ -14,12 +23,19 @@ import { ReportService } from '../../services/report.service';
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule]
 })
+
 export class ProfileComponent implements OnInit {
   currentUser!: User;
   userInfo!: User;
 
   followers: User[] = [];
   following: User[] = [];
+  posts: Post[] = [];
+  showEditPostModal = false; 
+  editingPost: Post | null = null; 
+  editPostTitle = '';   
+  editPostContent = '';
+  editPostFile: File | null = null; 
 
   showEditProfileModal = false;
   editName = '';
@@ -63,6 +79,7 @@ export class ProfileComponent implements OnInit {
        };
             this.loadFollowers(user.id);
             this.loadFollowing(user.id);
+            this.loadUserPosts(user.id);
             if (this.currentUser.id !== this.userInfo.id) {
             this.userService
               .isFollowing(this.currentUser.id, this.userInfo.id)
@@ -89,6 +106,57 @@ export class ProfileComponent implements OnInit {
       error: err => console.error('Error loading following:', err)
     });
   }
+  
+  loadUserPosts(userId: number) {
+  this.userService.getUserPosts(userId).subscribe({
+    next: data => this.posts = data,
+    error: err => console.error('Error loading posts:', err)
+  });
+}
+  
+  editPost(post: Post) {
+  this.editingPost = post;
+  this.editPostTitle = post.title;
+  this.editPostContent = post.content;
+  this.editPostFile = null; 
+  this.showEditPostModal = true;
+}
+ 
+  onEditPostFileSelected(event: any) {
+  this.editPostFile = event.target.files[0];
+}
+
+  savePostEdits() {
+  if (!this.editingPost) return;
+
+  const formData = new FormData();
+  formData.append('title', this.editPostTitle);
+  formData.append('content', this.editPostContent);
+  if (this.editPostFile) formData.append('file', this.editPostFile);
+
+  this.userService.updatePost(this.editingPost.id, formData).subscribe({
+    next: updated => {
+      const index = this.posts.findIndex(p => p.id === updated.id);
+      if (index !== -1) this.posts[index] = updated;
+      this.closeEditPostModal();
+    },
+    error: err => console.error('Error updating post:', err)
+  });
+}
+
+closeEditPostModal() {
+  this.showEditPostModal = false;
+  this.editingPost = null;
+  this.editPostTitle = '';
+  this.editPostContent = '';
+  this.editPostFile = null;
+}
+
+  deletePost(postId: number) {
+  this.userService.deletePost(postId).subscribe(() => {
+    this.posts = this.posts.filter(p => p.id !== postId);
+  });
+}
 
   isCurrentUserProfile(): boolean {
     return this.currentUser && this.userInfo && this.currentUser.id === this.userInfo.id;
