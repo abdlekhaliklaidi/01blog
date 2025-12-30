@@ -59,10 +59,8 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostDTO> getPost(@PathVariable Long id) {
-        return postService.getPostById(id)
-            .map(post -> ResponseEntity.ok(new PostDTO(post)))
-            .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    public ResponseEntity<Post> getPost(@PathVariable Long id) {
+    return ResponseEntity.ok(postService.getPostById(id));
     }
 
     @GetMapping("/author/{authorId}")

@@ -57,8 +57,9 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<Post> getPostById(Long id) {
-        return postRepository.findById(id);
+    public Post getPostById(Long id) {
+    return postRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Post not found"));
     }
 
     @Transactional(readOnly = true)
@@ -117,7 +118,7 @@ public class PostService {
     for (Follower f : followers) {
         Notification notif = new Notification();
         notif.setUser(f.getFollower());
-        notif.setMessage(author.getFirstname() + " " + author.getLastname() + "He published a new post.");
+        notif.setMessage(author.getFirstname() + " " + author.getLastname() + " " + "He publi shed a new post.");
         notificationService.create(notif);
     }
 

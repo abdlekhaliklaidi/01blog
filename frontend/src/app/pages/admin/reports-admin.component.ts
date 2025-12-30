@@ -185,14 +185,17 @@ export class ReportsAdminComponent implements OnInit {
 }
    
   showPost(postId: number) {
-  const post = this.allPosts.find(p => p.id === postId);
-  if (post) {
-    this.selectedPost = post;
-    this.showPostModal = true;
-  } else {
-    alert('Post not found.');
-  }
+  this.adminService.getPostById(postId).subscribe({
+    next: (post) => {
+      this.selectedPost = post;
+      this.showPostModal = true;
+    },
+    error: () => {
+      alert('Post not found');
+    }
+  });
 }
+
 
 closePostModal() {
   this.showPostModal = false;

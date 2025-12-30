@@ -17,6 +17,9 @@ import com.dev.backend.services.AdminService;
 import com.dev.backend.dto.AdminPostDTO;
 import com.dev.backend.entities.Post;
 import java.util.List;
+import java.util.Optional;
+import jakarta.transaction.Transactional;
+import com.dev.backend.dto.PostDetailsDTO;
 
 @RestController
 @RequestMapping("/admin")
@@ -70,6 +73,12 @@ public class AdminController {
     public ResponseEntity<Void> unhidePost(@PathVariable Long id) {
     adminService.unhidePost(id);
     return ResponseEntity.ok().build();
+}
+    
+    @GetMapping("/posts/{id}")
+    public ResponseEntity<PostDetailsDTO> getPostById(@PathVariable Long id) {
+    Post post = postService.getPostById(id);
+    return ResponseEntity.ok(new PostDetailsDTO(post));
 }
 
 }

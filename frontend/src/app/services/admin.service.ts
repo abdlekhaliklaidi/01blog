@@ -45,5 +45,9 @@ export class AdminService {
   unhidePost(postId: number) {
   return this.http.post(`http://localhost:8080/admin/unhide-post/${postId}`, {});
   }
+  
+  getPostById(id: number) {
+  return this.http.get(`http://localhost:8080/admin/posts/${id}`);
+  }
 
 }

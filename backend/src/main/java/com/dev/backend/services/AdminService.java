@@ -9,6 +9,10 @@ import com.dev.backend.dto.AdminPostDTO;
 import com.dev.backend.entities.Post;
 import com.dev.backend.repositories.PostRepository;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.Optional;
+import jakarta.transaction.Transactional;
+
 
 @Service
 public class AdminService {
@@ -77,6 +81,11 @@ public class AdminService {
         Post post = postRepository.findById(postId)
             .orElseThrow(() -> new RuntimeException("Post not found"));
         postRepository.delete(post);
+    }
+
+    public Post getPostById(Long id) {
+    return postRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Post not found"));
     }
 
 }
