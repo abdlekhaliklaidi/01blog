@@ -196,10 +196,14 @@ export class ReportsAdminComponent implements OnInit {
   });
 }
 
-
 closePostModal() {
   this.showPostModal = false;
   this.selectedPost = null;
+}
+  
+sidebarOpen = false;
+toggleSidebar() {
+  this.sidebarOpen = !this.sidebarOpen;
 }
 
   takeAction(report: any) {

@@ -145,7 +145,7 @@
       <div class="comment-options">
         <button class="more-btn" (click)="c.showOptions = !c.showOptions">⋮</button>
         <div class="options-menu" *ngIf="c.showOptions">
-          <button *ngIf="c.userId === userInfo.id" (click)="deleteComment(post, c)">
+           <button *ngIf="c.userId === userInfo.id" (click)="deleteComment(post, c)">
             Delete
           </button>
         </div>

@@ -8,6 +8,7 @@ public class CommentDTO {
     private Long id;
     private String content;
     private String authorName;
+    private Long userId;
     private LocalDateTime createdAt;
 
     public CommentDTO(Comment comment) {
@@ -16,6 +17,7 @@ public class CommentDTO {
         this.createdAt = comment.getCreatedAt();
 
         if (comment.getUser() != null) {
+            this.userId = comment.getUser().getId();
             this.authorName = comment.getUser().getFirstname() + " " + comment.getUser().getLastname();
         } else {
             this.authorName = "Unknown";
@@ -33,4 +35,6 @@ public class CommentDTO {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 }

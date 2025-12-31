@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import com.dev.backend.dto.CommentDTO;
 
 @RestController
 @RequestMapping("/comments")
@@ -50,8 +51,11 @@ public class CommentController {
     }
 
     @GetMapping("/post/{postId}")
-    public List<Comment> getCommentsByPost(@PathVariable Long postId) {
-        return commentService.getCommentsByPost(postId);
+    public List<CommentDTO> getCommentsByPost(@PathVariable Long postId) {
+    return commentService.getCommentsByPost(postId)
+        .stream()
+        .map(CommentDTO::new)
+        .toList();
     }
 
     @GetMapping("/user/{userId}")

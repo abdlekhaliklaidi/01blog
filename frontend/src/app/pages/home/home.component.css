@@ -749,7 +749,7 @@ body.dark-mode textarea {
 
 .comment-options .options-menu {
   position: absolute;
-  top: 100%; /* يظهر تحت الزر */
+  top: 100%; 
   right: 0;
   z-index: 1000;
   background-color: #fff;

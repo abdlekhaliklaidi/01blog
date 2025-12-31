@@ -25,7 +25,7 @@
 
 
 .nav-btn {
-  padding: 8px 16px;
+  padding: 8px 8px;
   border: 1px solid #0E2F76;
   background-color: #fff;
   color: #0E2F76;
@@ -80,6 +80,7 @@
   flex-direction: column;
   width: 150px;
   text-align: left;
+  z-index: 99;
 }
 
 .user-menu p {
@@ -99,3 +100,4 @@
 .user-menu button:hover {
   text-decoration: underline;
 }
+

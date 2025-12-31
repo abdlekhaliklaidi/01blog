@@ -1,5 +1,5 @@
 <div class="admin-layout">
-  <aside class="sidebar">
+  <aside class="sidebar" [class.open]="sidebarOpen">
     <div class="logo">01Blog</div>
 
     <ul class="menu">
@@ -43,6 +43,7 @@
 
   <div class="main">
     <header class="topbar">
+      <button class="menu-toggle" (click)="toggleSidebar()">☰</button>
       <!-- <input type="text" placeholder="Search Dashboard" /> -->
       <!-- <div class="topbar-right">
         <span>English</span>

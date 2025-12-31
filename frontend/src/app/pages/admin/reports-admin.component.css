@@ -193,3 +193,123 @@ h2 {
   color: #007bff;
 }
 
+/* ===== Responsive Base ===== */
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.content {
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .admin-layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    margin-top: 0;
+    display: none; /* إخفاء sidebar */
+  }
+
+  .main {
+    width: 100%;
+  }
+
+  .content {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .topbar {
+    padding: 0 10px;
+  }
+
+  .topbar input {
+    display: none;
+  }
+
+  .topbar-right img {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+.card {
+  overflow-x: auto;
+}
+
+.dashboard-table {
+  min-width: 600px;
+}
+
+@media (max-width: 768px) {
+  .btn {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  .toggle-buttons {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar-users {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .user-item {
+    font-size: 13px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .content {
+    max-width: 1200px;
+    margin: auto;
+  }
+}
+
+/* ===== Hamburger Button ===== */
+.menu-toggle {
+  display: none;
+  font-size: 26px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #7b61ff;
+}
+
+/* Sidebar mobile behavior */
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -260px;
+    width: 240px;
+    height: 100%;
+    margin-top: 0;
+    z-index: 1000;
+    transition: left 0.3s ease;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  .main {
+    width: 100%;
+  }
+}
+

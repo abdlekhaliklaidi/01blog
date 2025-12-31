@@ -153,8 +153,21 @@ closeEditPostModal() {
 }
 
   deletePost(postId: number) {
-  this.userService.deletePost(postId).subscribe(() => {
-    this.posts = this.posts.filter(p => p.id !== postId);
+  const confirmation = confirm('Êtes-vous sûr de vouloir supprimer ce post ?');
+
+  if (!confirmation) {
+    return; 
+  }
+
+  this.userService.deletePost(postId).subscribe({
+    next: () => {
+      this.posts = this.posts.filter(p => p.id !== postId);
+      alert('Post supprimé avec succès');
+    },
+    error: err => {
+      console.error('Erreur lors de la suppression du post :', err);
+      alert('Une erreur est survenue lors de la suppression');
+    }
   });
 }
 

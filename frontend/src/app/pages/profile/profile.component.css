@@ -281,3 +281,116 @@
 .post-actions .delete:hover {
   background: #ffcccc;
 }
+
+/* ===========================
+   Responsive Profile Page
+=========================== */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .profile-layout {
+    padding: 25px;
+    gap: 20px;
+  }
+
+  .profile-sidebar {
+    width: 200px;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-stats {
+    flex-wrap: wrap;
+  }
+
+  .stat-card {
+    width: 120px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .profile-layout {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .profile-sidebar {
+    width: 100%;
+    display: flex;
+    overflow-x: auto;
+    padding: 10px;
+  }
+
+  .profile-sidebar ul {
+    display: flex;
+    gap: 10px;
+    width: max-content;
+  }
+
+  .profile-sidebar li {
+    white-space: nowrap;
+    font-size: 14px;
+  }
+
+  .profile-card {
+    padding: 20px;
+  }
+
+  .avatar-section {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .avatar-buttons {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .profile-stats {
+    justify-content: center;
+  }
+
+  .posts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal {
+    width: 90%;
+  }
+}
+
+/* Small Phones */
+@media (max-width: 480px) {
+  .avatar {
+    width: 90px;
+    height: 90px;
+  }
+
+  .follow-btn,
+  .edit-btn,
+  .report-btn {
+    width: 100%;
+  }
+
+  .post-content h4 {
+    font-size: 15px;
+  }
+
+  .post-content p {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-sidebar {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 10;
+  }
+}
