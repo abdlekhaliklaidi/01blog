@@ -2,7 +2,12 @@
   <div class="nav-left">
     <!-- <h2 class="logo">01Blog</h2> -->
     <button class="nav-btn" routerLink="/">🏠 Home</button>
-    <button class="nav-btn" routerLink="/notifications">🔔 Notifications</button>
+    <button class="nav-btn notif-btn" routerLink="/notifications">
+     🔔 Notifications
+    <span class="badge" *ngIf="unreadCount > 0">
+    {{ unreadCount }}
+    </span>
+    </button>
 
     <button *ngIf="auth.isAdmin()"
             routerLink="/admin/reports-admin"

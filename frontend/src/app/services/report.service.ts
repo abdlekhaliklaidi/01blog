@@ -44,4 +44,13 @@ export class ReportService {
   return this.http.post(`http://localhost:8080/reports/user/${userId}`, report);
  }
 
+ getPostReportsPaginated(lastId: number = 0, limit: number = 10) {
+  return this.http.get<any[]>(`http://localhost:8080/reports/posts?lastId=${lastId}&limit=${limit}`);
+ }
+
+ getUserReportsPaginated(lastId: number = 0, limit: number = 10) {
+  return this.http.get<any[]>(`http://localhost:8080/reports/users?lastId=${lastId}&limit=${limit}`);
+ }
+
+ 
 }

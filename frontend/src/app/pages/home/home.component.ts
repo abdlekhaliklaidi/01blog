@@ -110,8 +110,11 @@ this.userService.getMe().subscribe({
   loadPosts() {
   this.postService.getFeed(this.userInfo.id).subscribe({
     next: (data) => {
+      // this.Posts = data.filter(post => !post.hidden);
       console.log('First load count:', data.length);
-      this.posts = data.map(p => ({
+      this.posts = data
+      .filter(p => !p.hidden)
+      .map(p => ({
       ...p,
       showComments: false,
       newComment: '',
@@ -158,7 +161,9 @@ this.userService.getMe().subscribe({
         }
 
         this.posts.push(
-          ...data.map(p => ({
+        ...data
+        .filter(p => !p.hidden)
+        .map(p => ({
             ...p,
             showComments: false,
             newComment: '',
@@ -217,60 +222,49 @@ onFileSelected(event: Event) {
 }
 
 createPost() {
-
   if (!this.newPost.title.trim() || !this.newPost.content.trim()) {
     alert('Please enter title and content');
     return;
   }
 
-  if (this.isEditMode && this.editingPost) {
-
-    const updateData = {
-      title: this.newPost.title.trim(),
-      content: this.newPost.content.trim()
-    };
-
-    this.postService.updatePost(this.editingPost.id, updateData).subscribe({
-      next: (updated) => {
-        const index = this.posts.findIndex(p => p.id === updated.id);
-      if (index !== -1) {
-      this.posts[index] = {
-      ...this.posts[index],
-      ...updated
-      };
-    }
-        this.resetPostForm();
-      },
-      error: (err) => {
-      if (err.status === 429) {
-        alert(err.error);
-      } else {
-        console.error('Create error', err);
-      }
-    }
-  });
-}
-
   const formData = new FormData();
   formData.append('title', this.newPost.title.trim());
   formData.append('content', this.newPost.content.trim());
-
   if (this.selectedImage) formData.append('image', this.selectedImage);
   if (this.selectedVideo) formData.append('video', this.selectedVideo);
 
-  this.postService.createPost(formData).subscribe({
-    next: (created) => {
-      this.posts.unshift({
-        ...created,
-        likes: created.likes || [],
-        comments: (created.comments || []).map(c => ({ ...c, showOptions: false })),
-        showComments: false,
-        newComment: ''
-      });
-      this.resetPostForm();
-    },
-    error: err => console.error('Create error', err)
-  });
+  if (this.isEditMode && this.editingPost) {
+    this.postService.updatePost(this.editingPost.id, formData).subscribe({
+      next: (updated) => {
+        const index = this.posts.findIndex(p => p.id === updated.id);
+        if (index !== -1) {
+          this.posts[index] = {
+            ...this.posts[index],
+            ...updated
+          };
+        }
+        this.resetPostForm();
+      },
+      error: (err) => {
+        if (err.status === 429) alert(err.error);
+        else console.error('Update error', err);
+      }
+    });
+  } else {
+    this.postService.createPost(formData).subscribe({
+      next: (created) => {
+        this.posts.unshift({
+          ...created,
+          likes: created.likes || [],
+          comments: (created.comments || []).map(c => ({ ...c, showOptions: false })),
+          showComments: false,
+          newComment: ''
+        });
+        this.resetPostForm();
+      },
+      error: err => console.error('Create error', err)
+    });
+  }
 }
 
   resetPostForm() {

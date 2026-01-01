@@ -26,6 +26,17 @@ export class ReportsAdminComponent implements OnInit {
   showTable: 'post' | 'user' | 'posts' = 'posts';
   selectedPost: any = null;
   showPostModal = false;
+  loadingUsers = false;
+  loadingPosts = false;
+  usersEndReached = false;
+  postsEndReached = false;
+  loadingPostReports = false;
+  loadingUserReports = false;
+  postReportsEndReached = false;
+  userReportsEndReached = false;
+  usersLimit = 10;
+  postsLimit = 10;
+  reportsLimit = 10;
 
 
   constructor(
@@ -37,7 +48,7 @@ export class ReportsAdminComponent implements OnInit {
 
   ngOnInit() {
     this.loadReports();
-    this.loadUsers();
+    this.loadUsersPaginated(); 
     if (this.showTable === 'posts') {
       this.loadAllPosts();
     }
@@ -58,14 +69,19 @@ export class ReportsAdminComponent implements OnInit {
   
   loadAllPosts() {
   this.adminService.getAllPosts().subscribe({
-    next: (data) => this.allPosts = data,
+    next: (data) => {
+      // this.allPosts = data.filter(post => !post.hidden);
+      this.allPosts = data; 
+    },
     error: (err) => console.error('Error loading posts', err)
   });
 }
 
   showPostsManagement() {
   this.showTable = 'posts';
-  this.loadAllPosts();
+  if (this.allPosts.length === 0) {
+    this.loadPostsPaginated();
+  }
 }
 
   loadReports() {
@@ -97,6 +113,36 @@ export class ReportsAdminComponent implements OnInit {
       this.isLoading = false;
     }, 1000);
   }
+  
+  loadPostReportsPaginated() {
+  if (this.loadingPostReports || this.postReportsEndReached) return;
+  this.loadingPostReports = true;
+  const lastId = this.postReports.length ? this.postReports[this.postReports.length - 1].id : 0;
+
+  this.reportService.getPostReportsPaginated(lastId, this.reportsLimit).subscribe({
+    next: (data) => {
+      if (data.length < this.reportsLimit) this.postReportsEndReached = true;
+      this.postReports.push(...data);
+      this.loadingPostReports = false;
+    },
+    error: () => this.loadingPostReports = false
+  });
+}
+
+loadUserReportsPaginated() {
+  if (this.loadingUserReports || this.userReportsEndReached) return;
+  this.loadingUserReports = true;
+  const lastId = this.userReports.length ? this.userReports[this.userReports.length - 1].id : 0;
+
+  this.reportService.getUserReportsPaginated(lastId, this.reportsLimit).subscribe({
+    next: (data) => {
+      if (data.length < this.reportsLimit) this.userReportsEndReached = true;
+      this.userReports.push(...data);
+      this.loadingUserReports = false;
+    },
+    error: () => this.loadingUserReports = false
+  });
+}
 
   deleteReport(id: number) {
     if (confirm('Are you sure you want to delete this report?')) {
@@ -163,6 +209,7 @@ export class ReportsAdminComponent implements OnInit {
 }
 
   hidePost(postId: number) {
+    if (confirm('Are you sure you want to hide this post?')) {
   this.adminService.hidePost(postId).subscribe({
     next: () => {
       this.loadAllPosts();
@@ -171,9 +218,10 @@ export class ReportsAdminComponent implements OnInit {
       console.error('Error hiding post', err);
     }
   });
+  }
 }
-
   unhidePost(postId: number) {
+    if (confirm('Are you sure you want to unhide this post?')) {
   this.adminService.unhidePost(postId).subscribe({
     next: () => {
       this.loadAllPosts();
@@ -182,8 +230,8 @@ export class ReportsAdminComponent implements OnInit {
       console.error('Error unhiding post', err);
     }
   });
-}
-   
+  }
+}  
   showPost(postId: number) {
   this.adminService.getPostById(postId).subscribe({
     next: (post) => {
@@ -209,4 +257,57 @@ toggleSidebar() {
   takeAction(report: any) {
     alert(`Taking action on report ${report.id}\nReason: ${report.reason}`);
   }
+
+loadUsersPaginated() {
+  if (this.loadingUsers || this.usersEndReached) return;
+  console.log('loadUsersPaginated called');
+  this.loadingUsers = true;
+  const lastId = this.users.length ? this.users[this.users.length - 1].id : 0;
+
+  this.adminService.getUsersPaginated(lastId, this.usersLimit).subscribe({
+    next: (data) => {
+      console.log(`Users paginated data received: ${data.length}`);
+      if (data.length < this.usersLimit) this.usersEndReached = true;
+      this.users.push(...data);
+      this.loadingUsers = false;
+    },
+    error: () => {
+      this.loadingUsers = false;
+    }
+  });
+}
+
+loadPostsPaginated() {
+  if (this.loadingPosts || this.postsEndReached) return;
+  console.log('loadPostsPaginated called');
+  this.loadingPosts = true;
+  const lastId = this.allPosts.length ? this.allPosts[this.allPosts.length - 1].id : 0;
+
+  this.adminService.getPostsPaginated(lastId, this.postsLimit).subscribe({
+    next: (data) => {
+      console.log(`Posts paginated data received: ${data.length}`);
+      if (data.length < this.postsLimit) this.postsEndReached = true;
+      this.allPosts.push(...data);
+      this.loadingPosts = false;
+    },
+    error: () => {
+      this.loadingPosts = false;
+    }
+  });
+}
+
+onUsersScroll(event: any) {
+  const element = event.target;
+  if (element.scrollTop + element.clientHeight >= element.scrollHeight - 5) {
+    this.loadUsersPaginated();
+  }
+}
+
+onPostsScroll(event: any) {
+  const element = event.target;
+  if (element.scrollTop + element.clientHeight >= element.scrollHeight - 5) {
+    this.loadPostsPaginated();
+  }
+}
+
 }

@@ -12,6 +12,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Optional;
 import jakarta.transaction.Transactional;
+import java.util.Comparator;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+
 
 
 @Service
@@ -39,6 +43,7 @@ public class AdminService {
     public List<AdminPostDTO> getAllPosts() {
     return postRepository.findAll()
         .stream()
+        // .filter(post -> !post.isHidden())
         .map(post -> new AdminPostDTO(
             post.getId(),
             post.getTitle(),
@@ -87,6 +92,41 @@ public class AdminService {
     return postRepository.findById(id)
         .orElseThrow(() -> new RuntimeException("Post not found"));
     }
+
+    public List<AdminUserDTO> getUsersAfterId(Long lastId, int limit) {
+
+    Pageable pageable = PageRequest.of(0, limit);
+
+    return userRepository
+        .findUsersAfterId(lastId == 0 ? null : lastId, pageable)
+        .stream()
+        .map(user -> new AdminUserDTO(
+            user.getId(),
+            user.getFirstname(),
+            user.getLastname(),
+            user.getEmail(),
+            user.isBanned()
+        ))
+        .toList();
+}
+
+    public List<AdminPostDTO> getPostsAfterId(Long lastId, int limit) {
+
+    Pageable pageable = PageRequest.of(0, limit);
+
+    return postRepository
+        .findPostsAfterId(lastId == 0 ? null : lastId, pageable)
+        .stream()
+        .map(post -> new AdminPostDTO(
+            post.getId(),
+            post.getTitle(),
+            post.getAuthor().getFirstname() + " " + post.getAuthor().getLastname(),
+            post.isHidden()
+        ))
+        .toList();
+}
+
+
 
 }
 

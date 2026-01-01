@@ -30,6 +30,9 @@ import com.dev.backend.services.FollowerService;
 import java.util.ArrayList;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.access.AccessDeniedException;
+
 
 @RestController
 @RequestMapping("/posts")
@@ -131,7 +134,6 @@ public class PostController {
         post.setVideoUrl("/videos/" + fileName);
     }
 
-    // Post savedPost = postRepository.save(post);
     Post savedPost = postService.createPost(post);
 
     return ResponseEntity.status(HttpStatus.CREATED).body(new PostDTO(savedPost));
@@ -147,25 +149,43 @@ public class PostController {
     }
 }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<PostDTO> updatePost(
-        @PathVariable Long id,
-        @RequestBody Post updatedPost) {
+    @PutMapping(value = "/{id}", consumes = "multipart/form-data")
+    public ResponseEntity<PostDTO> updatePostWithMedia(
+    @PathVariable Long id,
+    @RequestParam("title") String title,
+    @RequestParam("content") String content,
+    @RequestParam(value = "image", required = false) MultipartFile imageFile,
+    @RequestParam(value = "video", required = false) MultipartFile videoFile
+    ) throws IOException {
+    
+    Post updatedPost = new Post();
+    updatedPost.setTitle(title);
+    updatedPost.setContent(content);
 
-    String email = SecurityContextHolder.getContext()
-            .getAuthentication().getName();
+    if (imageFile != null && !imageFile.isEmpty()) {
+        String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
+        Path imagePath = Paths.get("uploads/images/" + fileName);
+        Files.createDirectories(imagePath.getParent());
+        Files.write(imagePath, imageFile.getBytes());
+        updatedPost.setImagePath("/images/" + fileName);
+    }
 
-    Post post = postService.updatePost(id, updatedPost, email);
+    if (videoFile != null && !videoFile.isEmpty()) {
+        String fileName = System.currentTimeMillis() + "_" + videoFile.getOriginalFilename();
+        Path videoPath = Paths.get("uploads/videos/" + fileName);
+        Files.createDirectories(videoPath.getParent());
+        Files.write(videoPath, videoFile.getBytes());
+        updatedPost.setVideoUrl("/videos/" + fileName);
+    }
+
+    Post post = postService.updatePost(id, updatedPost);
     return ResponseEntity.ok(new PostDTO(post));
     }
 
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
-
-    String email = SecurityContextHolder.getContext()
-            .getAuthentication().getName();
-
-    postService.deletePost(id, email);
+    postService.deletePost(id);
     return ResponseEntity.noContent().build();
     }
 

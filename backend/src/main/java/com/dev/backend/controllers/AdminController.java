@@ -80,5 +80,19 @@ public class AdminController {
     Post post = postService.getPostById(id);
     return ResponseEntity.ok(new PostDetailsDTO(post));
 }
+    
+    @GetMapping("/users/paginated")
+    public ResponseEntity<List<AdminUserDTO>> getUsersPaginated(
+        @RequestParam(required = false, defaultValue = "0") Long lastId,
+        @RequestParam(required = false, defaultValue = "10") int limit) {
+    return ResponseEntity.ok(adminService.getUsersAfterId(lastId, limit));
+}
+
+    @GetMapping("/posts/paginated")
+    public ResponseEntity<List<AdminPostDTO>> getPostsPaginated(
+        @RequestParam(required = false, defaultValue = "0") Long lastId,
+        @RequestParam(required = false, defaultValue = "10") int limit) {
+    return ResponseEntity.ok(adminService.getPostsAfterId(lastId, limit));
+}
 
 }

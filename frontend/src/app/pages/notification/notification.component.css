@@ -72,3 +72,8 @@ body {
   color: #777;
   margin-top: 3px;
 }
+
+.unread {
+  background: #eef6ff;
+  font-weight: bold;
+}

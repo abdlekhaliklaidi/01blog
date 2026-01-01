@@ -1,16 +1,29 @@
-<!-- <a routerLink="/home" class="back">⬅ Back to Home</a> -->
 <div class="notif-container">
+  <button class="read-all" (click)="readAll()">Mark all as read</button>
   <h2 class="notif-title">Notifications</h2>
 
   <p *ngIf="notifications.length === 0" class="no-notif">No notifications yet.</p>
 
   <div class="notif-list" *ngIf="notifications.length > 0">
-    <div class="notif-item" *ngFor="let n of notifications">
+    <div
+      class="notif-item"
+      *ngFor="let n of notifications"
+      [class.unread]="!n.read"
+    >
       <div class="notif-icon">🔔</div>
       <div class="notif-content">
         <p class="notif-message">{{ n.message }}</p>
         <span class="notif-date">{{ n.createdAt | date:'short' }}</span>
       </div>
+
+      <div class="notif-actions">
+        <button *ngIf="!n.read" (click)="markAsRead(n)">Read</button>
+        <button *ngIf="n.read" (click)="markAsUnread(n)">Unread</button>
+      </div>
     </div>
   </div>
+
+  <!-- <p>Unread Count: {{ unreadCount }}</p> -->
+
 </div>
+

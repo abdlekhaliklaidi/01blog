@@ -49,5 +49,14 @@ export class AdminService {
   getPostById(id: number) {
   return this.http.get(`http://localhost:8080/admin/posts/${id}`);
   }
+  
+  getUsersPaginated(lastId: number = 0, limit: number = 10) {
+  return this.http.get<any[]>(`${this.api}/users/paginated?lastId=${lastId}&limit=${limit}`);
+  }
 
+  getPostsPaginated(lastId: number = 0, limit: number = 10) {
+  return this.http.get<any[]>(`${this.api}/posts/paginated?lastId=${lastId}&limit=${limit}`);
+  }
+  
+  
 }

@@ -3,6 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-navbar',
@@ -21,11 +22,13 @@ export class NavbarComponent implements OnInit {
   userEmail: string | null = null;
   userInfo: any;
   private isBrowser = false;
+  unreadCount = 0;
 
   constructor(
     public auth: AuthService,
     private userService: UserService,
     private router: Router,
+    private notificationService: NotificationService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
@@ -44,6 +47,7 @@ export class NavbarComponent implements OnInit {
           id: user.id,
           name: user.firstname + ' ' + user.lastname
         };
+        this.loadUnreadCount();
       },
       error: () => {
         this.router.navigate(['/login']);
@@ -87,4 +91,11 @@ export class NavbarComponent implements OnInit {
     this.auth.logout();
     this.router.navigate(['/login']);
   }
+
+  loadUnreadCount() {
+  if (!this.userInfo?.id) return;
+  this.notificationService.getUnreadCount(this.userInfo.id)
+      .subscribe(count => this.unreadCount = count);
+  }
+
 }

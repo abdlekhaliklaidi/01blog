@@ -10,7 +10,7 @@
       <!-- <li>Settings</li> -->
     </ul>
 
-     <div class="sidebar-users">
+     <div class="sidebar-users" (scroll)="onUsersScroll($event)">
     <h4>Users</h4>
 
     <div class="user-item" *ngFor="let user of users">
@@ -140,7 +140,7 @@
         </table>
       </div>
 
-      <div class="card" *ngIf="showTable === 'posts'">
+      <div class="card posts-scroll" *ngIf="showTable === 'posts'" (scroll)="onPostsScroll($event)">
   <h3>Posts Management</h3>
 
   <table class="dashboard-table">

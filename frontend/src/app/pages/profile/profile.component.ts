@@ -132,12 +132,16 @@ export class ProfileComponent implements OnInit {
   const formData = new FormData();
   formData.append('title', this.editPostTitle);
   formData.append('content', this.editPostContent);
-  if (this.editPostFile) formData.append('file', this.editPostFile);
+
+  if (this.editPostFile) {
+    const fileType = this.editPostFile.type.startsWith('image/') ? 'image' : 'video';
+    formData.append(fileType, this.editPostFile);
+  }
 
   this.userService.updatePost(this.editingPost.id, formData).subscribe({
     next: updated => {
       const index = this.posts.findIndex(p => p.id === updated.id);
-      if (index !== -1) this.posts[index] = updated;
+      if (index !== -1) this.posts[index] = updated; 
       this.closeEditPostModal();
     },
     error: err => console.error('Error updating post:', err)

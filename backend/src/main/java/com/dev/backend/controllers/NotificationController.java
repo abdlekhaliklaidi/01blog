@@ -79,4 +79,37 @@ public class NotificationController {
     public Notification send(@RequestBody Notification notification) {
         return notificationService.create(notification);
     }
+
+    @GetMapping("/user/{userId}/unread/count")
+    public long unreadCount(@PathVariable Long userId) {
+    return notificationService.countUnread(userId);
+    }
+
+   @PutMapping("/{id}/read")
+   public Map<String, Long> markRead(@PathVariable Long id) {
+    notificationService.markAsRead(id);
+    long unreadCount = notificationService.countUnread(
+        notificationService.getNotificationById(id).getUser().getId()
+    );
+    return Map.of("unreadCount", unreadCount);
+    }
+
+    @PutMapping("/{id}/unread")
+    public Map<String, Long> markUnread(@PathVariable Long id) {
+    notificationService.markAsUnread(id);
+    long unreadCount = notificationService.countUnread(
+        notificationService.getNotificationById(id).getUser().getId()
+    );
+    return Map.of("unreadCount", unreadCount);
+    }
+
+    @PutMapping("/user/{userId}/read-all")
+    public Map<String, Long> readAll(@PathVariable Long userId) {
+    notificationService.markAllAsRead(userId);
+    long count = notificationService.countUnread(userId);
+    Map<String, Long> response = new HashMap<>();
+    response.put("unreadCount", count);
+    return response;
+    }
+
 }

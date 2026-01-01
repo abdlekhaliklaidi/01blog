@@ -16,22 +16,26 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   page = 0;
   size = 6;
   lastNotificationId = 0;
-  private timer: any;
+  unreadCount = 0;
   userId!: number;
+
+  private timer: any;
 
   constructor(private notificationService: NotificationService) {}
 
   ngOnInit() {
-  this.userId = Number(localStorage.getItem('userId'));
+    this.userId = Number(localStorage.getItem('userId'));
 
-  if (this.userId) {
+    if (!this.userId) return;
+
     this.loadNotifications();
+    this.loadUnreadCount();
 
     this.timer = setInterval(() => {
       this.loadLatest();
+      this.loadUnreadCount();
     }, 5000);
   }
-}
 
 //    ngOnInit() {
 //   this.userId = Number(localStorage.getItem('userId'));
@@ -57,47 +61,76 @@ export class NotificationsComponent implements OnInit, OnDestroy {
 //   };
 // }
 
-  ngOnDestroy() {
-  clearInterval(this.timer);
-}
+   ngOnDestroy() {
+    clearInterval(this.timer);
+  }
 
   loadNotifications() {
-  this.notificationService
-    .getNotifications(this.userId, this.page, this.size)
-    .subscribe(res => {
-      console.log('Page:', res.number);
-      console.log('Notifications:', res.content.length);
-      this.notifications = res.content;
+    this.notificationService
+      .getNotifications(this.userId, this.page, this.size)
+      .subscribe(res => {
+        this.notifications = res.content;
 
-      if (this.notifications.length > 0) {
-        this.lastNotificationId = this.notifications[0].id;
-      }
-    });
-}
+        if (this.notifications.length > 0) {
+          this.lastNotificationId = this.notifications[0].id;
+        }
+      });
+  }
+
   loadLatest() {
-  if (!this.lastNotificationId) return;
+    if (!this.lastNotificationId) return;
 
-  this.notificationService
-    .getLatestNotifications(this.userId, this.lastNotificationId)
-    .subscribe(data => {
-      console.log('New notifications:', data.length);
-
-      if (data.length > 0) {
-        this.notifications = [...data, ...this.notifications];
-        this.lastNotificationId = data[0].id;
-      }
-    });
+    this.notificationService
+      .getLatestNotifications(this.userId, this.lastNotificationId)
+      .subscribe(data => {
+        if (data.length > 0) {
+          this.notifications = [...data, ...this.notifications];
+          this.lastNotificationId = data[0].id;
+        }
+      });
   }
 
   loadMore() {
-  this.page++;
-  this.notificationService
-    .getNotifications(this.userId, this.page, this.size)
-    .subscribe(res => {
-      this.notifications = [
-        ...this.notifications,
-        ...res.content
-      ];
+    this.page++;
+    this.notificationService
+      .getNotifications(this.userId, this.page, this.size)
+      .subscribe(res => {
+        this.notifications = [...this.notifications, ...res.content];
+      });
+  }
+
+  loadUnreadCount() {
+    this.notificationService
+      .getUnreadCount(this.userId)
+      .subscribe(count => {
+        this.unreadCount = count;
+      });
+  }
+
+  markAsRead(notification: any) {
+    if (notification.read) return;
+
+    this.notificationService.markAsRead(notification.id).subscribe((res: any) => {
+      notification.read = true;
+      // this.unreadCount--;
+      this.unreadCount = res.unreadCount;
+    });
+  }
+  
+  markAsUnread(notification: any) {
+  if (!notification.read) return;
+
+  this.notificationService.markAsUnread(notification.id).subscribe((res: any) => {
+    notification.read = false;
+    this.unreadCount = res.unreadCount; 
+  });
+}
+
+  readAll() {
+    this.notificationService.readAll(this.userId).subscribe((res: any) => {
+      this.notifications.forEach(n => n.read = true);
+      // this.unreadCount = 0;
+      this.unreadCount = res.unreadCount;
     });
   }
 }

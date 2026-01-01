@@ -24,6 +24,9 @@ public class SecurityConfig {
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
 
+    @Autowired
+    private RateLimitFilter rateLimitFilter;
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
@@ -64,7 +67,8 @@ public class SecurityConfig {
           .requestMatchers(HttpMethod.GET, "/users", "/users/me").permitAll()
             .requestMatchers("/posts/**").authenticated()
             .requestMatchers("/images/**", "/videos/**").permitAll()
-            .requestMatchers("/notifications/**").authenticated()
+            // .requestMatchers("/notifications/**").authenticated()
+            .requestMatchers("/notifications/**").permitAll()
             .requestMatchers("/followers/**").authenticated()
             .requestMatchers("/admin/**").hasRole("ADMIN")
             .anyRequest().authenticated()
@@ -72,8 +76,8 @@ public class SecurityConfig {
         .sessionManagement(session ->
             session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         )
+        .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
         .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-
     return http.build();
   }
 

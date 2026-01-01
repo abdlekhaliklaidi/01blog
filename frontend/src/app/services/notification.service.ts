@@ -27,4 +27,28 @@ export class NotificationService {
     );
   }
 
+  getUnreadCount(userId: number) {
+  return this.http.get<number>(
+    `http://localhost:8080/notifications/user/${userId}/unread/count`
+  );
+}
+  
+  markAsRead(notificationId: number) {
+  return this.http.put(
+    `${this.apiUrl}/${notificationId}/read`,
+    {}
+  );
+}
+
+  readAll(userId: number) {
+  return this.http.put(
+    `${this.apiUrl}/user/${userId}/read-all`,
+    {}
+  );
+}
+  
+  markAsUnread(notificationId: number) {
+  return this.http.put(`${this.apiUrl}/${notificationId}/unread`, {});
+}
+
 }

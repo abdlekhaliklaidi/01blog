@@ -25,6 +25,9 @@ import com.dev.backend.entities.Follower;
 import com.dev.backend.repositories.FollowerRepository;
 import com.dev.backend.services.NotificationService;
 import com.dev.backend.entities.Notification;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.access.AccessDeniedException;
 
 
 @Service
@@ -46,8 +49,10 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public List<Post> getAllPosts() {
-        // return postRepository.findAll();
-        return postRepository.findAllWithLikesAndComments();
+    return postRepository.findAllWithLikesAndComments()
+            .stream()
+            .filter(post -> !post.isHidden())
+            .toList();
     }
 
     @Transactional(readOnly = true)
@@ -126,13 +131,16 @@ public class PostService {
     }
 
     @Transactional
-    public Post updatePost(Long id, Post updatedPost, String currentEmail) {
+    public Post updatePost(Long id, Post updatedPost) {
+
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    String currentEmail = auth.getName();
 
     Post post = postRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Post not found"));
 
     if (!post.getAuthor().getEmail().equals(currentEmail)) {
-        throw new RuntimeException("Unauthorized");
+        throw new AccessDeniedException("You are not allowed to edit this post");
     }
 
     post.setTitle(updatedPost.getTitle());
@@ -144,13 +152,16 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(Long id, String currentEmail) {
+    public void deletePost(Long id) {
+
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    String currentEmail = auth.getName();
 
     Post post = postRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Post not found"));
 
     if (!post.getAuthor().getEmail().equals(currentEmail)) {
-        throw new RuntimeException("Unauthorized");
+        throw new AccessDeniedException("You are not allowed to delete this post");
     }
 
     postRepository.delete(post);
