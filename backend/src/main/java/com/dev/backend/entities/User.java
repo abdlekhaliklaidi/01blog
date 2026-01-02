@@ -24,7 +24,8 @@ public class User {
     private String avatar;
 
     private String bio;
-
+    
+    @Column(nullable = false)
     private boolean banned = false;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

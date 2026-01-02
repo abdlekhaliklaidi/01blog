@@ -13,7 +13,8 @@ public class Notification {
     private Long id;
 
     private String message;
-
+    
+    @Column(nullable = false)
     private boolean read = false;
 
     @Column(nullable = false)

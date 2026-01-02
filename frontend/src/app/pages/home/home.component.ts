@@ -55,6 +55,12 @@ export class HomeComponent implements OnInit {
   console.log('Theme applied:', this.isDarkMode);
 this.userService.getMe().subscribe({
     next: (user) => {
+      if (user.isBanned) {
+      alert('Your account has been banned.');
+      localStorage.removeItem('token');
+      this.router.navigate(['/login']);
+      return;
+    }
       this.userInfo = {
         id: user.id,
         name: "Wilcom" + ' ' + user.firstname + ' ' + user.lastname,

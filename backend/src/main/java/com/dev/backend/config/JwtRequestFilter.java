@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import com.dev.backend.entities.User;
 
 import java.io.IOException;
 
@@ -68,6 +69,12 @@ protected void doFilterInternal(HttpServletRequest request,
     System.out.println("Extracted Email: " + email);
 
     if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+         User user = userDetailsService.findByEmail(email);
+            if (user.isBanned()) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                response.getWriter().write("User is banned");
+                return;
+            }
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
         System.out.println("UserDetails loaded: " + userDetails.getUsername());
         if (jwtUtil.validateToken(jwt)) {

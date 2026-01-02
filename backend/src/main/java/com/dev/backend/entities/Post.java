@@ -20,7 +20,8 @@ public class Post {
 
     @Column(length = 10000)
     private String content;
-
+    
+    @Column(nullable = false)
     private boolean hidden;
     
     @Column(nullable = false)
