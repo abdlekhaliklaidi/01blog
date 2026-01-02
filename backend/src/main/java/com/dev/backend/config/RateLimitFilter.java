@@ -27,8 +27,8 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
     private Bucket createNewBucket() {
         Bandwidth limit = Bandwidth.classic(
-                100, 
-                Refill.intervally(100, Duration.ofMinutes(1))
+                500, 
+                Refill.intervally(500, Duration.ofMinutes(1))
         );
         return Bucket.builder().addLimit(limit).build();
     }
@@ -65,6 +65,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } else {
             response.setStatus(429);
+            response.setHeader("Retry-After", "30");
             response.getWriter().write("Too many requests. Please try again later.");
         }
     }
@@ -75,5 +76,6 @@ public class RateLimitFilter extends OncePerRequestFilter {
         return "OPTIONS".equalsIgnoreCase(request.getMethod())
                 || path.startsWith("/images/")
                 || path.startsWith("/videos/");
+                || path.equals("/") || path.equals("/index.html") || path.startsWith("/css/") || path.startsWith("/ts/");
     }
 }
