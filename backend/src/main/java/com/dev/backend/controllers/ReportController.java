@@ -36,19 +36,34 @@ public class ReportController {
     reportService.reportUser(userId, report);
     return ResponseEntity.ok().build();
     }
-    
-    @GetMapping("/posts")
-    public List<ReportDTO> getPostReports() {
-    return reportService.getPostReports();
-    }
-
-    @GetMapping("/users")
-    public List<UserReportDTO> getUserReports() {
-    return reportService.getUserReports();
-    }
 
     @DeleteMapping("/{id}")
     public void deleteReport(@PathVariable Long id) {
         reportService.deleteReport(id);
     }
+    
+    @GetMapping("/posts")
+    public List<ReportDTO> getPostReports(
+        @RequestParam(defaultValue = "0") Long lastId,
+        @RequestParam(defaultValue = "10") int limit) {
+    
+    if (lastId == 0) {
+        return reportService.getPostReports();
+    } else {
+        return reportService.getPostReportsPaginated(lastId, limit);
+    }
+    }
+
+    @GetMapping("/users")
+    public List<UserReportDTO> getUserReports(
+        @RequestParam(defaultValue = "0") Long lastId,
+        @RequestParam(defaultValue = "10") int limit) {
+    
+    if (lastId == 0) {
+        return reportService.getUserReports();
+    } else {
+        return reportService.getUserReportsPaginated(lastId, limit);
+    }
+    }
+
 }

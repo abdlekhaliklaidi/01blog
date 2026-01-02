@@ -13,10 +13,11 @@ public class ReportDTO {
 
     private String authorName;
     private String reporterEmail;
+    private boolean hidden;
 
     public ReportDTO(Long id, String reason, LocalDateTime createdAt,
                      Long postId, String postTitle,
-                     String authorName, String reporterEmail) {
+                     String authorName, String reporterEmail, boolean hidden) {
         this.id = id;
         this.reason = reason;
         this.createdAt = createdAt;
@@ -24,6 +25,7 @@ public class ReportDTO {
         this.postTitle = postTitle;
         this.authorName = authorName;
         this.reporterEmail = reporterEmail;
+         this.hidden = hidden;
     }
 
     public Long getId() { return id; }
@@ -33,4 +35,5 @@ public class ReportDTO {
     public String getPostTitle() { return postTitle; }
     public String getAuthorName() { return authorName; }
     public String getReporterEmail() { return reporterEmail; }
+    public boolean isHidden() { return hidden; }
 }

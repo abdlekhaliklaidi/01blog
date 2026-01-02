@@ -118,6 +118,7 @@ h2 {
   cursor: pointer;
   font-weight: 600;
   margin-right: 5px;
+  margin-top: 5px;
 }
 
 .btn.primary {
@@ -213,7 +214,7 @@ html, body {
     width: 100%;
     height: auto;
     margin-top: 0;
-    display: none; /* إخفاء sidebar */
+    display: none; 
   }
 
   .main {

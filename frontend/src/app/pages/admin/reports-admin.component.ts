@@ -117,7 +117,9 @@ export class ReportsAdminComponent implements OnInit {
   loadPostReportsPaginated() {
   if (this.loadingPostReports || this.postReportsEndReached) return;
   this.loadingPostReports = true;
-  const lastId = this.postReports.length ? this.postReports[this.postReports.length - 1].id : 0;
+  const lastId = this.postReports.length
+  ? this.postReports[this.postReports.length - 1].id
+  : Number.MAX_SAFE_INTEGER;
 
   this.reportService.getPostReportsPaginated(lastId, this.reportsLimit).subscribe({
     next: (data) => {
@@ -132,7 +134,9 @@ export class ReportsAdminComponent implements OnInit {
 loadUserReportsPaginated() {
   if (this.loadingUserReports || this.userReportsEndReached) return;
   this.loadingUserReports = true;
-  const lastId = this.userReports.length ? this.userReports[this.userReports.length - 1].id : 0;
+  const lastId = this.userReports.length
+  ? this.userReports[this.userReports.length - 1].id
+  : Number.MAX_SAFE_INTEGER;
 
   this.reportService.getUserReportsPaginated(lastId, this.reportsLimit).subscribe({
     next: (data) => {
@@ -213,6 +217,7 @@ loadUserReportsPaginated() {
   this.adminService.hidePost(postId).subscribe({
     next: () => {
       this.loadAllPosts();
+      this.loadReports();
     },
     error: (err) => {
       console.error('Error hiding post', err);
@@ -225,6 +230,7 @@ loadUserReportsPaginated() {
   this.adminService.unhidePost(postId).subscribe({
     next: () => {
       this.loadAllPosts();
+      this.loadReports();
     },
     error: (err) => {
       console.error('Error unhiding post', err);

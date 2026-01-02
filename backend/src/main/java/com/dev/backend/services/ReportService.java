@@ -10,6 +10,8 @@ import com.dev.backend.repositories.UserRepository;
 import com.dev.backend.dto.ReportDTO;
 import com.dev.backend.repositories.PostRepository;
 import com.dev.backend.dto.UserReportDTO;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -83,9 +85,10 @@ public class ReportService {
         report.getPost() != null ? report.getPost().getId() : null,
         report.getPost() != null ? report.getPost().getTitle() : null,
         authorName,
-        reporterEmail
+        reporterEmail,
+        report.getPost() != null && report.getPost().isHidden()
     );
-}
+    }
     private UserReportDTO mapToUserReportDTO(Report report) {
     User u = report.getReportedUser();
 
@@ -97,9 +100,36 @@ public class ReportService {
         u.getFirstname() + " " + u.getLastname(),
         report.getReporter() != null ? report.getReporter().getEmail() : null
     );
-}
+    }
 
     public void deleteReport(Long id) {
         reportRepository.deleteById(id);
     }
+
+    public List<ReportDTO> getPostReportsPaginated(Long lastId, int limit) {
+    if (lastId == 0) {
+        lastId = Long.MAX_VALUE;
+    }
+    Pageable pageable = PageRequest.of(0, limit);
+
+    return reportRepository
+            .findByPostIsNotNullAndIdLessThanOrderByIdDesc(lastId, pageable)
+            .stream()
+            .map(this::mapToDTO)
+            .collect(Collectors.toList());
+    }
+
+    public List<UserReportDTO> getUserReportsPaginated(Long lastId, int limit) {
+    if (lastId == 0) {
+        lastId = Long.MAX_VALUE;
+    }
+    Pageable pageable = PageRequest.of(0, limit);
+
+    return reportRepository
+            .findByReportedUserIsNotNullAndIdLessThanOrderByIdDesc(lastId, pageable)
+            .stream()
+            .map(this::mapToUserReportDTO)
+            .collect(Collectors.toList());
+    }
+
 }
