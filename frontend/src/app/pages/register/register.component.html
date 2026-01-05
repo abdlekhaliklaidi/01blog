@@ -56,18 +56,25 @@
         <div class="form-group">
           <label for="email"><span class="icon">📧</span> Email</label>
           <input type="email" id="email" name="email" class="form-control"
-                 [(ngModel)]="credentials.email" required #emailInput="ngModel" />
+                 [(ngModel)]="credentials.email" required pattern="^[a-zA-Z0-9._%+.-]+@gmail.com$" #emailInput="ngModel" />
           <div *ngIf="emailInput.invalid && emailInput.touched" class="error">
             L'email est requis.
+          </div>
+          <div class="error" *ngIf="emailInput.touched && emailInput.errors">
+            <span *ngIf="emailInput.errors['required']">Email requis</span>
+            <span *ngIf="emailInput.errors['pattern']">Email doit être &#64;gmail.com</span>
           </div>
         </div>
 
         <div class="form-group">
           <label for="password"><span class="icon">🔒</span> Mot de passe</label>
           <input type="password" id="password" name="password" class="form-control"
-                 [(ngModel)]="credentials.password" required #passwordInput="ngModel" />
+                 [(ngModel)]="credentials.password" required pattern="^[A-Z].{7,}$" #passwordInput="ngModel" />
           <div *ngIf="passwordInput.invalid && passwordInput.touched" class="error">
             Le mot de passe est requis.
+            <span *ngIf="passwordInput.errors['pattern']">
+            8 caractères minimum et commencer par une majuscule
+            </span>
           </div>
         </div>
 

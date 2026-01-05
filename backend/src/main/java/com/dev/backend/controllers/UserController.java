@@ -10,6 +10,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.dev.backend.util.JwtUtil;
 import com.dev.backend.dto.UserDTO;
 import java.util.stream.Collectors;
+import jakarta.validation.Valid;
+import com.dev.backend.dto.RegisterDTO;
+
 
 import java.util.List;
 
@@ -102,13 +105,25 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody User user) {
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                                 .body("Email is already registered.");
-        }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        User savedUser = userRepository.save(user);
-        return ResponseEntity.ok(savedUser);
+    public ResponseEntity<String> registerUser(@Valid @RequestBody RegisterDTO dto) {
+
+    if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body("Cet email est déjà utilisé.");
     }
+
+    User user = new User();
+    user.setFirstname(dto.getFirstname());
+    user.setLastname(dto.getLastname());
+    user.setGenre(dto.getGenre());
+    user.setEmail(dto.getEmail());
+    user.setPassword(passwordEncoder.encode(dto.getPassword()));
+    user.setRole("USER");
+
+    userRepository.save(user);
+
+    return ResponseEntity.status(HttpStatus.CREATED)
+            .body("User registered successfully.");
+    }
+
 }

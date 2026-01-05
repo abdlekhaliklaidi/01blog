@@ -123,7 +123,7 @@ public class PostService {
     for (Follower f : followers) {
         Notification notif = new Notification();
         notif.setUser(f.getFollower());
-        notif.setMessage(author.getFirstname() + " " + author.getLastname() + " " + "He publi shed a new post.");
+        notif.setMessage(author.getFirstname() + " " + author.getLastname() + " " + "published a new post.");
         notificationService.create(notif);
     }
 

@@ -72,10 +72,16 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        String path = request.getServletPath();
-        return "OPTIONS".equalsIgnoreCase(request.getMethod())
-                || path.startsWith("/images/")
-                || path.startsWith("/videos/");
-                || path.equals("/") || path.equals("/index.html") || path.startsWith("/css/") || path.startsWith("/ts/");
+    String path = request.getServletPath();
+
+    return "OPTIONS".equalsIgnoreCase(request.getMethod())
+            || path.startsWith("/images/")
+            || path.startsWith("/videos/")
+            || path.equals("/users/register")
+            || path.equals("/users/login")
+            || path.equals("/")
+            || path.equals("/index.html")
+            || path.startsWith("/css/")
+            || path.startsWith("/ts/");
     }
 }

@@ -3,6 +3,8 @@ package com.dev.backend.entities;
 import jakarta.persistence.*;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "app_user")
@@ -16,9 +18,15 @@ public class User {
     private String firstname;
     private String genre;
     
+    @NotBlank
+    @Pattern(
+     regexp = "^[a-zA-Z0-9._%+-]+@gmail\\.com$",
+     message = "Email doit être un compte Gmail"
+    )
     @Column(unique = true)
     private String email;
 
+    @Column(nullable = false)
     private String password;
 
     private String avatar;

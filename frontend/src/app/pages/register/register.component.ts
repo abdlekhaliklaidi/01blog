@@ -26,6 +26,8 @@ export class RegisterComponent {
   errorMessage: string = '';
 
   constructor(private http: HttpClient, private router: Router) {}
+  gmailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+  passwordPattern = /^[A-Z].{7,}$/;
 
   onRegister() {
     const { firstname, lastname, genre, email, password, confirmPassword } = this.credentials;
@@ -34,6 +36,17 @@ export class RegisterComponent {
       this.errorMessage = 'Veuillez remplir tous les champs.';
       this.successMessage = '';
       return;
+    }
+    
+    if (!this.gmailPattern.test(email)) {
+    this.errorMessage = 'L’email doit être au format @gmail.com';
+    return;
+    }
+
+    if (!this.passwordPattern.test(password)) {
+    this.errorMessage =
+      'Le mot de passe doit contenir au moins 8 caractères et commencer par une majuscule.';
+    return;
     }
 
     if (password !== confirmPassword) {
@@ -55,7 +68,11 @@ export class RegisterComponent {
         }, 2000);
       },
       error: (err) => {
+        if (err.status === 409) {
+        this.errorMessage = 'Cet email est déjà utilisé.';
+      } else {
         this.errorMessage = err.error || 'Échec de l’inscription.';
+      }
         this.successMessage = '';
       }
     });

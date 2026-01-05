@@ -53,17 +53,13 @@
             [(ngModel)]="credentials.password"
             placeholder="Enter your password"
             required
-            minlength="6"
+            minlength="8"
             #passwordInput="ngModel"
             class="form-control"
           />
           <div class="error" *ngIf="passwordInput.invalid && passwordInput.touched">
-            Password must be at least 6 characters
+            Password must be at least 8 characters
           </div>
-        </div>
-
-        <div class="forgot-password">
-          <a routerLink="/forgot-password">Forgot Password?</a>
         </div>
 
         <div class="form-actions">
